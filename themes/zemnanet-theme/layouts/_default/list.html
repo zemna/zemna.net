@@ -17,7 +17,7 @@
     {{- /* Category filter tabs */ -}}
     <div class="zn-filter" data-filter-group="category">
       <button class="zn-filter__btn is-active" data-filter="all">All</button>
-      {{- range .Site.Taxonomies.categories.Alphabetical }}
+      {{- range .Site.Taxonomies.topics.Alphabetical }}
       <button class="zn-filter__btn" data-filter="{{ .Page.Title | lower }}">{{ .Page.Title }}</button>
       {{- end }}
     </div>

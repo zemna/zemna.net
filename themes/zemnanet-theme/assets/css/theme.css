@@ -723,7 +723,7 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 .zn-topic-card svg { color: var(--zn-text-300); flex-shrink: 0; transition: transform var(--zn-duration-fast) var(--zn-ease-out); }
 .zn-topic-card:hover svg { transform: translateX(3px); color: var(--zn-indigo-400); }
 
-/* Topic card — large variant for /categories/ page */
+/* Topic card — large variant for /topics/ page */
 .zn-topic-card--large {
   flex-direction: row;
   align-items: center;

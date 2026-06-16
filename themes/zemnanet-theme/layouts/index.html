@@ -29,7 +29,7 @@
         </div>
         <div class="zn-hero__stat-divider"></div>
         <div class="zn-hero__stat">
-          <span class="zn-hero__stat-num">{{ len .Site.Taxonomies.categories }}</span>
+          <span class="zn-hero__stat-num">{{ len .Site.Taxonomies.topics }}</span>
           <span class="zn-hero__stat-label">Topics</span>
         </div>
         <div class="zn-hero__stat-divider"></div>
@@ -147,7 +147,7 @@
       </div>
     </div>
     <div class="zn-grid zn-grid--5">
-      {{- range .Site.Taxonomies.categories.ByCount }}
+      {{- range .Site.Taxonomies.topics.ByCount }}
       <a class="zn-topic-card" href="{{ .Page.RelPermalink }}">
         <span class="zn-topic-card__name">{{ .Page.Title }}</span>
         <span class="zn-topic-card__count">{{ .Count }}</span>

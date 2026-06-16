@@ -2,7 +2,7 @@
 title: "Stop reaching for a state library"
 date: 2026-06-15
 description: "Modern JavaScript runtimes have had structured state primitives for years. You probably don't need a 40KB dependency for what your app actually does."
-categories: ["Code"]
+topics: ["Code"]
 tags: ["javascript", "patterns", "state-management"]
 draft: false
 cover: "/covers/code-cover.png"

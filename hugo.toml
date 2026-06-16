@@ -60,7 +60,7 @@ theme = "zemnanet-theme"
 
 [[menu.main]]
   name = "Topics"
-  url = "/categories/"
+  url = "/topics/"
   weight = 25
 
 [[menu.main]]
@@ -96,7 +96,7 @@ theme = "zemnanet-theme"
 
 # Series taxonomy
 [taxonomies]
-  category = "categories"
+  topic = "topics"
   tag = "tags"
   series = "series"
 

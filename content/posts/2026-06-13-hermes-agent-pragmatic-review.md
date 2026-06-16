@@ -2,7 +2,7 @@
 title: "A pragmatic review of Hermes Agent after six months"
 date: 2026-06-13
 description: "It's a personal AI agent. It's not a product for end-users. With that frame, it works better than anything else I've tried. Here's what works, what doesn't, and when I'd reach for something else."
-categories: ["Tools"]
+topics: ["Tools"]
 tags: ["ai", "agents", "review", "hermes"]
 draft: false
 cover: "/covers/tools-cover.png"

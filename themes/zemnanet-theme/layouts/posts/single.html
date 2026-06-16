@@ -23,7 +23,7 @@
           <a href="/posts/">Blog</a>
           {{- with index .Params.categories 0 }}
           <span class="zn-article__breadcrumb__sep">/</span>
-          <a href="/categories/{{ . | urlize }}/">{{ . }}</a>
+          <a href="/topics/{{ . | urlize }}/">{{ . }}</a>
           {{- end }}
         </nav>
 
