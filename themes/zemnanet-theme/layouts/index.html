@@ -27,19 +27,20 @@
     {{- $posts := where .Site.RegularPages "Section" "posts" }}
     <div class="zn-grid zn-grid--posts">
       {{- range first 6 $posts.ByDate.Reverse }}
-      <article class="zn-card">
+      {{- $isFirst := eq .Permalink (index $posts.ByDate.Reverse 0).Permalink }}
+      <article class="zn-card{{ if $isFirst }} zn-card--featured{{ end }}">
+        {{- if $isFirst }}<div class="zn-card__ribbon">★ Latest</div>{{ end }}
         {{- if .Params.cover }}
         <div class="zn-card__cover"><img src="{{ .Params.cover | relURL }}" alt=""></div>
         {{- else }}
-        <div class="zn-card__cover">{{ .Section }} / {{ .Date.Format "2006" }}</div>
+        <div class="zn-card__cover-placeholder">{{ .Section }} / {{ .Date.Format "2006" }}</div>
         {{- end }}
         <div class="zn-card__body">
+          {{- with index .Params.categories 0 }}
+          <span class="zn-card__category zn-card__category--{{ . | lower }}">{{ . }}</span>
+          {{- end }}
           <div class="zn-card__meta">
             <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "Jan 2, 2006" }}</time>
-            {{- with .Params.categories }}
-            <span class="zn-card__meta-dot">·</span>
-            <span>{{ index . 0 }}</span>
-            {{- end }}
             {{- if .Site.Params.readingTime }}
             <span class="zn-card__meta-dot">·</span>
             <span>{{ .ReadingTime }} min</span>
@@ -48,6 +49,7 @@
           <h3 class="zn-card__title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
           <p class="zn-card__excerpt">{{ .Description | default (.Summary | plainify | truncate 160) }}</p>
           <div class="zn-card__footer">
+            <a class="zn-card__cta" href="{{ .RelPermalink }}">Read post</a>
             {{- range first 3 .Params.tags }}<a class="zn-tag" href="/tags/{{ . | urlize }}/">#{{ . }}</a>{{- end }}
           </div>
         </div>

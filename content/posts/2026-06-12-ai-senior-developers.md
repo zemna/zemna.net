@@ -5,6 +5,7 @@ description: "Two years of watching the field from Jakarta. The replacement thre
 categories: ["Opinion"]
 tags: ["ai", "career", "opinion"]
 draft: false
+cover: "/covers/opinion-cover.png"
 ---
 
 There's a genre of LinkedIn post that goes: "AI will replace senior developers because seniors are slower, more expensive, and refuse to learn new tools."

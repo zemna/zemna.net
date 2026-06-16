@@ -5,6 +5,7 @@ description: "Five years of quiet, distributed, community-driven tooling work. T
 categories: ["Indonesia"]
 tags: ["indonesia", "open-source", "community"]
 draft: false
+cover: "/covers/indonesia-cover.png"
 ---
 
 I've been in Jakarta long enough to have watched the Indonesian tech scene go through three hype cycles. The current one is different — and more durable — because it's not being driven by outside attention.

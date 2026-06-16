@@ -5,6 +5,7 @@ description: "Modern JavaScript runtimes have had structured state primitives fo
 categories: ["Code"]
 tags: ["javascript", "patterns", "state-management"]
 draft: false
+cover: "/covers/code-cover.png"
 ---
 
 Every JavaScript codebase I've touched in the last two years has had a state-management library somewhere in `package.json`. Most of them didn't need one.

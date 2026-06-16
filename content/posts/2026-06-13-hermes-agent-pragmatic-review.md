@@ -5,6 +5,7 @@ description: "It's a personal AI agent. It's not a product for end-users. With t
 categories: ["Tools"]
 tags: ["ai", "agents", "review", "hermes"]
 draft: false
+cover: "/covers/tools-cover.png"
 ---
 
 I have been running Hermes as my primary AI agent for about six months. This is a pragmatic review — not sponsored, not a teardown. Just notes from daily use.
