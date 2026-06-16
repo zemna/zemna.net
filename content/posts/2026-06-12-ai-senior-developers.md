@@ -6,6 +6,10 @@ categories: ["Opinion"]
 tags: ["ai", "career", "opinion"]
 draft: false
 cover: "/covers/opinion-cover.png"
+author: "Shinjae Kang"
+authorRole: "Senior Software Developer"
+authorLocation: "Jakarta, Indonesia"
+
 ---
 
 There's a genre of LinkedIn post that goes: "AI will replace senior developers because seniors are slower, more expensive, and refuse to learn new tools."

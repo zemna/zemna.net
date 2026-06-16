@@ -6,6 +6,10 @@ categories: ["Tools"]
 tags: ["ai", "agents", "review", "hermes"]
 draft: false
 cover: "/covers/tools-cover.png"
+author: "Shinjae Kang"
+authorRole: "Senior Software Developer"
+authorLocation: "Jakarta, Indonesia"
+
 ---
 
 I have been running Hermes as my primary AI agent for about six months. This is a pragmatic review — not sponsored, not a teardown. Just notes from daily use.

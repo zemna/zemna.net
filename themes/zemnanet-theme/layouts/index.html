@@ -1,77 +1,166 @@
 {{ define "main" }}
-<div class="zn-hero">
-  <div class="zn-container zn-container--default">
-    <span class="zn-hero__eyebrow">zemna.net</span>
-    <h1 class="zn-hero__title">{{ .Site.Params.tagline | safeHTML }}</h1>
-    <p class="zn-hero__lede">{{ .Site.Params.description | safeHTML }}</p>
-    <div class="zn-hero__actions">
-      <a class="zn-button zn-button--accent" href="/posts/">
-        Read the blog
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-      <a class="zn-button zn-button--ghost" href="/about/">About the author</a>
+
+{{- /* Hero — minimal */ -}}
+<section class="zn-hero">
+  <div class="zn-container zn-container--wide">
+    <div class="zn-hero__inner">
+      <span class="zn-hero__eyebrow">zemna.net</span>
+      <h1 class="zn-hero__title">Bridging Korean &amp; <em>Southeast Asian</em> Tech</h1>
+      <p class="zn-hero__lede">{{ .Site.Params.description | safeHTML }}</p>
+      <div class="zn-hero__actions">
+        <a class="zn-button zn-button--accent" href="/posts/">
+          Read the blog
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a class="zn-button zn-button--ghost" href="/about/">About the author</a>
+      </div>
+      <div class="zn-hero__stats">
+        <div class="zn-hero__stat">
+          <span class="zn-hero__stat-num">{{ len (where .Site.RegularPages "Section" "posts") }}+</span>
+          <span class="zn-hero__stat-label">Posts published</span>
+        </div>
+        <div class="zn-hero__stat">
+          <span class="zn-hero__stat-num">7</span>
+          <span class="zn-hero__stat-label">Topics rotating weekly</span>
+        </div>
+        <div class="zn-hero__stat">
+          <span class="zn-hero__stat-num">3</span>
+          <span class="zn-hero__stat-label">Languages (en, ko, id)</span>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
+{{- /* Breadcrumb + section header */ -}}
 <section class="zn-section">
-  <div class="zn-container zn-container--default">
+  <div class="zn-container zn-container--wide">
+    <nav class="zn-breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span class="zn-breadcrumb__sep">/</span>
+      <span aria-current="page">Latest writing</span>
+    </nav>
+
     <div class="zn-section__head">
       <div>
         <h2 class="zn-section__title">Latest writing</h2>
-        <p class="zn-section__sub">One post per day, rotating through seven themes. Mon = news · Tue = code · Wed = Indonesia · Thu = tools · Fri = debate · Sat = build in public · Sun = free.</p>
+        <p class="zn-section__sub">One post per day. Mon = news · Tue = code · Wed = Indonesia · Thu = tools · Fri = debate · Sat = build in public · Sun = free.</p>
       </div>
       <a class="zn-button zn-button--ghost" href="/posts/">All posts →</a>
     </div>
 
     {{- $posts := where .Site.RegularPages "Section" "posts" }}
-    <div class="zn-grid zn-grid--posts">
-      {{- range first 6 $posts.ByDate.Reverse }}
-      {{- $isFirst := eq .Permalink (index $posts.ByDate.Reverse 0).Permalink }}
-      <article class="zn-card{{ if $isFirst }} zn-card--featured{{ end }}">
-        {{- if $isFirst }}<div class="zn-card__ribbon">★ Latest</div>{{ end }}
-        {{- if .Params.cover }}
-        <div class="zn-card__cover"><img src="{{ .Params.cover | relURL }}" alt=""></div>
+    {{- $sorted := $posts.ByDate.Reverse }}
+
+    {{- if gt (len $sorted) 0 }}
+    {{- $featured := index $sorted 0 }}
+    {{- $rest := after 1 $sorted }}
+
+    {{- /* Featured post (large, side-by-side) */ -}}
+    <article class="zn-featured">
+      <a class="zn-featured__cover" href="{{ $featured.RelPermalink }}" aria-label="{{ $featured.Title }}">
+        {{- if $featured.Params.cover }}
+        <img src="{{ $featured.Params.cover | relURL }}" alt="">
         {{- else }}
-        <div class="zn-card__cover-placeholder">{{ .Section }} / {{ .Date.Format "2006" }}</div>
+        <div class="zn-featured__placeholder">{{ $featured.Section }} / {{ $featured.Date.Format "2006" }}</div>
         {{- end }}
-        <div class="zn-card__body">
-          {{- with index .Params.categories 0 }}
+      </a>
+      <div class="zn-featured__body">
+        <div class="zn-featured__meta">
+          {{- with index $featured.Params.categories 0 }}
           <span class="zn-card__category zn-card__category--{{ . | lower }}">{{ . }}</span>
           {{- end }}
+          <span class="zn-card__meta-dot">·</span>
+          <time datetime="{{ $featured.PublishDate.Format "2006-01-02" }}">{{ $featured.PublishDate.Format "January 2, 2006" }}</time>
+          <span class="zn-card__meta-dot">·</span>
+          <span>{{ $featured.ReadingTime }} min read</span>
+        </div>
+        <h3 class="zn-featured__title">
+          <a href="{{ $featured.RelPermalink }}">{{ $featured.Title }}</a>
+        </h3>
+        <p class="zn-featured__excerpt">{{ $featured.Description | default ($featured.Summary | plainify | truncate 280) }}</p>
+        <div class="zn-featured__footer">
+          <div class="zn-featured__author">
+            <div class="zn-featured__avatar">{{ substr $featured.Params.author 0 1 | default "S" }}</div>
+            <div>
+              <span class="zn-featured__author-name">{{ $featured.Params.author | default "Shinjae Kang" }}</span>
+              <span class="zn-featured__author-loc">{{ $featured.Params.authorLocation | default "Jakarta, Indonesia" }}</span>
+            </div>
+          </div>
+          <a class="zn-card__cta" href="{{ $featured.RelPermalink }}">Read post →</a>
+        </div>
+      </div>
+    </article>
+
+    {{- /* Grid of remaining posts */ -}}
+    {{- if gt (len $rest) 0 }}
+    <div class="zn-grid zn-grid--3 zn-grid--posts">
+      {{- range $rest }}
+      <article class="zn-card">
+        <a class="zn-card__cover" href="{{ .RelPermalink }}" aria-label="{{ .Title }}">
+          {{- if .Params.cover }}
+          <img src="{{ .Params.cover | relURL }}" alt="">
+          {{- else }}
+          <div class="zn-card__cover-placeholder">{{ .Section }} / {{ .Date.Format "2006" }}</div>
+          {{- end }}
+        </a>
+        <div class="zn-card__body">
           <div class="zn-card__meta">
-            <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "Jan 2, 2006" }}</time>
-            {{- if .Site.Params.readingTime }}
+            {{- with index .Params.categories 0 }}
+            <span class="zn-card__category zn-card__category--{{ . | lower }}">{{ . }}</span>
+            <span class="zn-card__meta-dot">·</span>
+            {{- end }}
+            <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "Jan 2" }}</time>
             <span class="zn-card__meta-dot">·</span>
             <span>{{ .ReadingTime }} min</span>
-            {{- end }}
           </div>
           <h3 class="zn-card__title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
-          <p class="zn-card__excerpt">{{ .Description | default (.Summary | plainify | truncate 160) }}</p>
+          <p class="zn-card__excerpt">{{ .Description | default (.Summary | plainify | truncate 140) }}</p>
           <div class="zn-card__footer">
-            <a class="zn-card__cta" href="{{ .RelPermalink }}">Read post</a>
-            {{- range first 3 .Params.tags }}<a class="zn-tag" href="/tags/{{ . | urlize }}/">#{{ . }}</a>{{- end }}
+            <span class="zn-card__author">
+              <span class="zn-card__author-avatar">{{ substr (.Params.author | default "S") 0 1 }}</span>
+              {{ .Params.author | default "Shinjae Kang" }}
+            </span>
+            <a class="zn-card__cta" href="{{ .RelPermalink }}">Read →</a>
           </div>
         </div>
       </article>
       {{- end }}
     </div>
+    {{- end }}
+
+    {{- end }}
   </div>
 </section>
 
+{{- /* Topics */ -}}
 <section class="zn-section zn-section--tight" style="background: var(--zn-surface); border-block: 1px solid var(--zn-border);">
-  <div class="zn-container zn-container--default">
+  <div class="zn-container zn-container--wide">
     <div class="zn-section__head">
-      <h2 class="zn-section__title">Topics</h2>
-      <p class="zn-section__sub">Browse by theme.</p>
+      <div>
+        <h2 class="zn-section__title">Topics</h2>
+        <p class="zn-section__sub">Browse by theme.</p>
+      </div>
     </div>
-    <div class="zn-grid zn-grid--3">
-      {{- range first 6 .Site.Taxonomies.categories.ByCount }}
-      <a class="zn-card" href="{{ .Page.RelPermalink }}" style="padding: var(--zn-space-6);">
-        <h3 class="zn-card__title">{{ .Page.Title }}</h3>
-        <p class="zn-card__excerpt">{{ .Count }} post{{ if ne .Count 1 }}s{{ end }}</p>
+    <div class="zn-grid zn-grid--4">
+      {{- range first 8 .Site.Taxonomies.categories.ByCount }}
+      <a class="zn-topic-card" href="{{ .Page.RelPermalink }}">
+        <span class="zn-topic-card__name">{{ .Page.Title }}</span>
+        <span class="zn-topic-card__count">{{ .Count }} post{{ if ne .Count 1 }}s{{ end }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
       {{- end }}
+    </div>
+  </div>
+</section>
+
+{{- /* Newsletter / Subscribe (placeholder) */ -}}
+<section class="zn-section">
+  <div class="zn-container zn-container--narrow">
+    <div class="zn-subscribe">
+      <span class="zn-hero__eyebrow">Stay in the loop</span>
+      <h2 class="zn-section__title">No newsletter. RSS only.</h2>
+      <p class="zn-section__sub">This blog doesn't collect emails. Subscribe via <a href="/index.xml">RSS</a> or follow on <a href="https://x.com/zemnanet" rel="me noopener">X</a> / <a href="https://instagram.com/zemna" rel="me noopener">Instagram</a>. New posts ship every day.</p>
     </div>
   </div>
 </section>

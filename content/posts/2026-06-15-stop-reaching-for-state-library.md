@@ -6,6 +6,10 @@ categories: ["Code"]
 tags: ["javascript", "patterns", "state-management"]
 draft: false
 cover: "/covers/code-cover.png"
+author: "Shinjae Kang"
+authorRole: "Senior Software Developer"
+authorLocation: "Jakarta, Indonesia"
+
 ---
 
 Every JavaScript codebase I've touched in the last two years has had a state-management library somewhere in `package.json`. Most of them didn't need one.

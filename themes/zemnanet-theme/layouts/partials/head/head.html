@@ -77,6 +77,8 @@
 <link rel="stylesheet" href="{{ $article.RelPermalink }}">
 {{- $interactions := resources.Get "css/interactions.css" | resources.Minify }}
 <link rel="stylesheet" href="{{ $interactions.RelPermalink }}">
+{{- $featured := resources.Get "css/featured.css" | resources.Minify }}
+<link rel="stylesheet" href="{{ $featured.RelPermalink }}">
 
 {{- /* OpenSearch */ -}}
 <link rel="search" type="application/opensearchdescription+xml" title="{{ .Site.Title }}" href="{{ "opensearch.xml" | relURL }}">

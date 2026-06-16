@@ -6,6 +6,10 @@ categories: ["Indonesia"]
 tags: ["indonesia", "open-source", "community"]
 draft: false
 cover: "/covers/indonesia-cover.png"
+author: "Shinjae Kang"
+authorRole: "Senior Software Developer"
+authorLocation: "Jakarta, Indonesia"
+
 ---
 
 I've been in Jakarta long enough to have watched the Indonesian tech scene go through three hype cycles. The current one is different — and more durable — because it's not being driven by outside attention.

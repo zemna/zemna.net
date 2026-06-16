@@ -45,7 +45,7 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 .zn-container--prose   { max-width: var(--zn-container-prose); }
 
 @media (max-width: 640px) {
-  .zn-container { padding-inline: var(--zn-space-4); }
+  .zn-container { padding-inline: var(--zn-space-5); }
 }
 
 /* ---- Header ---- */

@@ -126,11 +126,11 @@
   --zn-bp-2xl: 1536px;
 
   /* --- Container --- */
-  --zn-container-prose:   68ch;
-  --zn-container-narrow:  640px;
-  --zn-container-default: 1024px;
-  --zn-container-wide:    1280px;
-  --zn-container-full:    1536px;
+  --zn-container-prose:   80ch;
+  --zn-container-narrow:  720px;
+  --zn-container-default: 1280px;
+  --zn-container-wide:    1440px;
+  --zn-container-full:    1680px;
 
   /* --- Motion --- */
   --zn-duration-instant:   0ms;

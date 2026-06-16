@@ -7,6 +7,10 @@ tags: ["korea", "devtools", "industry"]
 draft: false
 series: "Korean Tech in 2026"
 cover: "/covers/news-cover.png"
+author: "Shinjae Kang"
+authorRole: "Senior Software Developer"
+authorLocation: "Jakarta, Indonesia"
+
 ---
 
 The Korean developer-tools market has historically been fragmented. Dozens of small teams shipping one thing well, each with its own API, its own auth model, its own quirks. That era is ending.
