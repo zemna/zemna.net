@@ -1,0 +1,69 @@
+{{ define "main" }}
+<section class="zn-section">
+  <div class="zn-container zn-container--default">
+    <nav class="zn-breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span class="zn-breadcrumb__sep">/</span>
+      <a href="/tags/">Tags</a>
+      <span class="zn-breadcrumb__sep">/</span>
+      <span aria-current="page">#{{ .Title }}</span>
+    </nav>
+
+    <div class="zn-section__head">
+      <div>
+        <h1 class="zn-section__title">#{{ .Title }}</h1>
+        {{- with .Description }}
+        <p class="zn-section__sub">{{ . }}</p>
+        {{- else }}
+        <p class="zn-section__sub">{{ len .Pages }} post{{ if ne (len .Pages) 1 }}s{{ end }} tagged with #{{ .Title }}</p>
+        {{- end }}
+      </div>
+      <a class="zn-button zn-button--ghost" href="/tags/">← All tags</a>
+    </div>
+
+    <div class="zn-grid zn-grid--3 zn-grid--posts">
+      {{- range .Pages.ByDate.Reverse }}
+      <article class="zn-card">
+        <a class="zn-card__cover" href="{{ .RelPermalink }}" aria-label="{{ .Title }}">
+          {{- if .Params.cover }}
+          <img src="{{ .Params.cover | relURL }}" alt="" loading="lazy">
+          {{- else }}
+          <div class="zn-card__cover-placeholder">{{ .Section }} / {{ .Date.Format "2006" }}</div>
+          {{- end }}
+        </a>
+        <div class="zn-card__body">
+          <div class="zn-card__meta">
+            {{- with index .Params.categories 0 }}
+            <span class="zn-card__category zn-card__category--{{ . | lower }}">{{ . }}</span>
+            <span class="zn-card__meta-dot">·</span>
+            {{- end }}
+            <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "Jan 2" }}</time>
+            <span class="zn-card__meta-dot">·</span>
+            <span>{{ .ReadingTime }} min</span>
+          </div>
+          <h3 class="zn-card__title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+          <p class="zn-card__excerpt">{{ .Description | default (.Summary | plainify | truncate 140) }}</p>
+          <div class="zn-card__footer">
+            <span class="zn-card__author">
+              <span class="zn-card__author-avatar">{{ substr (.Params.author | default "S") 0 1 }}</span>
+              {{ .Params.author | default "Shinjae Kang" }}
+            </span>
+            <a class="zn-card__cta" href="{{ .RelPermalink }}">Read →</a>
+          </div>
+        </div>
+      </article>
+      {{- end }}
+    </div>
+
+    {{- if gt (len .Pages) 0 }}
+    <div class="zn-section__head" style="margin-top: var(--zn-space-16); border-top: 1px solid var(--zn-border-subtle); padding-top: var(--zn-space-10);">
+      <p class="zn-section__sub">Also see: 
+        {{- range first 5 (where .Site.Taxonomies.tags "Page.Title" "!=" .Title).ByCount }}
+        <a href="{{ .Page.RelPermalink }}" class="zn-tag">#{{ .Page.Title }}</a>
+        {{- end }}
+      </p>
+    </div>
+    {{- end }}
+  </div>
+</section>
+{{ end }}
