@@ -156,5 +156,29 @@
       debounceTimer = setTimeout(function() { renderResults(q); }, 120);
     });
   }
+
+  // ============ Category filter (blog list page) ============
+  var filterGroup = document.querySelector('[data-filter-group]');
+  if (filterGroup) {
+    var filterBtns = filterGroup.querySelectorAll('.zn-filter__btn');
+    var filterCards = document.querySelectorAll('[data-category]');
+
+    filterBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        filterBtns.forEach(function(b) { b.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+
+        var filter = btn.getAttribute('data-filter');
+        filterCards.forEach(function(card) {
+          if (filter === 'all') {
+            card.style.display = '';
+          } else {
+            var cat = card.getAttribute('data-category');
+            card.style.display = (cat === filter) ? '' : 'none';
+          }
+        });
+      });
+    });
+  }
 })();
 </script>

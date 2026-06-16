@@ -1,14 +1,19 @@
 {{ define "main" }}
 
-{{- /* Hero — minimal */ -}}
+{{- /* Hero — professional editorial feel */ -}}
 <section class="zn-hero">
   <div class="zn-container zn-container--wide">
     <div class="zn-hero__inner">
-      <span class="zn-hero__eyebrow">zemna.net</span>
-      <h1 class="zn-hero__title">Bridging Korean &amp; <em>Southeast Asian</em> Tech</h1>
+      <div class="zn-hero__badge">
+        <span class="zn-hero__badge-dot"></span>
+        <span>Publishing daily from Jakarta</span>
+      </div>
+      <h1 class="zn-hero__title">
+        Bridging Korean <br class="zn-hide-mobile">&amp; <em>Southeast Asian</em> Tech
+      </h1>
       <p class="zn-hero__lede">{{ .Site.Params.description | safeHTML }}</p>
       <div class="zn-hero__actions">
-        <a class="zn-button zn-button--accent" href="/posts/">
+        <a class="zn-button zn-button--primary" href="/posts/">
           Read the blog
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
@@ -16,35 +21,31 @@
       </div>
       <div class="zn-hero__stats">
         <div class="zn-hero__stat">
-          <span class="zn-hero__stat-num">{{ len (where .Site.RegularPages "Section" "posts") }}+</span>
-          <span class="zn-hero__stat-label">Posts published</span>
+          <span class="zn-hero__stat-num">{{ len (where .Site.RegularPages "Section" "posts") }}</span>
+          <span class="zn-hero__stat-label">Posts</span>
         </div>
+        <div class="zn-hero__stat-divider"></div>
         <div class="zn-hero__stat">
-          <span class="zn-hero__stat-num">7</span>
-          <span class="zn-hero__stat-label">Topics rotating weekly</span>
+          <span class="zn-hero__stat-num">{{ len .Site.Taxonomies.categories }}</span>
+          <span class="zn-hero__stat-label">Topics</span>
         </div>
+        <div class="zn-hero__stat-divider"></div>
         <div class="zn-hero__stat">
           <span class="zn-hero__stat-num">3</span>
-          <span class="zn-hero__stat-label">Languages (en, ko, id)</span>
+          <span class="zn-hero__stat-label">Languages</span>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-{{- /* Breadcrumb + section header */ -}}
+{{- /* Latest writing — featured + grid */ -}}
 <section class="zn-section">
   <div class="zn-container zn-container--wide">
-    <nav class="zn-breadcrumb" aria-label="Breadcrumb">
-      <a href="/">Home</a>
-      <span class="zn-breadcrumb__sep">/</span>
-      <span aria-current="page">Latest writing</span>
-    </nav>
-
     <div class="zn-section__head">
       <div>
         <h2 class="zn-section__title">Latest writing</h2>
-        <p class="zn-section__sub">One post per day. Mon = news · Tue = code · Wed = Indonesia · Thu = tools · Fri = debate · Sat = build in public · Sun = free.</p>
+        <p class="zn-section__sub">One post per day. Mon&nbsp;=&nbsp;news · Tue&nbsp;=&nbsp;code · Wed&nbsp;=&nbsp;Indonesia · Thu&nbsp;=&nbsp;tools · Fri&nbsp;=&nbsp;debate · Sat&nbsp;=&nbsp;build · Sun&nbsp;=&nbsp;free.</p>
       </div>
       <a class="zn-button zn-button--ghost" href="/posts/">All posts →</a>
     </div>
@@ -60,7 +61,7 @@
     <article class="zn-featured">
       <a class="zn-featured__cover" href="{{ $featured.RelPermalink }}" aria-label="{{ $featured.Title }}">
         {{- if $featured.Params.cover }}
-        <img src="{{ $featured.Params.cover | relURL }}" alt="">
+        <img src="{{ $featured.Params.cover | relURL }}" alt="" loading="eager">
         {{- else }}
         <div class="zn-featured__placeholder">{{ $featured.Section }} / {{ $featured.Date.Format "2006" }}</div>
         {{- end }}
@@ -69,8 +70,8 @@
         <div class="zn-featured__meta">
           {{- with index $featured.Params.categories 0 }}
           <span class="zn-card__category zn-card__category--{{ . | lower }}">{{ . }}</span>
-          {{- end }}
           <span class="zn-card__meta-dot">·</span>
+          {{- end }}
           <time datetime="{{ $featured.PublishDate.Format "2006-01-02" }}">{{ $featured.PublishDate.Format "January 2, 2006" }}</time>
           <span class="zn-card__meta-dot">·</span>
           <span>{{ $featured.ReadingTime }} min read</span>
@@ -99,7 +100,7 @@
       <article class="zn-card">
         <a class="zn-card__cover" href="{{ .RelPermalink }}" aria-label="{{ .Title }}">
           {{- if .Params.cover }}
-          <img src="{{ .Params.cover | relURL }}" alt="">
+          <img src="{{ .Params.cover | relURL }}" alt="" loading="lazy">
           {{- else }}
           <div class="zn-card__cover-placeholder">{{ .Section }} / {{ .Date.Format "2006" }}</div>
           {{- end }}
@@ -134,7 +135,7 @@
 </section>
 
 {{- /* Topics */ -}}
-<section class="zn-section zn-section--tight" style="background: var(--zn-surface); border-block: 1px solid var(--zn-border);">
+<section class="zn-section zn-section--tight zn-section--surface">
   <div class="zn-container zn-container--wide">
     <div class="zn-section__head">
       <div>
@@ -142,11 +143,11 @@
         <p class="zn-section__sub">Browse by theme.</p>
       </div>
     </div>
-    <div class="zn-grid zn-grid--4">
-      {{- range first 8 .Site.Taxonomies.categories.ByCount }}
+    <div class="zn-grid zn-grid--5">
+      {{- range .Site.Taxonomies.categories.ByCount }}
       <a class="zn-topic-card" href="{{ .Page.RelPermalink }}">
         <span class="zn-topic-card__name">{{ .Page.Title }}</span>
-        <span class="zn-topic-card__count">{{ .Count }} post{{ if ne .Count 1 }}s{{ end }}</span>
+        <span class="zn-topic-card__count">{{ .Count }}</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
       {{- end }}
@@ -154,13 +155,13 @@
   </div>
 </section>
 
-{{- /* Newsletter / Subscribe (placeholder) */ -}}
+{{- /* Subscribe / RSS */ -}}
 <section class="zn-section">
   <div class="zn-container zn-container--narrow">
     <div class="zn-subscribe">
-      <span class="zn-hero__eyebrow">Stay in the loop</span>
-      <h2 class="zn-section__title">No newsletter. RSS only.</h2>
-      <p class="zn-section__sub">This blog doesn't collect emails. Subscribe via <a href="/index.xml">RSS</a> or follow on <a href="https://x.com/zemnanet" rel="me noopener">X</a> / <a href="https://instagram.com/zemna" rel="me noopener">Instagram</a>. New posts ship every day.</p>
+      <span class="zn-subscribe__eyebrow">Stay in the loop</span>
+      <h2 class="zn-subscribe__title">No newsletter. RSS only.</h2>
+      <p class="zn-subscribe__desc">This blog doesn't collect emails. Subscribe via <a href="/index.xml">RSS</a> or follow on <a href="https://x.com/zemnanet" rel="me noopener">X</a> / <a href="https://instagram.com/zemna" rel="me noopener">Instagram</a>. New posts ship every day.</p>
     </div>
   </div>
 </section>

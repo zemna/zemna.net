@@ -59,14 +59,9 @@ theme = "zemnanet-theme"
   weight = 20
 
 [[menu.main]]
-  name = "Series"
-  url = "/series/"
-  weight = 30
-
-[[menu.main]]
   name = "About"
   url = "/about/"
-  weight = 40
+  weight = 30
 
 # Footer menu
 [[menu.footer]]

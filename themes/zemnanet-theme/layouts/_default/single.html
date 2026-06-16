@@ -1,112 +1,111 @@
 {{ define "main" }}
-<article class="zn-article">
-  <div class="zn-reading-progress" data-reading-progress></div>
 
-  <div class="zn-container zn-container--wide">
-    <nav class="zn-breadcrumb" aria-label="Breadcrumb">
+{{- /* Reading progress bar */ -}}
+<div class="zn-reading-bar" data-reading-progress></div>
+
+<article class="zn-article" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="zn-container zn-container--prose">
+    {{- /* Breadcrumb */ -}}
+    <nav class="zn-article__breadcrumb" aria-label="Breadcrumb">
       <a href="/">Home</a>
-      <span class="zn-breadcrumb__sep">/</span>
-      <a href="/posts/">Posts</a>
-      <span class="zn-breadcrumb__sep">/</span>
-      <span aria-current="page">{{ .Title | truncate 50 }}</span>
+      <span class="zn-article__breadcrumb__sep">/</span>
+      <a href="/posts/">Blog</a>
+      <span class="zn-article__breadcrumb__sep">/</span>
+      <span>{{ .Title | truncate 40 }}</span>
     </nav>
-  </div>
 
-  <header class="zn-article__header">
-    <div class="zn-article__eyebrow">
+    {{- /* Header */ -}}
+    <header class="zn-article__header">
       {{- with index .Params.categories 0 }}
-      <span class="zn-card__category zn-card__category--{{ . | lower }}">{{ . }}</span>
-      <span class="zn-card__meta-dot">·</span>
+      <span class="zn-article__category">{{ . }}</span>
       {{- end }}
-      <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "January 2, 2006" }}</time>
-      <span class="zn-card__meta-dot">·</span>
-      <span class="zn-article__reading">{{ .ReadingTime }} min read</span>
-      {{- with .Params.series }}
-      <span class="zn-card__meta-dot">·</span>
-      <a class="zn-article__series-link" href="/series/{{ . | urlize }}/">Series: {{ . }}</a>
+
+      <h1 class="zn-article__title" itemprop="headline">{{ .Title }}</h1>
+
+      {{- with .Description }}
+      <p class="zn-article__desc">{{ . }}</p>
       {{- end }}
-    </div>
 
-    <h1 class="zn-article__title">{{ .Title }}</h1>
-
-    {{- with .Description }}
-    <p class="zn-article__lede">{{ . }}</p>
-    {{- end }}
-
-    <div class="zn-article__meta">
-      <div class="zn-article__author">
-        <div class="zn-article__avatar">{{ substr (.Params.author | default "S") 0 1 }}</div>
-        <div>
-          <span class="zn-article__author-name">{{ .Params.author | default "Shinjae Kang" }}</span>
-          <span class="zn-article__author-role">{{ .Params.authorRole | default "Senior Developer · Jakarta" }}</span>
+      <div class="zn-article__meta">
+        <div class="zn-article__author">
+          <div class="zn-article__author-avatar">{{ substr (.Params.author | default "S") 0 1 }}</div>
+          <div class="zn-article__author-info">
+            <span class="zn-article__author-name" itemprop="author">{{ .Params.author | default "Shinjae Kang" }}</span>
+            <span class="zn-article__author-detail">{{ .Params.authorRole | default "Senior Software Developer" }} · {{ .Params.authorLocation | default "Jakarta" }}</span>
+          </div>
+        </div>
+        <div class="zn-article__date">
+          <time class="zn-article__date-pub" datetime="{{ .PublishDate.Format "2006-01-02" }}" itemprop="datePublished">{{ .PublishDate.Format "January 2, 2006" }}</time>
+          <span class="zn-article__date-read">{{ .ReadingTime }} min read</span>
         </div>
       </div>
-      {{- if and .Site.Params.showLastModified (ne (.Lastmod.Format "2006-01-02") (.PublishDate.Format "2006-01-02")) }}
-      <div class="zn-article__updated">
-        Updated <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "Jan 2, 2006" }}</time>
+    </header>
+
+    {{- /* Cover image */ -}}
+    {{- if .Params.cover }}
+    <div class="zn-article__cover">
+      <img src="{{ .Params.cover | relURL }}" alt="" itemprop="image">
+    </div>
+    {{- end }}
+
+    {{- /* Prose body */ -}}
+    <div class="zn-prose" itemprop="articleBody">
+      {{ .Content }}
+    </div>
+
+    {{- /* Footer: tags */ -}}
+    <footer class="zn-article__footer">
+      {{- with .Params.tags }}
+      <div class="zn-article__tags">
+        {{- range . }}
+        <a class="zn-tag" href="/tags/{{ . | urlize }}/">{{ . }}</a>
+        {{- end }}
       </div>
       {{- end }}
-    </div>
-  </header>
 
-  {{- with .Params.cover }}
-  <div class="zn-article__cover">
-    <img src="{{ . | relURL }}" alt="{{ $.Title }}">
-    {{- with $.Params.coverCaption }}
-    <figcaption>{{ . }}</figcaption>
-    {{- end }}
-  </div>
-  {{- end }}
-
-  {{- with .Params.series }}
-  {{- $seriesName := . }}
-  {{- $seriesPosts := where (where site.RegularPages "Section" "posts") ".Params.series" $seriesName }}
-  <aside class="zn-series">
-    <p class="zn-series__title">Part of a series</p>
-    <p class="zn-series__name">{{ $seriesName }}</p>
-    <ol class="zn-series__list">
-      {{- range $i, $p := $seriesPosts.ByDate }}
-      <li {{ if eq $p.RelPermalink $.RelPermalink }}class="is-current"{{ end }}>
-        <span>{{ add $i 1 }}.</span>
-        <a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a>
-      </li>
-      {{- end }}
-    </ol>
-  </aside>
-  {{- end }}
-
-  <div class="zn-prose{{ if and .Site.Params.useSerifForEditorial (eq .Section "posts") }} zn-prose--serif{{ end }}">
-    {{ .Content }}
-  </div>
-
-  <footer class="zn-article__footer">
-    {{- with .Params.tags }}
-    <div class="zn-article__tags">
-      <span class="zn-article__tags-label">Tags</span>
-      {{- range . }}<a class="zn-tag zn-tag--lg" href="/tags/{{ . | urlize }}/">#{{ . }}</a>{{- end }}
-    </div>
-    {{- end }}
-
-    {{- if in .Site.Params.shareButtons "twitter" }}
-    <div class="zn-article__share">
-      <span class="zn-article__share-label">Share</span>
-      <a class="zn-button zn-button--ghost" href="https://twitter.com/intent/tweet?url={{ .Permalink | urlize }}&text={{ .Title | urlize }}" rel="noopener">X / Twitter</a>
-    </div>
-    {{- end }}
-
-    <div class="zn-author">
-      <div class="zn-author__avatar">{{ substr (.Params.author | default "S") 0 1 }}</div>
-      <div>
-        <p class="zn-author__name">{{ .Params.author | default "Shinjae Kang" }}</p>
-        <p class="zn-author__role">{{ .Params.authorRole | default "Senior Software Developer · Jakarta, Indonesia" }}</p>
-        <p class="zn-author__bio">{{ .Site.Params.authorBio }}</p>
-        <div class="zn-author__links">
-          <a href="https://twitter.com/zemnanet" rel="me noopener">X</a>
-          <a href="https://instagram.com/zemna" rel="me noopener">Instagram</a>
-          <a href="https://github.com/zemnanet" rel="me noopener">GitHub</a>
-        </div>
+      <div class="zn-article__share">
+        <span class="zn-article__share-label">Share</span>
+        <a class="zn-icon-button" href="https://x.com/intent/tweet?text={{ .Title | safeURL }}&amp;url={{ .Permalink | safeURL }}" rel="noopener" aria-label="Share on X">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
       </div>
-    </div>
-  </footer>
+    </footer>
+  </div>
 </article>
+
+{{- /* Related posts */ -}}
+{{- $related := .Site.RegularPages.Related . | first 3 }}
+{{- if gt (len $related) 0 }}
+<section class="zn-related">
+  <div class="zn-container zn-container--wide">
+    <h2 class="zn-related__title">Related posts</h2>
+    <div class="zn-grid zn-grid--3">
+      {{- range $related }}
+      <article class="zn-card">
+        <a class="zn-card__cover" href="{{ .RelPermalink }}" aria-label="{{ .Title }}">
+          {{- if .Params.cover }}
+          <img src="{{ .Params.cover | relURL }}" alt="" loading="lazy">
+          {{- else }}
+          <div class="zn-card__cover-placeholder">{{ .Section }} / {{ .Date.Format "2006" }}</div>
+          {{- end }}
+        </a>
+        <div class="zn-card__body">
+          <div class="zn-card__meta">
+            {{- with index .Params.categories 0 }}
+            <span class="zn-card__category zn-card__category--{{ . | lower }}">{{ . }}</span>
+            <span class="zn-card__meta-dot">·</span>
+            {{- end }}
+            <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "Jan 2" }}</time>
+            <span class="zn-card__meta-dot">·</span>
+            <span>{{ .ReadingTime }} min</span>
+          </div>
+          <h3 class="zn-card__title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+        </div>
+      </article>
+      {{- end }}
+    </div>
+  </div>
+</section>
+{{- end }}
+
 {{ end }}
