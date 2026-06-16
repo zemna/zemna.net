@@ -4,8 +4,8 @@ date: 2026-06-12
 description: "Two years of watching the field from Jakarta. The replacement threat was always a junior-developer story. The senior-developer story is the opposite of what most people are writing about."
 categories: ["Opinion"]
 tags: ["ai", "career", "opinion"]
-draft: false
 cover: "/covers/opinion-cover.png"
+draft: false
 author: "Shinjae Kang"
 authorRole: "Senior Software Developer"
 authorLocation: "Jakarta, Indonesia"

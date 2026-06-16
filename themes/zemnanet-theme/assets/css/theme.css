@@ -69,16 +69,21 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 }
 .zn-header__link.is-active { color: var(--zn-text-100); background: var(--zn-surface-3); }
 .zn-header__actions { display: flex; gap: var(--zn-space-1); align-items: center; }
-.zn-header__menu { display: none; }
+.zn-icon-button.zn-header__menu { display: none; }
 
 @media (max-width: 768px) {
   .zn-header__nav { display: none; }
-  .zn-header__menu { display: flex; }
+  .zn-icon-button.zn-header__menu { display: inline-flex; }
+  .zn-header__actions { margin-left: auto; }
 }
 
 /* ---- Logo ---- */
-.zn-logo { height: 26px; width: auto; color: var(--zn-text-100); }
-.zn-logo__dot { fill: var(--zn-vermilion-500); }
+.zn-logo { height: 34px; width: auto; color: var(--zn-text-100); }
+.zn-logo__dot { fill: var(--zn-vermilion-500); filter: drop-shadow(0 0 8px rgba(227, 66, 52, 0.45)); }
+.zn-logo__accent { fill: var(--zn-text-200); }
+.zn-header__logo .zn-logo { height: 36px; }
+.zn-footer__brand .zn-logo { height: 36px; }
+@media (max-width: 480px) { .zn-logo { height: 32px; } }
 
 /* ---- Icon button (Linear: rgba white bg, circle) ---- */
 .zn-icon-button {
@@ -204,7 +209,7 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
   max-width: 18ch;
   font-feature-settings: var(--zn-font-features);
 }
-.zn-hero__title em { font-style: normal; color: var(--zn-indigo-400); }
+.zn-hero__title em { font-style: normal; color: var(--zn-indigo-400); text-shadow: 0 0 28px rgba(113,112,255,0.28); }
 .zn-hero__lede {
   font-size: var(--zn-text-body-l);
   line-height: var(--zn-leading-relaxed);
@@ -354,12 +359,34 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 .zn-card__cover-placeholder {
   aspect-ratio: 16/10;
   display: flex; align-items: center; justify-content: center;
-  background: var(--zn-surface-1);
-  color: var(--zn-text-300);
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(113, 112, 255, 0.22), transparent 34%),
+    radial-gradient(circle at 82% 74%, rgba(227, 66, 52, 0.16), transparent 30%),
+    linear-gradient(135deg, var(--zn-surface-1), var(--zn-surface-3));
+  color: var(--zn-text-200);
   font-family: var(--zn-font-mono);
   font-size: var(--zn-text-caption);
   letter-spacing: var(--zn-tracking-wide);
   border-bottom: 1px solid var(--zn-border-subtle);
+  text-transform: uppercase;
+}
+.zn-card__cover-placeholder::before {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border: 1px solid var(--zn-border-subtle);
+  border-radius: var(--zn-radius-lg);
+}
+.zn-card__cover-placeholder::after {
+  content: "zemnanet";
+  position: absolute;
+  right: var(--zn-space-5);
+  bottom: var(--zn-space-4);
+  color: var(--zn-text-400);
+  font-size: var(--zn-text-label);
+  letter-spacing: var(--zn-tracking-widest);
 }
 .zn-card__body {
   padding: var(--zn-space-5) var(--zn-space-6) var(--zn-space-6);

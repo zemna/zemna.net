@@ -33,7 +33,7 @@ Three brand colors, derived from a synthesis of **Korean hanji** (off-white) and
 
 ## Automation
 
-Posts are drafted with AI assistance under the [zemnanet content pipeline](https://github.com/zemnanet) — a 5-agent team (Strategist, Writer, Designer, Editor, Analyst) defined as a [Hermes skill](/productivity/marketing-team/). Every post passes through a quality gate (90+ expert panel score) before it ships.
+Posts are drafted with AI assistance under the [zemnanet content pipeline](https://github.com/zemnanet) — a 5-agent team (Strategist, Writer, Designer, Editor, Analyst) defined as an internal Hermes workflow. Every post passes through a quality gate before it ships.
 
 The IG and X accounts are managed via [Zernio](https://zernio.com). Posting schedule:
 

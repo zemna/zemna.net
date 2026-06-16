@@ -6,12 +6,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
 {{- /* Theme color follows design tokens */ -}}
-<meta name="theme-color" content="#1A2238" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0D111F" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#08090a" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#08090a" media="(prefers-color-scheme: dark)">
 
 {{- /* Title and description */ -}}
-<title>{{ if .IsHome }}{{ .Site.Title }} — {{ .Site.Params.tagline }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
-<meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Summary }}{{ . | plainify }}{{ end }}{{ end }}{{ if not .IsHome }} — {{ .Site.Title }}{{ end }}">
+{{- $title := cond .IsHome (printf "%s — %s" .Site.Title .Site.Params.tagline) (printf "%s — %s" .Title .Site.Title) -}}
+{{- $description := .Description | default (.Summary | plainify) | default .Site.Params.description -}}
+<title>{{ $title }}</title>
+<meta name="description" content="{{ $description }}{{ if and (not .IsHome) (not (in $description .Site.Title)) }} — {{ .Site.Title }}{{ end }}">
 
 {{- /* Canonical */ -}}
 <link rel="canonical" href="{{ .Permalink }}">
@@ -21,11 +23,11 @@
 
 {{- /* Open Graph */ -}}
 <meta property="og:site_name" content="{{ .Site.Title }}">
-<meta property="og:title" content="{{ .Title }}">
-<meta property="og:description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $description }}">
 <meta property="og:type" content="{{ if .IsPage }}article{{ else }}{{ .Site.Params.openGraphType }}{{ end }}">
 <meta property="og:url" content="{{ .Permalink }}">
-<meta property="og:locale" content="{{ .Site.Language.LanguageCode | default "en" }}_{{ .Site.Language.LanguageCode | default "EN" | upper }}">
+<meta property="og:locale" content="{{ .Site.Params.ogLocale | default "en_US" }}">
 {{- if .Params.cover }}
 <meta property="og:image" content="{{ .Params.cover | absURL }}">
 {{- else }}
@@ -36,10 +38,12 @@
 <meta name="twitter:card" content="{{ .Site.Params.twitterCard }}">
 <meta name="twitter:site" content="{{ .Site.Params.twitter }}">
 <meta name="twitter:creator" content="{{ .Site.Params.twitter }}">
-<meta name="twitter:title" content="{{ .Title }}">
-<meta name="twitter:description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+<meta name="twitter:title" content="{{ $title }}">
+<meta name="twitter:description" content="{{ $description }}">
 {{- if .Params.cover }}
 <meta name="twitter:image" content="{{ .Params.cover | absURL }}">
+{{- else }}
+<meta name="twitter:image" content="{{ "og-default.png" | absURL }}">
 {{- end }}
 
 {{- /* Article meta */ -}}
@@ -93,7 +97,7 @@
   "jobTitle": "Senior Software Developer",
   "url": "{{ .Site.BaseURL }}",
   "sameAs": [
-    "https://twitter.com/{{ replace .Site.Params.twitter "@" "" }}",
+    "https://x.com/{{ replace .Site.Params.twitter "@" "" }}",
     "https://instagram.com/{{ replace .Site.Params.instagram "@" "" }}",
     "https://github.com/{{ .Site.Params.github }}"
   ],
