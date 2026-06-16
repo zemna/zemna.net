@@ -1,90 +1,135 @@
 /* ============================================================================
-   zemnanet Design System — v1.0.0
-   Auto-generated from tokens.json. DO NOT edit by hand.
-   Use the JSON source of truth; this file is a build artifact.
+   zemnanet Design System v2.0.0 — Linear-inspired
+   Dark-mode-native. 3-tier weights. Inter Variable with cv01/ss03.
+   zemnanet brand preserved: navy + off-white + vermilion, indigo as accent.
    ============================================================================ */
 
+@font-face {
+  font-family: 'Inter';
+  font-display: swap;
+  font-weight: 100 900;
+  font-style: normal;
+  src: local('Inter Variable'), local('Inter'), local('SF Pro Display');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-display: swap;
+  font-weight: 100 800;
+  font-style: normal;
+  src: local('JetBrains Mono'), local('SF Mono'), local('Menlo');
+}
+
 :root {
-  /* --- Brand --- */
-  --zn-navy-50:  #EEF0F5;
-  --zn-navy-100: #D4D8E3;
-  --zn-navy-200: #A9B1C7;
-  --zn-navy-300: #7E89AB;
-  --zn-navy-400: #53638F;
-  --zn-navy-500: #2E4073;
-  --zn-navy-600: #1F2D57;
-  --zn-navy-700: #1A2238;  /* brand navy */
-  --zn-navy-800: #141A2B;
-  --zn-navy-900: #0D111F;
+  /* ============================================================
+     COLORS — Dark-mode native (Linear-inspired)
+     ============================================================ */
 
-  --zn-vermilion-50:  #FCEEEC;
-  --zn-vermilion-100: #F8D2CC;
-  --zn-vermilion-200: #F2A499;
-  --zn-vermilion-300: #EC7666;
+  /* Brand: zemnanet — preserved for identity */
+  --zn-navy-700:  #1A2238;   /* brand navy */
+  --zn-navy-900:  #08090a;   /* marketing black (Linear-equivalent) */
+  --zn-offwhite-50: #FCFBF8;  /* brand off-white */
+  --zn-vermilion-500: #E34234; /* brand vermilion */
+
+  /* Dark surface scale (luminance stepping, Linear) */
+  --zn-surface-0:  #08090a;   /* marketing black — deepest canvas */
+  --zn-surface-1:  #0f1011;   /* panel dark */
+  --zn-surface-2:  #141516;   /* line tint */
+  --zn-surface-3:  #191a1b;   /* elevated card */
+  --zn-surface-4:  #1e1f20;   /* hover/active */
+  --zn-surface-5:  #28282c;   /* highest dark surface */
+
+  /* Text — cool gray (warm = off) */
+  --zn-text-100:  #f7f8f8;   /* primary text */
+  --zn-text-200:  #d0d6e0;   /* secondary text */
+  --zn-text-300:  #8a8f98;   /* tertiary text */
+  --zn-text-400:  #62666d;   /* quaternary text */
+  --zn-text-500:  #4a4d52;   /* disabled */
+
+  /* Brand indigo (Linear accent) */
+  --zn-indigo-500: #5e6ad2;   /* brand indigo */
+  --zn-indigo-400: #7170ff;   /* accent violet */
+  --zn-indigo-300: #828fff;   /* hover */
+
+  /* Vermilion preserved for specific accents (Zernio brand match) */
+  --zn-vermilion-500: #E34234;
   --zn-vermilion-400: #E65A4A;
-  --zn-vermilion-500: #E34234;  /* brand vermilion */
-  --zn-vermilion-600: #C42B1F;
-  --zn-vermilion-700: #9F1F16;
-  --zn-vermilion-800: #79160F;
-  --zn-vermilion-900: #540E0A;
 
-  --zn-offwhite-50:  #FCFBF8;  /* brand off-white */
-  --zn-offwhite-100: #F8F6F0;
-  --zn-offwhite-200: #F4F1EA;
-  --zn-offwhite-300: #E8E4DA;
-  --zn-offwhite-400: #C9C3B5;
+  /* Status */
+  --zn-success: #10b981;
+  --zn-warning: #d4922b;
+  --zn-danger:  #E34234;
 
-  --zn-ink-500: #5B5750;
-  --zn-ink-600: #3D3A35;
-  --zn-ink-700: #26241F;
-  --zn-ink-800: #181712;
+  /* Borders — semi-transparent white (Linear) */
+  --zn-border-subtle:   rgba(255, 255, 255, 0.05);
+  --zn-border:          rgba(255, 255, 255, 0.08);
+  --zn-border-strong:   rgba(255, 255, 255, 0.12);
+  --zn-border-solid:    #23252a;
 
-  --zn-success: #3A7D44;
-  --zn-warning: #D4922B;
-  --zn-danger:  #C42B1F;
-  --zn-info:    #2E4073;
+  /* Light theme (preserved for opt-in) */
+  --zn-light-bg:        #FCFBF8;
+  --zn-light-surface:   #F8F6F0;
+  --zn-light-border:    #E8E4DA;
+  --zn-light-text:      #3D3A35;
+  --zn-light-text-2:    #5B5750;
 
-  /* --- Theme (light, default) --- */
-  --zn-bg:           var(--zn-offwhite-50);
-  --zn-surface:      var(--zn-offwhite-100);
-  --zn-surface-2:    var(--zn-offwhite-200);
-  --zn-border:       var(--zn-offwhite-300);
-  --zn-text:         var(--zn-ink-600);
-  --zn-text-muted:   var(--zn-ink-500);
-  --zn-text-strong:  var(--zn-ink-700);
-  --zn-link:         var(--zn-vermilion-500);
-  --zn-link-hover:   var(--zn-vermilion-600);
-  --zn-code-bg:      var(--zn-navy-50);
-  --zn-code-block-bg: var(--zn-navy-900);
-  --zn-code-block-fg: var(--zn-offwhite-100);
+  /* ============================================================
+     TYPOGRAPHY — Linear 3-tier weights
+     ============================================================ */
 
-  /* --- Typography --- */
-  --zn-font-sans:   'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  --zn-font-serif:  'Noto Serif KR', 'Source Han Serif', 'Iowan Old Style', 'Apple Garamond', serif;
-  --zn-font-mono:   'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
+  --zn-font-sans: 'Inter', 'Inter Variable', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, system-ui, sans-serif;
+  --zn-font-serif: 'Noto Serif KR', 'Source Han Serif', 'Iowan Old Style', 'Apple Garamond', serif;
+  --zn-font-mono: 'JetBrains Mono', 'Berkeley Mono', 'SF Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  --zn-text-xs:   0.75rem;
-  --zn-text-sm:   0.875rem;
-  --zn-text-base: 1rem;
-  --zn-text-lg:   1.125rem;
-  --zn-text-xl:   1.25rem;
-  --zn-text-2xl:  1.5rem;
-  --zn-text-3xl:  1.875rem;
-  --zn-text-4xl:  2.25rem;
-  --zn-text-5xl:  3rem;
-  --zn-text-6xl:  3.75rem;
+  /* OpenType features — Linear signature */
+  --zn-font-features: 'cv01', 'ss03';
 
-  --zn-leading-tight:   1.2;
-  --zn-leading-snug:    1.35;
-  --zn-leading-normal:  1.6;
-  --zn-leading-relaxed: 1.75;
+  /* Three-tier weight system (Linear) */
+  --zn-wt-read:      400;   /* body */
+  --zn-wt-ui:        510;   /* signature emphasis */
+  --zn-wt-strong:    590;   /* strong emphasis */
 
-  --zn-tracking-tight:  -0.02em;
-  --zn-tracking-normal: 0;
-  --zn-tracking-wide:   0.04em;
-  --zn-tracking-widest: 0.12em;
+  /* Type scale (Linear) */
+  --zn-text-display-xl: 4.5rem;   /* 72px */
+  --zn-text-display-l:  4rem;     /* 64px */
+  --zn-text-display:    3rem;     /* 48px */
+  --zn-text-h1:         2rem;     /* 32px */
+  --zn-text-h2:         1.5rem;   /* 24px */
+  --zn-text-h3:         1.25rem;  /* 20px */
+  --zn-text-body-l:     1.125rem; /* 18px */
+  --zn-text-body-emp:   1.0625rem; /* 17px */
+  --zn-text-body:       1rem;     /* 16px */
+  --zn-text-body-med:   1rem;
+  --zn-text-body-sb:    1rem;
+  --zn-text-small:      0.9375rem; /* 15px */
+  --zn-text-caption-l:  0.875rem;  /* 14px */
+  --zn-text-caption:    0.8125rem; /* 13px */
+  --zn-text-label:      0.75rem;   /* 12px */
+  --zn-text-micro:      0.6875rem; /* 11px */
 
-  /* --- Spacing (8px base) --- */
+  /* Line height */
+  --zn-leading-tight:   1.0;
+  --zn-leading-snug:    1.13;
+  --zn-leading-snug-2:  1.33;
+  --zn-leading-normal:  1.5;
+  --zn-leading-relaxed: 1.6;
+
+  /* Letter spacing (negative, Linear compression) */
+  --zn-tracking-72:    -0.022em;  /* 72px */
+  --zn-tracking-64:    -0.022em;  /* 64px */
+  --zn-tracking-48:    -0.022em;  /* 48px */
+  --zn-tracking-32:    -0.022em;  /* 32px */
+  --zn-tracking-24:    -0.012em;  /* 24px */
+  --zn-tracking-20:    -0.012em;  /* 20px */
+  --zn-tracking-18:    -0.0082em; /* 18px */
+  --zn-tracking-15:    -0.011em;  /* 15px */
+  --zn-tracking-13:    -0.01em;   /* 13px */
+  --zn-tracking-wide:  0.04em;   /* uppercase */
+  --zn-tracking-widest: 0.12em;  /* eyebrow */
+
+  /* ============================================================
+     SPACING — 8px base (Linear also uses 8px)
+     ============================================================ */
   --zn-space-0:  0;
   --zn-space-1:  0.25rem;
   --zn-space-2:  0.5rem;
@@ -92,6 +137,7 @@
   --zn-space-4:  1rem;
   --zn-space-5:  1.25rem;
   --zn-space-6:  1.5rem;
+  --zn-space-7:  1.75rem;
   --zn-space-8:  2rem;
   --zn-space-10: 2.5rem;
   --zn-space-12: 3rem;
@@ -99,98 +145,159 @@
   --zn-space-20: 5rem;
   --zn-space-24: 6rem;
   --zn-space-32: 8rem;
+  --zn-space-40: 10rem;
 
-  /* --- Radius --- */
+  /* ============================================================
+     RADIUS — Linear scale
+     ============================================================ */
   --zn-radius-none: 0;
-  --zn-radius-sm:   2px;
-  --zn-radius-md:   4px;
-  --zn-radius-lg:   8px;
-  --zn-radius-xl:   12px;
+  --zn-radius-sm:   4px;
+  --zn-radius-md:   6px;       /* Linear button/input */
+  --zn-radius-lg:   8px;       /* Linear card */
+  --zn-radius-xl:   12px;      /* Linear panel */
   --zn-radius-2xl:  16px;
-  --zn-radius-full: 9999px;
+  --zn-radius-3xl:  22px;      /* Linear large panel */
+  --zn-radius-pill: 9999px;
+  --zn-radius-full: 50%;
 
-  /* --- Shadow --- */
+  /* ============================================================
+     SHADOWS — Linear multi-layer + inset
+     ============================================================ */
   --zn-shadow-none: none;
-  --zn-shadow-xs:   0 1px 2px rgba(26, 34, 56, 0.05);
-  --zn-shadow-sm:   0 2px 4px rgba(26, 34, 56, 0.06), 0 1px 2px rgba(26, 34, 56, 0.04);
-  --zn-shadow-md:   0 4px 12px rgba(26, 34, 56, 0.08), 0 2px 4px rgba(26, 34, 56, 0.04);
-  --zn-shadow-lg:   0 12px 24px rgba(26, 34, 56, 0.10), 0 4px 8px rgba(26, 34, 56, 0.05);
-  --zn-shadow-xl:   0 24px 48px rgba(26, 34, 56, 0.12), 0 8px 16px rgba(26, 34, 56, 0.06);
-  --zn-shadow-inner: inset 0 2px 4px rgba(26, 34, 56, 0.06);
+  --zn-shadow-xs: 0 1.2px 0 rgba(0, 0, 0, 0.03);
+  --zn-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --zn-shadow-md:
+    rgba(0, 0, 0, 0) 0px 8px 2px,
+    rgba(0, 0, 0, 0.01) 0px 5px 2px,
+    rgba(0, 0, 0, 0.04) 0px 3px 2px,
+    rgba(0, 0, 0, 0.07) 0px 1px 1px,
+    rgba(0, 0, 0, 0.08) 0px 0px 1px;
+  --zn-shadow-lg:
+    rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 8px 16px;
+  --zn-shadow-xl:
+    rgba(0, 0, 0, 0.5) 0px 4px 8px,
+    rgba(0, 0, 0, 0.4) 0px 16px 32px;
+  --zn-shadow-inset:
+    rgba(0, 0, 0, 0.2) 0px 0px 12px 0px inset;
+  --zn-shadow-ring: 0px 0px 0px 1px rgba(0, 0, 0, 0.2);
+  --zn-shadow-focus:
+    rgba(0, 0, 0, 0.1) 0px 4px 12px,
+    0 0 0 2px var(--zn-indigo-500);
 
-  /* --- Breakpoints (informational; use in @media) --- */
+  /* ============================================================
+     GRADIENTS — Linear-style subtle
+     ============================================================ */
+  --zn-gradient-hero: linear-gradient(180deg, var(--zn-surface-0) 0%, var(--zn-surface-1) 100%);
+  --zn-gradient-card: linear-gradient(180deg, var(--zn-surface-3) 0%, var(--zn-surface-2) 100%);
+  --zn-gradient-accent: linear-gradient(135deg, var(--zn-indigo-500) 0%, var(--zn-indigo-400) 100%);
+  --zn-gradient-vermilion: linear-gradient(135deg, var(--zn-vermilion-500) 0%, var(--zn-vermilion-400) 100%);
+  --zn-gradient-radial-accent: radial-gradient(circle at 70% 30%, rgba(94, 106, 210, 0.10) 0%, transparent 50%);
+
+  /* ============================================================
+     CONTAINERS
+     ============================================================ */
+  --zn-container-prose:   80ch;
+  --zn-container-narrow:  720px;
+  --zn-container-default: 1200px;
+  --zn-container-wide:    1400px;
+  --zn-container-full:    1680px;
+
+  /* ============================================================
+     BREAKPOINTS
+     ============================================================ */
   --zn-bp-sm:  640px;
   --zn-bp-md:  768px;
   --zn-bp-lg:  1024px;
   --zn-bp-xl:  1280px;
   --zn-bp-2xl: 1536px;
 
-  /* --- Container --- */
-  --zn-container-prose:   80ch;
-  --zn-container-narrow:  720px;
-  --zn-container-default: 1280px;
-  --zn-container-wide:    1440px;
-  --zn-container-full:    1680px;
-
-  /* --- Motion --- */
-  --zn-duration-instant:   0ms;
-  --zn-duration-fast:      120ms;
-  --zn-duration-normal:    200ms;
-  --zn-duration-slow:      320ms;
+  /* ============================================================
+     MOTION
+     ============================================================ */
+  --zn-duration-fast: 120ms;
+  --zn-duration-normal: 200ms;
+  --zn-duration-slow: 320ms;
   --zn-duration-deliberate: 480ms;
   --zn-ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
   --zn-ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
   --zn-ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);
   --zn-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-  /* --- Z-index --- */
-  --zn-z-base:    0;
-  --zn-z-raised:  10;
-  --zn-z-sticky:  100;
+  /* ============================================================
+     Z-INDEX
+     ============================================================ */
+  --zn-z-base: 0;
+  --zn-z-raised: 10;
+  --zn-z-sticky: 100;
   --zn-z-overlay: 200;
-  --zn-z-modal:   300;
+  --zn-z-modal: 300;
   --zn-z-popover: 400;
-  --zn-z-toast:   500;
+  --zn-z-toast: 500;
   --zn-z-tooltip: 600;
+
+  /* ============================================================
+     THEME — DARK MODE (default)
+     ============================================================ */
+  --zn-bg:           var(--zn-surface-0);
+  --zn-surface:      var(--zn-surface-3);
+  --zn-surface-2:    var(--zn-surface-1);
+  --zn-border-color: var(--zn-border);
+  --zn-text:         var(--zn-text-200);
+  --zn-text-muted:   var(--zn-text-300);
+  --zn-text-strong:  var(--zn-text-100);
+  --zn-link:         var(--zn-indigo-400);
+  --zn-link-hover:   var(--zn-indigo-300);
+  --zn-accent:       var(--zn-indigo-500);
+  --zn-accent-hover: var(--zn-indigo-300);
+  --zn-code-bg:      var(--zn-surface-1);
+  --zn-code-block-bg: var(--zn-surface-1);
+  --zn-code-block-fg: var(--zn-text-100);
+  --zn-selection-bg: var(--zn-indigo-500);
+  --zn-selection-fg: var(--zn-text-100);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --zn-bg:           var(--zn-navy-900);
-    --zn-surface:      var(--zn-navy-800);
-    --zn-surface-2:    var(--zn-navy-700);
-    --zn-border:       var(--zn-navy-600);
-    --zn-text:         var(--zn-offwhite-100);
-    --zn-text-muted:   var(--zn-offwhite-300);
-    --zn-text-strong:  var(--zn-offwhite-50);
-    --zn-link:         var(--zn-vermilion-400);
-    --zn-link-hover:   var(--zn-vermilion-300);
-    --zn-code-bg:      var(--zn-navy-700);
-  }
-}
-
-[data-theme="dark"] {
-  --zn-bg:           var(--zn-navy-900);
-  --zn-surface:      var(--zn-navy-800);
-  --zn-surface-2:    var(--zn-navy-700);
-  --zn-border:       var(--zn-navy-600);
-  --zn-text:         var(--zn-offwhite-100);
-  --zn-text-muted:   var(--zn-offwhite-300);
-  --zn-text-strong:  var(--zn-offwhite-50);
-  --zn-link:         var(--zn-vermilion-400);
-  --zn-link-hover:   var(--zn-vermilion-300);
-  --zn-code-bg:      var(--zn-navy-700);
-}
-
+/* Light mode (opt-in via [data-theme="light"]) */
 [data-theme="light"] {
-  --zn-bg:           var(--zn-offwhite-50);
-  --zn-surface:      var(--zn-offwhite-100);
-  --zn-surface-2:    var(--zn-offwhite-200);
-  --zn-border:       var(--zn-offwhite-300);
-  --zn-text:         var(--zn-ink-600);
-  --zn-text-muted:   var(--zn-ink-500);
-  --zn-text-strong:  var(--zn-ink-700);
-  --zn-link:         var(--zn-vermilion-500);
-  --zn-link-hover:   var(--zn-vermilion-600);
-  --zn-code-bg:      var(--zn-navy-50);
+  --zn-bg:           var(--zn-light-bg);
+  --zn-surface:      #ffffff;
+  --zn-surface-2:    var(--zn-light-surface);
+  --zn-border-color: var(--zn-light-border);
+  --zn-text:         var(--zn-light-text);
+  --zn-text-muted:   var(--zn-light-text-2);
+  --zn-text-strong:  var(--zn-offwhite-50);
+  --zn-link:         var(--zn-indigo-500);
+  --zn-link-hover:   var(--zn-indigo-300);
+  --zn-code-bg:      var(--zn-light-surface);
+  --zn-code-block-bg: #1f1f1f;
+  --zn-code-block-fg: #f7f8f8;
 }
+
+/* NOTE: zemnanet is dark-first. No `prefers-color-scheme: light` override.
+   Use [data-theme="light"] explicitly if a user wants the light variant. */
+
+/* Global element defaults */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: var(--zn-font-features);
+}
+
+body {
+  margin: 0;
+  font-family: var(--zn-font-sans);
+  font-size: var(--zn-text-body);
+  font-weight: var(--zn-wt-read);
+  line-height: var(--zn-leading-normal);
+  color: var(--zn-text);
+  background: var(--zn-bg);
+  font-feature-settings: var(--zn-font-features);
+  transition: background var(--zn-duration-normal) var(--zn-ease-out), color var(--zn-duration-normal) var(--zn-ease-out);
+}
+
+::selection { background: var(--zn-indigo-500); color: var(--zn-text-100); }

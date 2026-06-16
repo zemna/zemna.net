@@ -9,9 +9,9 @@
   var root = document.documentElement;
 
   // ============ Theme ============
+  // zemnanet is dark-first. Default to dark unless user explicitly chose light.
   var stored = localStorage.getItem('zn-theme');
-  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  var theme = stored || (prefersDark ? 'dark' : 'light');
+  var theme = stored || 'dark';  // dark-first
   root.setAttribute('data-theme', theme);
 
   document.addEventListener('click', function(e) {
