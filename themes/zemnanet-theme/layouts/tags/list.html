@@ -1,0 +1,27 @@
+{{ define "main" }}
+<section class="zn-section">
+  <div class="zn-container zn-container--default">
+    <nav class="zn-breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span class="zn-breadcrumb__sep">/</span>
+      <span aria-current="page">Tags</span>
+    </nav>
+
+    <div class="zn-section__head">
+      <div>
+        <h1 class="zn-section__title">Tags</h1>
+        <p class="zn-section__sub">Browse all tags across posts.</p>
+      </div>
+    </div>
+
+    <div class="zn-tags-cloud">
+      {{- range .Site.Taxonomies.tags.ByCount }}
+      <a class="zn-tags-cloud__item" href="{{ .Page.RelPermalink }}">
+        <span class="zn-tags-cloud__name">#{{ .Page.Title }}</span>
+        <span class="zn-tags-cloud__count">{{ .Count }}</span>
+      </a>
+      {{- end }}
+    </div>
+  </div>
+</section>
+{{ end }}

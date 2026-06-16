@@ -4,56 +4,71 @@
 <div class="zn-reading-bar" data-reading-progress></div>
 
 <article class="zn-article" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="zn-container zn-container--prose">
-    {{- /* Breadcrumb */ -}}
-    <nav class="zn-article__breadcrumb" aria-label="Breadcrumb">
-      <a href="/">Home</a>
-      <span class="zn-article__breadcrumb__sep">/</span>
-      <a href="/posts/">Blog</a>
-      <span class="zn-article__breadcrumb__sep">/</span>
-      <span>{{ .Title | truncate 40 }}</span>
-    </nav>
 
-    {{- /* Header */ -}}
-    <header class="zn-article__header">
-      {{- with index .Params.categories 0 }}
-      <span class="zn-article__category">{{ . }}</span>
-      {{- end }}
-
-      <h1 class="zn-article__title" itemprop="headline">{{ .Title }}</h1>
-
-      {{- with .Description }}
-      <p class="zn-article__desc">{{ . }}</p>
-      {{- end }}
-
-      <div class="zn-article__meta">
-        <div class="zn-article__author">
-          <div class="zn-article__author-avatar">{{ substr (.Params.author | default "S") 0 1 }}</div>
-          <div class="zn-article__author-info">
-            <span class="zn-article__author-name" itemprop="author">{{ .Params.author | default "Shinjae Kang" }}</span>
-            <span class="zn-article__author-detail">{{ .Params.authorRole | default "Senior Software Developer" }} · {{ .Params.authorLocation | default "Jakarta" }}</span>
-          </div>
-        </div>
-        <div class="zn-article__date">
-          <time class="zn-article__date-pub" datetime="{{ .PublishDate.Format "2006-01-02" }}" itemprop="datePublished">{{ .PublishDate.Format "January 2, 2006" }}</time>
-          <span class="zn-article__date-read">{{ .ReadingTime }} min read</span>
-        </div>
-      </div>
-    </header>
-
-    {{- /* Cover image */ -}}
+  {{- /* Cover header — full-width image with overlay */ -}}
+  <header class="zn-article__hero">
     {{- if .Params.cover }}
-    <div class="zn-article__cover">
-      <img src="{{ .Params.cover | relURL }}" alt="" itemprop="image">
+    <div class="zn-article__hero-bg">
+      <img src="{{ .Params.cover | relURL }}" alt="" aria-hidden="true">
     </div>
     {{- end }}
+    <div class="zn-article__hero-overlay"></div>
+    <div class="zn-container zn-container--wide">
+      <div class="zn-article__hero-content">
 
-    {{- /* Prose body */ -}}
+        {{- /* Breadcrumb */ -}}
+        <nav class="zn-article__breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a>
+          <span class="zn-article__breadcrumb__sep">/</span>
+          <a href="/posts/">Blog</a>
+          {{- with index .Params.categories 0 }}
+          <span class="zn-article__breadcrumb__sep">/</span>
+          <a href="/categories/{{ . | urlize }}/">{{ . }}</a>
+          {{- end }}
+        </nav>
+
+        {{- /* Category + Tags badges */ -}}
+        <div class="zn-article__hero-badges">
+          {{- with index .Params.categories 0 }}
+          <span class="zn-card__category zn-card__category--{{ . | lower }}">{{ . }}</span>
+          {{- end }}
+          {{- with .Params.tags }}
+          {{- range . }}
+          <a class="zn-article__hero-tag" href="/tags/{{ . | urlize }}/">#{{ . }}</a>
+          {{- end }}
+          {{- end }}
+        </div>
+
+        <h1 class="zn-article__hero-title" itemprop="headline">{{ .Title }}</h1>
+
+        {{- with .Description }}
+        <p class="zn-article__hero-desc">{{ . }}</p>
+        {{- end }}
+
+        <div class="zn-article__hero-meta">
+          <div class="zn-article__author">
+            <div class="zn-article__author-avatar">{{ substr ($.Params.author | default "S") 0 1 }}</div>
+            <div class="zn-article__author-info">
+              <span class="zn-article__author-name" itemprop="author">{{ .Params.author | default "Shinjae Kang" }}</span>
+              <span class="zn-article__author-detail">{{ .Params.authorRole | default "Senior Software Developer" }} · {{ .Params.authorLocation | default "Jakarta" }}</span>
+            </div>
+          </div>
+          <div class="zn-article__date">
+            <time datetime="{{ .PublishDate.Format "2006-01-02" }}" itemprop="datePublished">{{ .PublishDate.Format "January 2, 2006" }}</time>
+            <span class="zn-article__date-read">{{ .ReadingTime }} min read</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{- /* Prose body */ -}}
+  <div class="zn-container zn-container--prose">
     <div class="zn-prose" itemprop="articleBody">
       {{ .Content }}
     </div>
 
-    {{- /* Footer: tags */ -}}
+    {{- /* Footer: tags + share */ -}}
     <footer class="zn-article__footer">
       {{- with .Params.tags }}
       <div class="zn-article__tags">

@@ -27,8 +27,8 @@ I write here about **IT, AI, and the developer tooling** I use day to day, with 
 
 - **X (Twitter)** — [@zemnanet](https://x.com/zemnanet)
 - **Instagram** — [@zemna](https://instagram.com/zemna)
-- **GitHub** — [zemnanet](https://github.com/zemnanet)
-- **Email** — [hello@zemna.net](mailto:hello@zemna.net)
+- **GitHub** — [zemna](https://github.com/zemna)
+- **Email** — [zemna@zemna.net](mailto:zemna@zemna.net)
 
 ### Disclosure
 

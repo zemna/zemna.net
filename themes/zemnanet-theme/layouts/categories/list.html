@@ -1,0 +1,30 @@
+{{ define "main" }}
+<section class="zn-section">
+  <div class="zn-container zn-container--default">
+    <nav class="zn-breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span class="zn-breadcrumb__sep">/</span>
+      <span aria-current="page">Topics</span>
+    </nav>
+
+    <div class="zn-section__head">
+      <div>
+        <h1 class="zn-section__title">Topics</h1>
+        <p class="zn-section__sub">Browse by editorial category.</p>
+      </div>
+    </div>
+
+    <div class="zn-grid zn-grid--3">
+      {{- range .Site.Taxonomies.categories.ByCount }}
+      <a class="zn-topic-card zn-topic-card--large" href="{{ .Page.RelPermalink }}">
+        <div>
+          <span class="zn-topic-card__name">{{ .Page.Title }}</span>
+          <span class="zn-topic-card__count">{{ .Count }} post{{ if ne .Count 1 }}s{{ end }}</span>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      {{- end }}
+    </div>
+  </div>
+</section>
+{{ end }}

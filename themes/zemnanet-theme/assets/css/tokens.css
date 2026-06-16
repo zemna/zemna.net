@@ -257,20 +257,89 @@
   --zn-selection-fg: var(--zn-text-100);
 }
 
-/* Light mode (opt-in via [data-theme="light"]) */
+/* Light mode — complete token override via [data-theme="light"] */
 [data-theme="light"] {
-  --zn-bg:           var(--zn-light-bg);
-  --zn-surface:      #ffffff;
-  --zn-surface-2:    var(--zn-light-surface);
-  --zn-border-color: var(--zn-light-border);
-  --zn-text:         var(--zn-light-text);
-  --zn-text-muted:   var(--zn-light-text-2);
-  --zn-text-strong:  var(--zn-offwhite-50);
+  /* Surface scale (warm off-white, zemnanet brand) */
+  --zn-surface-0:  #FCFBF8;   /* canvas — brand off-white */
+  --zn-surface-1:  #F5F3ED;   /* panel light */
+  --zn-surface-2:  #EDEAE2;   /* line tint */
+  --zn-surface-3:  #FFFFFF;   /* elevated card */
+  --zn-surface-4:  #E8E4DA;   /* hover/active */
+  --zn-surface-5:  #D9D5CB;   /* highest light surface */
+
+  /* Text — warm gray (brand-aware) */
+  --zn-text-100:  #1A2238;   /* primary text — brand navy */
+  --zn-text-200:  #3D3A35;   /* secondary text */
+  --zn-text-300:  #6B665E;   /* tertiary text */
+  --zn-text-400:  #8A847A;   /* quaternary text */
+  --zn-text-500:  #A8A298;   /* disabled */
+
+  /* Brand indigo — darker for light bg */
+  --zn-indigo-500: #4F5BD2;   /* brand indigo */
+  --zn-indigo-400: #5E6AD2;   /* accent violet */
+  --zn-indigo-300: #7B7FFF;   /* hover */
+
+  /* Vermilion — slightly deeper for light bg */
+  --zn-vermilion-500: #D4352A;
+  --zn-vermilion-400: #E34234;
+
+  /* Status — darker for light bg */
+  --zn-success: #0D9668;
+  --zn-warning: #B87A1E;
+  --zn-danger:  #D4352A;
+
+  /* Borders — semi-transparent dark (light mode pattern) */
+  --zn-border-subtle:   rgba(0, 0, 0, 0.06);
+  --zn-border:          rgba(0, 0, 0, 0.10);
+  --zn-border-strong:   rgba(0, 0, 0, 0.16);
+  --zn-border-solid:    #D9D5CB;
+
+  /* Semantic tokens */
+  --zn-bg:           var(--zn-surface-0);
+  --zn-surface:      var(--zn-surface-3);
+  --zn-surface-2:    var(--zn-surface-1);
+  --zn-border-color: var(--zn-border);
+  --zn-text:         var(--zn-text-200);
+  --zn-text-muted:   var(--zn-text-300);
+  --zn-text-strong:  var(--zn-text-100);
   --zn-link:         var(--zn-indigo-500);
   --zn-link-hover:   var(--zn-indigo-300);
-  --zn-code-bg:      var(--zn-light-surface);
+  --zn-link-underline: rgba(79, 91, 210, 0.3);
+  --zn-accent:       var(--zn-indigo-500);
+  --zn-accent-hover: var(--zn-indigo-300);
+  --zn-code-bg:      var(--zn-surface-1);
   --zn-code-block-bg: #1f1f1f;
   --zn-code-block-fg: #f7f8f8;
+  --zn-selection-bg: var(--zn-indigo-500);
+  --zn-selection-fg: #FFFFFF;
+
+  /* Gradients — light-aware */
+  --zn-gradient-hero: linear-gradient(180deg, var(--zn-surface-0) 0%, var(--zn-surface-1) 100%);
+  --zn-gradient-card: linear-gradient(180deg, var(--zn-surface-3) 0%, var(--zn-surface-2) 100%);
+  --zn-gradient-accent: linear-gradient(135deg, var(--zn-indigo-500) 0%, var(--zn-indigo-400) 100%);
+  --zn-gradient-radial-accent: radial-gradient(circle at 70% 30%, rgba(79, 91, 210, 0.07) 0%, transparent 50%);
+
+  /* Shadows — light-aware */
+  --zn-shadow-xs: 0 1.2px 0 rgba(0, 0, 0, 0.02);
+  --zn-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --zn-shadow-md:
+    rgba(0, 0, 0, 0) 0px 8px 2px,
+    rgba(0, 0, 0, 0.003) 0px 5px 2px,
+    rgba(0, 0, 0, 0.01) 0px 3px 2px,
+    rgba(0, 0, 0, 0.02) 0px 1px 1px,
+    rgba(0, 0, 0, 0.03) 0px 0px 1px;
+  --zn-shadow-lg:
+    rgba(0, 0, 0, 0.08) 0px 2px 4px,
+    rgba(0, 0, 0, 0.06) 0px 8px 16px;
+  --zn-shadow-xl:
+    rgba(0, 0, 0, 0.10) 0px 4px 8px,
+    rgba(0, 0, 0, 0.08) 0px 16px 32px;
+  --zn-shadow-inset:
+    rgba(0, 0, 0, 0.04) 0px 0px 12px 0px inset;
+  --zn-shadow-ring: 0px 0px 0px 1px rgba(0, 0, 0, 0.08);
+  --zn-shadow-focus:
+    rgba(79, 91, 210, 0.15) 0px 4px 12px,
+    0 0 0 2px var(--zn-indigo-500);
 }
 
 /* NOTE: zemnanet is dark-first. No `prefers-color-scheme: light` override.

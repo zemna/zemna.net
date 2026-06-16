@@ -16,10 +16,10 @@ theme = "zemnanet-theme"
   authorBio = "Senior Korean developer, 15 years in Jakarta. Bridging Korean & Southeast Asian tech."
   description = "IT, AI, and dev tooling insights from a Korean senior dev working in Southeast Asia."
   tagline = "Bridging Korean & Southeast Asian Tech"
-  email = "hello@zemna.net"
+  email = "zemna@zemna.net"
   twitter = "@zemnanet"
   instagram = "@zemna"
-  github = "zemnanet"
+  github = "zemna"
   linkedin = "shinjae-kang"
   timezone = "Asia/Jakarta"
   copyrightYear = 2026
@@ -57,6 +57,16 @@ theme = "zemnanet-theme"
   name = "Blog"
   url = "/posts/"
   weight = 20
+
+[[menu.main]]
+  name = "Topics"
+  url = "/categories/"
+  weight = 25
+
+[[menu.main]]
+  name = "Tags"
+  url = "/tags/"
+  weight = 28
 
 [[menu.main]]
   name = "About"
