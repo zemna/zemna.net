@@ -1,0 +1,126 @@
+{{ define "main" }}
+
+{{- /* Reading progress bar */ -}}
+<div class="zn-reading-bar" data-reading-progress></div>
+
+<article class="zn-article" itemscope itemtype="https://schema.org/BlogPosting">
+
+  {{- /* Cover header — full-width image with overlay */ -}}
+  <header class="zn-article__hero">
+    {{- if .Params.cover }}
+    <div class="zn-article__hero-bg">
+      <img src="{{ .Params.cover | relURL }}" alt="" aria-hidden="true">
+    </div>
+    {{- end }}
+    <div class="zn-article__hero-overlay"></div>
+    <div class="zn-container zn-container--wide">
+      <div class="zn-article__hero-content">
+
+        {{- /* Breadcrumb */ -}}
+        <nav class="zn-article__breadcrumb" aria-label="Breadcrumb">
+          <a href="/">Home</a>
+          <span class="zn-article__breadcrumb__sep">/</span>
+          <a href="/posts/">Blog</a>
+          {{- with index .Params.categories 0 }}
+          <span class="zn-article__breadcrumb__sep">/</span>
+          <a href="/categories/{{ . | urlize }}/">{{ . }}</a>
+          {{- end }}
+        </nav>
+
+        {{- /* Category + Tags badges */ -}}
+        <div class="zn-article__hero-badges">
+          {{- with index .Params.categories 0 }}
+          <span class="zn-card__category zn-card__category--{{ . | lower }}">{{ . }}</span>
+          {{- end }}
+          {{- with .Params.tags }}
+          {{- range . }}
+          <a class="zn-article__hero-tag" href="/tags/{{ . | urlize }}/">#{{ . }}</a>
+          {{- end }}
+          {{- end }}
+        </div>
+
+        <h1 class="zn-article__hero-title" itemprop="headline">{{ .Title }}</h1>
+
+        {{- with .Description }}
+        <p class="zn-article__hero-desc">{{ . }}</p>
+        {{- end }}
+
+        <div class="zn-article__hero-meta">
+          <div class="zn-article__author">
+            <div class="zn-article__author-avatar">{{ substr ($.Params.author | default "S") 0 1 }}</div>
+            <div class="zn-article__author-info">
+              <span class="zn-article__author-name" itemprop="author">{{ .Params.author | default "Shinjae Kang" }}</span>
+              <span class="zn-article__author-detail">{{ .Params.authorRole | default "Senior Software Developer" }} · {{ .Params.authorLocation | default "Jakarta" }}</span>
+            </div>
+          </div>
+          <div class="zn-article__date">
+            <time datetime="{{ .PublishDate.Format "2006-01-02" }}" itemprop="datePublished">{{ .PublishDate.Format "January 2, 2006" }}</time>
+            <span class="zn-article__date-read">{{ .ReadingTime }} min read</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{- /* Prose body */ -}}
+  <div class="zn-container zn-container--prose">
+    <div class="zn-prose" itemprop="articleBody">
+      {{ .Content }}
+    </div>
+
+    {{- /* Footer: tags + share */ -}}
+    <footer class="zn-article__footer">
+      {{- with .Params.tags }}
+      <div class="zn-article__tags">
+        {{- range . }}
+        <a class="zn-tag" href="/tags/{{ . | urlize }}/">{{ . }}</a>
+        {{- end }}
+      </div>
+      {{- end }}
+
+      <div class="zn-article__share">
+        <span class="zn-article__share-label">Share</span>
+        <a class="zn-icon-button" href="https://x.com/intent/tweet?text={{ .Title | safeURL }}&amp;url={{ .Permalink | safeURL }}" rel="noopener" aria-label="Share on X">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+      </div>
+    </footer>
+  </div>
+</article>
+
+{{- /* Related posts */ -}}
+{{- $related := .Site.RegularPages.Related . | first 3 }}
+{{- if gt (len $related) 0 }}
+<section class="zn-related">
+  <div class="zn-container zn-container--wide">
+    <h2 class="zn-related__title">Related posts</h2>
+    <div class="zn-grid zn-grid--3">
+      {{- range $related }}
+      <article class="zn-card">
+        <a class="zn-card__cover" href="{{ .RelPermalink }}" aria-label="{{ .Title }}">
+          {{- if .Params.cover }}
+          <img src="{{ .Params.cover | relURL }}" alt="" loading="lazy">
+          {{- else }}
+          <div class="zn-card__cover-placeholder">{{ .Section }} / {{ .Date.Format "2006" }}</div>
+          {{- end }}
+        </a>
+        <div class="zn-card__body">
+          <div class="zn-card__meta">
+            {{- with index .Params.categories 0 }}
+            <span class="zn-card__category zn-card__category--{{ . | lower }}">{{ . }}</span>
+            <span class="zn-card__meta-dot">·</span>
+            {{- end }}
+            <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "Jan 2" }}</time>
+            <span class="zn-card__meta-dot">·</span>
+            <span>{{ .ReadingTime }} min</span>
+          </div>
+          <h3 class="zn-card__title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+        </div>
+      </article>
+      {{- end }}
+    </div>
+  </div>
+</section>
+{{- end }}
+
+{{ end }}
