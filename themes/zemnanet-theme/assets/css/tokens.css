@@ -1,0 +1,196 @@
+/* ============================================================================
+   zemnanet Design System — v1.0.0
+   Auto-generated from tokens.json. DO NOT edit by hand.
+   Use the JSON source of truth; this file is a build artifact.
+   ============================================================================ */
+
+:root {
+  /* --- Brand --- */
+  --zn-navy-50:  #EEF0F5;
+  --zn-navy-100: #D4D8E3;
+  --zn-navy-200: #A9B1C7;
+  --zn-navy-300: #7E89AB;
+  --zn-navy-400: #53638F;
+  --zn-navy-500: #2E4073;
+  --zn-navy-600: #1F2D57;
+  --zn-navy-700: #1A2238;  /* brand navy */
+  --zn-navy-800: #141A2B;
+  --zn-navy-900: #0D111F;
+
+  --zn-vermilion-50:  #FCEEEC;
+  --zn-vermilion-100: #F8D2CC;
+  --zn-vermilion-200: #F2A499;
+  --zn-vermilion-300: #EC7666;
+  --zn-vermilion-400: #E65A4A;
+  --zn-vermilion-500: #E34234;  /* brand vermilion */
+  --zn-vermilion-600: #C42B1F;
+  --zn-vermilion-700: #9F1F16;
+  --zn-vermilion-800: #79160F;
+  --zn-vermilion-900: #540E0A;
+
+  --zn-offwhite-50:  #FCFBF8;  /* brand off-white */
+  --zn-offwhite-100: #F8F6F0;
+  --zn-offwhite-200: #F4F1EA;
+  --zn-offwhite-300: #E8E4DA;
+  --zn-offwhite-400: #C9C3B5;
+
+  --zn-ink-500: #5B5750;
+  --zn-ink-600: #3D3A35;
+  --zn-ink-700: #26241F;
+  --zn-ink-800: #181712;
+
+  --zn-success: #3A7D44;
+  --zn-warning: #D4922B;
+  --zn-danger:  #C42B1F;
+  --zn-info:    #2E4073;
+
+  /* --- Theme (light, default) --- */
+  --zn-bg:           var(--zn-offwhite-50);
+  --zn-surface:      var(--zn-offwhite-100);
+  --zn-surface-2:    var(--zn-offwhite-200);
+  --zn-border:       var(--zn-offwhite-300);
+  --zn-text:         var(--zn-ink-600);
+  --zn-text-muted:   var(--zn-ink-500);
+  --zn-text-strong:  var(--zn-ink-700);
+  --zn-link:         var(--zn-vermilion-500);
+  --zn-link-hover:   var(--zn-vermilion-600);
+  --zn-code-bg:      var(--zn-navy-50);
+  --zn-code-block-bg: var(--zn-navy-900);
+  --zn-code-block-fg: var(--zn-offwhite-100);
+
+  /* --- Typography --- */
+  --zn-font-sans:   'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --zn-font-serif:  'Noto Serif KR', 'Source Han Serif', 'Iowan Old Style', 'Apple Garamond', serif;
+  --zn-font-mono:   'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
+
+  --zn-text-xs:   0.75rem;
+  --zn-text-sm:   0.875rem;
+  --zn-text-base: 1rem;
+  --zn-text-lg:   1.125rem;
+  --zn-text-xl:   1.25rem;
+  --zn-text-2xl:  1.5rem;
+  --zn-text-3xl:  1.875rem;
+  --zn-text-4xl:  2.25rem;
+  --zn-text-5xl:  3rem;
+  --zn-text-6xl:  3.75rem;
+
+  --zn-leading-tight:   1.2;
+  --zn-leading-snug:    1.35;
+  --zn-leading-normal:  1.6;
+  --zn-leading-relaxed: 1.75;
+
+  --zn-tracking-tight:  -0.02em;
+  --zn-tracking-normal: 0;
+  --zn-tracking-wide:   0.04em;
+  --zn-tracking-widest: 0.12em;
+
+  /* --- Spacing (8px base) --- */
+  --zn-space-0:  0;
+  --zn-space-1:  0.25rem;
+  --zn-space-2:  0.5rem;
+  --zn-space-3:  0.75rem;
+  --zn-space-4:  1rem;
+  --zn-space-5:  1.25rem;
+  --zn-space-6:  1.5rem;
+  --zn-space-8:  2rem;
+  --zn-space-10: 2.5rem;
+  --zn-space-12: 3rem;
+  --zn-space-16: 4rem;
+  --zn-space-20: 5rem;
+  --zn-space-24: 6rem;
+  --zn-space-32: 8rem;
+
+  /* --- Radius --- */
+  --zn-radius-none: 0;
+  --zn-radius-sm:   2px;
+  --zn-radius-md:   4px;
+  --zn-radius-lg:   8px;
+  --zn-radius-xl:   12px;
+  --zn-radius-2xl:  16px;
+  --zn-radius-full: 9999px;
+
+  /* --- Shadow --- */
+  --zn-shadow-none: none;
+  --zn-shadow-xs:   0 1px 2px rgba(26, 34, 56, 0.05);
+  --zn-shadow-sm:   0 2px 4px rgba(26, 34, 56, 0.06), 0 1px 2px rgba(26, 34, 56, 0.04);
+  --zn-shadow-md:   0 4px 12px rgba(26, 34, 56, 0.08), 0 2px 4px rgba(26, 34, 56, 0.04);
+  --zn-shadow-lg:   0 12px 24px rgba(26, 34, 56, 0.10), 0 4px 8px rgba(26, 34, 56, 0.05);
+  --zn-shadow-xl:   0 24px 48px rgba(26, 34, 56, 0.12), 0 8px 16px rgba(26, 34, 56, 0.06);
+  --zn-shadow-inner: inset 0 2px 4px rgba(26, 34, 56, 0.06);
+
+  /* --- Breakpoints (informational; use in @media) --- */
+  --zn-bp-sm:  640px;
+  --zn-bp-md:  768px;
+  --zn-bp-lg:  1024px;
+  --zn-bp-xl:  1280px;
+  --zn-bp-2xl: 1536px;
+
+  /* --- Container --- */
+  --zn-container-prose:   68ch;
+  --zn-container-narrow:  640px;
+  --zn-container-default: 1024px;
+  --zn-container-wide:    1280px;
+  --zn-container-full:    1536px;
+
+  /* --- Motion --- */
+  --zn-duration-instant:   0ms;
+  --zn-duration-fast:      120ms;
+  --zn-duration-normal:    200ms;
+  --zn-duration-slow:      320ms;
+  --zn-duration-deliberate: 480ms;
+  --zn-ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --zn-ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
+  --zn-ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);
+  --zn-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* --- Z-index --- */
+  --zn-z-base:    0;
+  --zn-z-raised:  10;
+  --zn-z-sticky:  100;
+  --zn-z-overlay: 200;
+  --zn-z-modal:   300;
+  --zn-z-popover: 400;
+  --zn-z-toast:   500;
+  --zn-z-tooltip: 600;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --zn-bg:           var(--zn-navy-900);
+    --zn-surface:      var(--zn-navy-800);
+    --zn-surface-2:    var(--zn-navy-700);
+    --zn-border:       var(--zn-navy-600);
+    --zn-text:         var(--zn-offwhite-100);
+    --zn-text-muted:   var(--zn-offwhite-300);
+    --zn-text-strong:  var(--zn-offwhite-50);
+    --zn-link:         var(--zn-vermilion-400);
+    --zn-link-hover:   var(--zn-vermilion-300);
+    --zn-code-bg:      var(--zn-navy-700);
+  }
+}
+
+[data-theme="dark"] {
+  --zn-bg:           var(--zn-navy-900);
+  --zn-surface:      var(--zn-navy-800);
+  --zn-surface-2:    var(--zn-navy-700);
+  --zn-border:       var(--zn-navy-600);
+  --zn-text:         var(--zn-offwhite-100);
+  --zn-text-muted:   var(--zn-offwhite-300);
+  --zn-text-strong:  var(--zn-offwhite-50);
+  --zn-link:         var(--zn-vermilion-400);
+  --zn-link-hover:   var(--zn-vermilion-300);
+  --zn-code-bg:      var(--zn-navy-700);
+}
+
+[data-theme="light"] {
+  --zn-bg:           var(--zn-offwhite-50);
+  --zn-surface:      var(--zn-offwhite-100);
+  --zn-surface-2:    var(--zn-offwhite-200);
+  --zn-border:       var(--zn-offwhite-300);
+  --zn-text:         var(--zn-ink-600);
+  --zn-text-muted:   var(--zn-ink-500);
+  --zn-text-strong:  var(--zn-ink-700);
+  --zn-link:         var(--zn-vermilion-500);
+  --zn-link-hover:   var(--zn-vermilion-600);
+  --zn-code-bg:      var(--zn-navy-50);
+}

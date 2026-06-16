@@ -1,0 +1,26 @@
+{{ define "main" }}
+<section class="zn-section">
+  <div class="zn-container zn-container--default">
+    <h1 class="zn-section__title">{{ .Title }}</h1>
+    <p class="zn-section__sub">{{ .Description | default (printf "%d posts" (len .Pages)) }}</p>
+
+    <div class="zn-grid zn-grid--posts" style="margin-top: var(--zn-space-8);">
+      {{- range .Pages.ByDate.Reverse }}
+      <article class="zn-card">
+        <div class="zn-card__body">
+          <div class="zn-card__meta">
+            <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "Jan 2, 2006" }}</time>
+            {{- if .Site.Params.readingTime }}
+            <span class="zn-card__meta-dot">·</span>
+            <span>{{ .ReadingTime }} min</span>
+            {{- end }}
+          </div>
+          <h3 class="zn-card__title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+          <p class="zn-card__excerpt">{{ .Description | default (.Summary | plainify | truncate 140) }}</p>
+        </div>
+      </article>
+      {{- end }}
+    </div>
+  </div>
+</section>
+{{ end }}

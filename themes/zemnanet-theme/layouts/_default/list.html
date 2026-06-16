@@ -1,0 +1,57 @@
+{{ define "main" }}
+<section class="zn-section">
+  <div class="zn-container zn-container--default">
+    <div class="zn-section__head">
+      <div>
+        <h1 class="zn-section__title">{{ .Title }}</h1>
+        {{- with .Description }}
+        <p class="zn-section__sub">{{ . }}</p>
+        {{- end }}
+      </div>
+    </div>
+
+    {{- $paginator := .Paginate (where .Site.RegularPages "Section" "posts") }}
+    <div class="zn-grid zn-grid--posts">
+      {{- range $paginator.Pages }}
+      <article class="zn-card">
+        {{- if .Params.cover }}
+        <div class="zn-card__cover"><img src="{{ .Params.cover | relURL }}" alt=""></div>
+        {{- else }}
+        <div class="zn-card__cover">{{ .Section }} / {{ .Date.Format "2006" }}</div>
+        {{- end }}
+        <div class="zn-card__body">
+          <div class="zn-card__meta">
+            <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "Jan 2, 2006" }}</time>
+            {{- with .Params.categories }}
+            <span class="zn-card__meta-dot">·</span>
+            <span>{{ index . 0 }}</span>
+            {{- end }}
+            {{- if .Site.Params.readingTime }}
+            <span class="zn-card__meta-dot">·</span>
+            <span>{{ .ReadingTime }} min</span>
+            {{- end }}
+          </div>
+          <h3 class="zn-card__title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+          <p class="zn-card__excerpt">{{ .Description | default (.Summary | plainify | truncate 160) }}</p>
+          <div class="zn-card__footer">
+            {{- range first 3 .Params.tags }}<a class="zn-tag" href="/tags/{{ . | urlize }}/">#{{ . }}</a>{{- end }}
+          </div>
+        </div>
+      </article>
+      {{- end }}
+    </div>
+
+    {{- if gt $paginator.TotalPages 1 }}
+    <nav class="zn-pagination" aria-label="Pagination">
+      {{- if $paginator.HasPrev }}<a href="{{ $paginator.Prev.URL }}">← Prev</a>{{ end }}
+      {{- range $paginator.Pagers }}
+      {{- if eq . $paginator }}<span class="is-active">{{ .PageNumber }}</span>
+      {{- else }}<a href="{{ .URL }}">{{ .PageNumber }}</a>
+      {{- end }}
+      {{- end }}
+      {{- if $paginator.HasNext }}<a href="{{ $paginator.Next.URL }}">Next →</a>{{ end }}
+    </nav>
+    {{- end }}
+  </div>
+</section>
+{{ end }}

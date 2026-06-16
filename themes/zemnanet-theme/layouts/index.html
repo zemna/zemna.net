@@ -1,0 +1,76 @@
+{{ define "main" }}
+<div class="zn-hero">
+  <div class="zn-container zn-container--default">
+    <span class="zn-hero__eyebrow">zemna.net</span>
+    <h1 class="zn-hero__title">{{ .Site.Params.tagline | safeHTML }}</h1>
+    <p class="zn-hero__lede">{{ .Site.Params.description | safeHTML }}</p>
+    <div class="zn-hero__actions">
+      <a class="zn-button zn-button--accent" href="/posts/">
+        Read the blog
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a class="zn-button zn-button--ghost" href="/about/">About the author</a>
+    </div>
+  </div>
+</div>
+
+<section class="zn-section">
+  <div class="zn-container zn-container--default">
+    <div class="zn-section__head">
+      <div>
+        <h2 class="zn-section__title">Latest writing</h2>
+        <p class="zn-section__sub">One post per day, rotating through seven themes. Mon = news · Tue = code · Wed = Indonesia · Thu = tools · Fri = debate · Sat = build in public · Sun = free.</p>
+      </div>
+      <a class="zn-button zn-button--ghost" href="/posts/">All posts →</a>
+    </div>
+
+    {{- $posts := where .Site.RegularPages "Section" "posts" }}
+    <div class="zn-grid zn-grid--posts">
+      {{- range first 6 $posts.ByDate.Reverse }}
+      <article class="zn-card">
+        {{- if .Params.cover }}
+        <div class="zn-card__cover"><img src="{{ .Params.cover | relURL }}" alt=""></div>
+        {{- else }}
+        <div class="zn-card__cover">{{ .Section }} / {{ .Date.Format "2006" }}</div>
+        {{- end }}
+        <div class="zn-card__body">
+          <div class="zn-card__meta">
+            <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "Jan 2, 2006" }}</time>
+            {{- with .Params.categories }}
+            <span class="zn-card__meta-dot">·</span>
+            <span>{{ index . 0 }}</span>
+            {{- end }}
+            {{- if .Site.Params.readingTime }}
+            <span class="zn-card__meta-dot">·</span>
+            <span>{{ .ReadingTime }} min</span>
+            {{- end }}
+          </div>
+          <h3 class="zn-card__title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+          <p class="zn-card__excerpt">{{ .Description | default (.Summary | plainify | truncate 160) }}</p>
+          <div class="zn-card__footer">
+            {{- range first 3 .Params.tags }}<a class="zn-tag" href="/tags/{{ . | urlize }}/">#{{ . }}</a>{{- end }}
+          </div>
+        </div>
+      </article>
+      {{- end }}
+    </div>
+  </div>
+</section>
+
+<section class="zn-section zn-section--tight" style="background: var(--zn-surface); border-block: 1px solid var(--zn-border);">
+  <div class="zn-container zn-container--default">
+    <div class="zn-section__head">
+      <h2 class="zn-section__title">Topics</h2>
+      <p class="zn-section__sub">Browse by theme.</p>
+    </div>
+    <div class="zn-grid zn-grid--3">
+      {{- range first 6 .Site.Taxonomies.categories.ByCount }}
+      <a class="zn-card" href="{{ .Page.RelPermalink }}" style="padding: var(--zn-space-6);">
+        <h3 class="zn-card__title">{{ .Page.Title }}</h3>
+        <p class="zn-card__excerpt">{{ .Count }} post{{ if ne .Count 1 }}s{{ end }}</p>
+      </a>
+      {{- end }}
+    </div>
+  </div>
+</section>
+{{ end }}

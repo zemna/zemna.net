@@ -1,0 +1,30 @@
+# Public output
+/public/
+
+# Hugo
+.hugo_build.lock
+.hugo_stats.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Local env
+.env
+.env.local
+
+# Generated test content
+content/posts/*-test-*.md
+content/posts/*-demo-*.md
+
+# Dependency caches
+node_modules/

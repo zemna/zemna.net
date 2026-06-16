@@ -1,0 +1,82 @@
+{{ define "main" }}
+<article class="zn-article">
+  <div class="zn-reading-progress" data-reading-progress></div>
+
+  <header class="zn-article__header">
+    <div class="zn-article__eyebrow">
+      {{- with .Params.categories }}<span>{{ index . 0 }}</span>{{- end }}
+      {{- if .Site.Params.readingTime }}
+      <span class="zn-card__meta-dot">·</span>
+      <span class="zn-article__reading">{{ .ReadingTime }} min read</span>
+      {{- end }}
+    </div>
+
+    <h1 class="zn-article__title">{{ .Title }}</h1>
+
+    {{- with .Description }}
+    <p class="zn-article__lede">{{ . }}</p>
+    {{- end }}
+
+    <div class="zn-article__meta">
+      <span class="zn-article__author">{{ .Site.Params.author }}</span>
+      <span class="zn-article__meta-dot">·</span>
+      <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "January 2, 2006" }}</time>
+      {{- if and .Site.Params.showLastModified (ne (.Lastmod.Format "2006-01-02") (.PublishDate.Format "2006-01-02")) }}
+      <span class="zn-article__meta-dot">·</span>
+      <span>Updated <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "Jan 2, 2006" }}</time></span>
+      {{- end }}
+    </div>
+  </header>
+
+  {{- with .Params.cover }}
+  <div class="zn-article__cover">
+    <img src="{{ . | relURL }}" alt="{{ $.Title }}">
+  </div>
+  {{- end }}
+
+  {{- with .Params.series }}
+  {{- $seriesName := . }}
+  {{- $seriesPosts := where (where site.RegularPages "Section" "posts") ".Params.series" $seriesName }}
+  <aside class="zn-series">
+    <p class="zn-series__title">Part of a series</p>
+    <p class="zn-series__name">{{ $seriesName }}</p>
+    <ol class="zn-series__list">
+      {{- range $i, $p := $seriesPosts.ByDate }}
+      <li {{ if eq $p.RelPermalink $.RelPermalink }}class="is-current"{{ end }}>
+        <span>{{ add $i 1 }}.</span>
+        <a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a>
+      </li>
+      {{- end }}
+    </ol>
+  </aside>
+  {{- end }}
+
+  <div class="zn-prose{{ if and .Site.Params.useSerifForEditorial (eq .Section "posts") }} zn-prose--serif{{ end }}">
+    {{ .Content }}
+  </div>
+
+  <footer class="zn-article__footer">
+    {{- with .Params.tags }}
+    <div class="zn-article__tags">
+      {{- range . }}<a class="zn-tag" href="/tags/{{ . | urlize }}/">#{{ . }}</a>{{- end }}
+    </div>
+    {{- end }}
+
+    {{- if in .Site.Params.shareButtons "twitter" }}
+    <div class="zn-article__share">
+      <span class="zn-article__share-label">Share</span>
+      <a class="zn-button zn-button--ghost" href="https://twitter.com/intent/tweet?url={{ .Permalink | urlize }}&text={{ .Title | urlize }}" rel="noopener">X / Twitter</a>
+    </div>
+    {{- end }}
+
+    <div class="zn-author">
+      <div class="zn-author__avatar">{{ substr .Site.Params.author 0 1 }}</div>
+      <div>
+        <p class="zn-author__name">{{ .Site.Params.author }}</p>
+        <p class="zn-author__role">{{ .Site.Params.authorLocation }} · Senior Developer</p>
+        <p class="zn-author__bio">{{ .Site.Params.authorBio }}</p>
+      </div>
+    </div>
+  </footer>
+</article>
+{{ end }}

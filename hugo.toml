@@ -1,0 +1,195 @@
+# ============================================================================
+# zemnanet — Hugo site config
+# zemna.net — Bridging Korean & Southeast Asian Tech
+# ============================================================================
+
+baseURL = "https://zemna.net/"
+languageCode = "en-us"
+defaultContentLanguage = "en"
+title = "zemnanet"
+theme = "zemnanet-theme"
+
+# Site metadata (used by templates & social cards)
+[params]
+  author = "Shinjae Kang"
+  authorLocation = "Jakarta, Indonesia"
+  authorBio = "Senior Korean developer, 15 years in Jakarta. Bridging Korean & Southeast Asian tech."
+  description = "IT, AI, and dev tooling insights from a Korean senior dev working in Southeast Asia."
+  tagline = "Bridging Korean & Southeast Asian Tech"
+  email = "hello@zemna.net"
+  twitter = "@zemnanet"
+  instagram = "@zemna"
+  github = "zemnanet"
+  linkedin = "shinjae-kang"
+  timezone = "Asia/Jakarta"
+  copyrightYear = 2026
+
+  # Design system version (link to /design-system/)
+  designSystemVersion = "1.0.0"
+
+  # Code highlight
+  codeCopyButton = true
+  codeMaxLines = 50
+
+  # SEO defaults
+  openGraphType = "website"
+  twitterCard = "summary_large_image"
+
+  # Reading time
+  readingTime = true
+
+  # Show last modified date
+  showLastModified = true
+
+  # Use serif font for editorial Korean
+  useSerifForEditorial = true
+
+  # Social share (post footer)
+  shareButtons = ["twitter", "linkedin", "copy"]
+
+# Main menu (header)
+[[menu.main]]
+  name = "Home"
+  url = "/"
+  weight = 10
+
+[[menu.main]]
+  name = "Blog"
+  url = "/posts/"
+  weight = 20
+
+[[menu.main]]
+  name = "Series"
+  url = "/series/"
+  weight = 30
+
+[[menu.main]]
+  name = "About"
+  url = "/about/"
+  weight = 40
+
+# Footer menu
+[[menu.footer]]
+  name = "RSS"
+  url = "/index.xml"
+  weight = 10
+
+[[menu.footer]]
+  name = "Sitemap"
+  url = "/sitemap.xml"
+  weight = 20
+
+[[menu.footer]]
+  name = "Design System"
+  url = "/design-system/"
+  weight = 30
+
+[[menu.footer]]
+  name = "Colophon"
+  url = "/colophon/"
+  weight = 40
+
+# Series taxonomy
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+  series = "series"
+
+# Output formats: RSS, JSON feed, sitemap
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+  section = ["HTML", "RSS"]
+  taxonomy = ["HTML", "RSS"]
+  term = ["HTML", "RSS"]
+
+# Markdown rendering
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    lineNos = true
+    lineNumbersInTable = true
+    noClasses = false
+    style = "monokai"
+    tabWidth = 2
+
+# Sitemap
+[sitemap]
+  changefreq = "weekly"
+  filename = "sitemap.xml"
+  priority = 0.5
+
+# Pagination
+[pagination]
+  pagerSize = 10
+
+# Privacy / security
+[privacy]
+  [privacy.vimeo]
+    disabled = false
+    simple = true
+  [privacy.youtube]
+    disabled = false
+    privacyEnhanced = true
+  [privacy.x]
+    disabled = false
+    enableDNT = true
+
+# Permalinks: clean URLs
+[permalinks]
+  posts = "/posts/:slug/"
+  series = "/series/:slug/"
+
+# Build stats
+[buildStats]
+  disable = false
+
+# Module mounts (will be used later for content import from external)
+[[module.mounts]]
+  source = "content"
+  target = "content"
+
+[[module.mounts]]
+  source = "static"
+  target = "static"
+
+[[module.mounts]]
+  source = "layouts"
+  target = "layouts"
+
+[[module.mounts]]
+  source = "data"
+  target = "data"
+
+[[module.mounts]]
+  source = "assets"
+  target = "assets"
+
+# Per-language config (English base; i18n ready)
+[languages]
+  [languages.en]
+    languageName = "English"
+    weight = 1
+    title = "zemnanet"
+    description = "IT, AI, and dev tooling insights from a Korean senior dev working in Southeast Asia."
+    [languages.en.params]
+      ogLocale = "en_US"
+
+  [languages.ko]
+    languageName = "한국어"
+    weight = 2
+    title = "zemnanet"
+    description = "자카르타 기반 한국 시니어 개발자의 IT, AI, 개발 도구 인사이트."
+    [languages.ko.params]
+      ogLocale = "ko_KR"
+
+  [languages.id]
+    languageName = "Bahasa Indonesia"
+    weight = 3
+    title = "zemnanet"
+    description = "Wawasan IT, AI, dan dev tooling dari developer senior Korea yang berkarya di Asia Tenggara."
+    [languages.id.params]
+      ogLocale = "id_ID"

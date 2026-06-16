@@ -1,0 +1,15 @@
+{{ define "main" }}
+<section class="zn-section">
+  <div class="zn-container zn-container--narrow">
+    <article class="zn-article" style="padding-block: var(--zn-space-8);">
+      <header class="zn-article__header">
+        <h1 class="zn-article__title">{{ .Title }}</h1>
+        {{- with .Description }}<p class="zn-article__lede">{{ . }}</p>{{- end }}
+      </header>
+      <div class="zn-prose">
+        {{ .Content }}
+      </div>
+    </article>
+  </div>
+</section>
+{{ end }}

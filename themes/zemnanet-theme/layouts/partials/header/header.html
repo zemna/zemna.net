@@ -1,0 +1,31 @@
+{{- /*
+  header.html — sticky header with logo, nav, theme toggle, language switcher
+*/ -}}
+<header class="zn-header" role="banner">
+  <div class="zn-container zn-container--default zn-header__inner">
+    <a href="{{ .Site.BaseURL }}" class="zn-header__logo" aria-label="{{ .Site.Title }} home">
+      {{- partial "brand/logo.html" . }}
+    </a>
+
+    <nav class="zn-header__nav" aria-label="Primary">
+      {{- $current := . }}
+      {{- range .Site.Menus.main }}
+      <a href="{{ .URL }}" class="zn-header__link{{ if $current.IsMenuCurrent "main" . }} is-active{{ end }}">{{ .Name }}</a>
+      {{- end }}
+    </nav>
+
+    <div class="zn-header__actions">
+      <button class="zn-icon-button" type="button" aria-label="Search" data-action="search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </button>
+      <button class="zn-icon-button" type="button" aria-label="Toggle theme" data-action="theme">
+        <svg class="zn-icon-light" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="zn-icon-dark" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </div>
+
+    <button class="zn-icon-button zn-header__menu" type="button" aria-label="Menu" data-action="mobile-menu">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+    </button>
+  </div>
+</header>
