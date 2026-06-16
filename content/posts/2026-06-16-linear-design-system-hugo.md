@@ -1,6 +1,6 @@
 ---
 title: "54개 디자인 시스템 해부해서 내 Hugo 블로그에 Linear.app DNA를 이식한 하루"
-date: 2026-06-16T21:30:00+07:00
+date: 2026-06-16T18:00:00+07:00
 draft: false
 description: "popular-web-designs 스킬로 54개 실제 서비스 디자인 시스템을 분석하고, Linear.app의 디자인 토큰을 Hugo 정적 블로그에 통째로 이식한 과정. MiniMax, GLM, GPT 모델 3종을 번갈아가며 같은 작업을 시켜본 비교 후기도 담았다."
 cover: "covers/linear-design-system.png"
