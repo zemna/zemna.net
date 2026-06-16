@@ -287,7 +287,7 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 .zn-button--ghost:hover { background: var(--zn-surface-4); color: var(--zn-text-100); text-decoration: none; border-color: var(--zn-border-strong); }
 
 /* ---- Section ---- */
-.zn-section { padding-block: var(--zn-space-16); }
+.zn-section { padding-block: var(--zn-space-8); }
 .zn-section--tight { padding-block: var(--zn-space-12); }
 .zn-section--surface {
   background: var(--zn-surface-1);

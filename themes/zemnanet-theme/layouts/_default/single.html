@@ -13,7 +13,7 @@
     </div>
     {{- end }}
     <div class="zn-article__hero-overlay"></div>
-    <div class="zn-container zn-container--wide">
+    <div class="zn-container zn-container--default">
       <div class="zn-article__hero-content">
 
         {{- /* Breadcrumb */ -}}
@@ -92,7 +92,7 @@
 {{- $related := .Site.RegularPages.Related . | first 3 }}
 {{- if gt (len $related) 0 }}
 <section class="zn-related">
-  <div class="zn-container zn-container--wide">
+  <div class="zn-container zn-container--default">
     <h2 class="zn-related__title">Related posts</h2>
     <div class="zn-grid zn-grid--3">
       {{- range $related }}

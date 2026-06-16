@@ -71,7 +71,7 @@
 
 /* Hero breadcrumb — prominent & readable */
 .zn-article__hero .zn-article__breadcrumb {
-  margin-bottom: var(--zn-space-8);
+  margin-bottom: var(--zn-space-4);
 }
 .zn-article__hero .zn-article__breadcrumb a {
   color: rgba(255, 255, 255, 0.75);
@@ -171,7 +171,7 @@
   gap: var(--zn-space-2);
   font-size: var(--zn-text-caption-l);
   color: var(--zn-text-300);
-  margin-bottom: var(--zn-space-8);
+  margin-bottom: var(--zn-space-4);
   letter-spacing: var(--zn-tracking-wide);
   font-weight: var(--zn-wt-ui);
 }
@@ -386,7 +386,7 @@
   display: flex;
   gap: var(--zn-space-2);
   flex-wrap: wrap;
-  margin-bottom: var(--zn-space-8);
+  margin-bottom: var(--zn-space-4);
 }
 
 .zn-article__share {
