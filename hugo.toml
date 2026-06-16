@@ -96,6 +96,18 @@ theme = "zemnanet-theme"
   series = "series"
 
 # Output formats: RSS, JSON feed, sitemap
+[outputFormats]
+  [outputFormats.RSS]
+    mediatype = "application/rss+xml"
+    baseName = "index"
+    isPlainText = true
+    notAlternative = true
+  [outputFormats.JSON]
+    mediatype = "application/json"
+    baseName = "index"
+    isPlainText = true
+    isHTML = false
+
 [outputs]
   home = ["HTML", "RSS", "JSON"]
   section = ["HTML", "RSS"]

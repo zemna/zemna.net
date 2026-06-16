@@ -9,6 +9,8 @@
     {{- block "main" . }}{{ end }}
   </main>
   {{- partial "footer/footer.html" . }}
-  {{- partial "scripts/theme-toggle.html" . }}
+  {{- partial "search/overlay.html" . }}
+  {{- partial "mobile-nav/drawer.html" . }}
+  {{- partial "scripts/interactions.html" . }}
 </body>
 </html>

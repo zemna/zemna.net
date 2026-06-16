@@ -1,0 +1,26 @@
+{{- /*
+  mobile-nav.html — Slide-in mobile menu drawer. Triggered by [data-action="mobile-menu"].
+*/ -}}
+<nav id="zn-mobile-nav" class="zn-mobile-nav" aria-label="Mobile">
+  <div class="zn-mobile-nav__head">
+    {{- partial "brand/logo.html" . }}
+    <button type="button" class="zn-icon-button" data-action="mobile-menu-close" aria-label="Close menu">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <ul class="zn-mobile-nav__list">
+    {{- range .Site.Menus.main }}
+    <li>
+      <a href="{{ .URL }}" class="zn-mobile-nav__link">
+        <span>{{ .Name }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </li>
+    {{- end }}
+  </ul>
+  <div class="zn-mobile-nav__foot">
+    {{- range .Site.Menus.footer }}
+    <a href="{{ .URL }}" class="zn-mobile-nav__link zn-mobile-nav__link--sub">{{ .Name }}</a>
+    {{- end }}
+  </div>
+</nav>

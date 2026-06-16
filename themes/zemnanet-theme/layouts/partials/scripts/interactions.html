@@ -1,0 +1,160 @@
+{{- /*
+  scripts/interactions.html — theme + reading progress + search + mobile menu
+  Loaded once via baseof.html. All handlers are data-action-based.
+*/ -}}
+<script>
+(function() {
+  'use strict';
+
+  var root = document.documentElement;
+
+  // ============ Theme ============
+  var stored = localStorage.getItem('zn-theme');
+  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var theme = stored || (prefersDark ? 'dark' : 'light');
+  root.setAttribute('data-theme', theme);
+
+  document.addEventListener('click', function(e) {
+    var themeBtn = e.target.closest('[data-action="theme"]');
+    if (themeBtn) {
+      var current = root.getAttribute('data-theme') || 'light';
+      var next = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('zn-theme', next);
+      return;
+    }
+  });
+
+  // ============ Reading progress (article pages) ============
+  var progress = document.querySelector('[data-reading-progress]');
+  if (progress) {
+    var updateProgress = function() {
+      var article = document.querySelector('.zn-article');
+      if (!article) return;
+      var rect = article.getBoundingClientRect();
+      var total = article.offsetHeight - window.innerHeight;
+      var scrolled = -rect.top;
+      var pct = Math.max(0, Math.min(100, (scrolled / total) * 100));
+      progress.style.width = pct + '%';
+    };
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+  }
+
+  // ============ Search overlay ============
+  var searchOverlay = document.getElementById('zn-search-overlay');
+  var searchInput = searchOverlay ? searchOverlay.querySelector('input[type="search"]') : null;
+
+  function openSearch() {
+    if (!searchOverlay) return;
+    searchOverlay.setAttribute('data-open', 'true');
+    root.style.overflow = 'hidden';
+    setTimeout(function() { if (searchInput) searchInput.focus(); }, 50);
+  }
+  function closeSearch() {
+    if (!searchOverlay) return;
+    searchOverlay.removeAttribute('data-open');
+    root.style.overflow = '';
+  }
+
+  document.addEventListener('click', function(e) {
+    var searchBtn = e.target.closest('[data-action="search"]');
+    if (searchBtn) { e.preventDefault(); openSearch(); return; }
+    var closeBtn = e.target.closest('[data-action="search-close"]');
+    if (closeBtn) { e.preventDefault(); closeSearch(); return; }
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && searchOverlay && searchOverlay.getAttribute('data-open') === 'true') {
+      closeSearch();
+    }
+    // Cmd/Ctrl + K → open search
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      openSearch();
+    }
+  });
+  if (searchOverlay) {
+    searchOverlay.addEventListener('click', function(e) {
+      if (e.target === searchOverlay) closeSearch();
+    });
+  }
+
+  // ============ Mobile menu drawer ============
+  var menuBtn = document.querySelector('[data-action="mobile-menu"]');
+  var mobileNav = document.getElementById('zn-mobile-nav');
+
+  function openMenu() {
+    if (!mobileNav) return;
+    mobileNav.setAttribute('data-open', 'true');
+    root.style.overflow = 'hidden';
+    if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
+  }
+  function closeMenu() {
+    if (!mobileNav) return;
+    mobileNav.removeAttribute('data-open');
+    root.style.overflow = '';
+    if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  document.addEventListener('click', function(e) {
+    var mb = e.target.closest('[data-action="mobile-menu"]');
+    if (mb) { e.preventDefault(); openMenu(); return; }
+    var mc = e.target.closest('[data-action="mobile-menu-close"]');
+    if (mc) { e.preventDefault(); closeMenu(); return; }
+  });
+
+  // ============ Search: page-find (client-side, posts.json) ============
+  // We don't ship Pagefind (yet) — for now, a simple client-side filter on
+  // an embedded posts index. This keeps the build static with no extra runtime.
+  var searchResults = searchOverlay ? searchOverlay.querySelector('[data-search-results]') : null;
+  var postsIndex = null;
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function(c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function renderResults(query) {
+    if (!searchResults) return;
+    if (!query || query.length < 2) {
+      searchResults.innerHTML = '<p class="zn-search__empty">Type at least 2 characters.</p>';
+      return;
+    }
+    if (!postsIndex) {
+      searchResults.innerHTML = '<p class="zn-search__empty">Loading index…</p>';
+      fetch('/index.json').then(function(r) { return r.json(); }).then(function(data) {
+        postsIndex = (data && data.items) ? data.items : [];
+        renderResults(query);
+      }).catch(function() {
+        searchResults.innerHTML = '<p class="zn-search__empty">Search index unavailable.</p>';
+      });
+      return;
+    }
+    var q = query.toLowerCase();
+    var hits = postsIndex.filter(function(p) {
+      return (p.title && p.title.toLowerCase().indexOf(q) !== -1) ||
+             (p.summary && p.summary.toLowerCase().indexOf(q) !== -1) ||
+             (p.tags && p.tags.join(' ').toLowerCase().indexOf(q) !== -1);
+    }).slice(0, 10);
+    if (hits.length === 0) {
+      searchResults.innerHTML = '<p class="zn-search__empty">No matches for "' + escapeHtml(query) + '".</p>';
+      return;
+    }
+    searchResults.innerHTML = hits.map(function(p) {
+      var summary = (p.summary || '').slice(0, 120);
+      return '<a class="zn-search__hit" href="' + p.url + '">' +
+             '<strong>' + escapeHtml(p.title) + '</strong>' +
+             '<span>' + escapeHtml(summary) + '</span>' +
+             '</a>';
+    }).join('');
+  }
+  if (searchInput) {
+    var debounceTimer;
+    searchInput.addEventListener('input', function(e) {
+      clearTimeout(debounceTimer);
+      var q = e.target.value;
+      debounceTimer = setTimeout(function() { renderResults(q); }, 120);
+    });
+  }
+})();
+</script>
