@@ -5,6 +5,7 @@ topic: ["AI", "Open Source"]
 tags: ["GLM-5.2", "Z.AI", "open-weights", "benchmarks", "LLM", "coding-agents"]
 slug: glm-5-2-open-weights
 description: "Z.AI's GLM 5.2 (744B MoE, 1M context, MIT license) tops open-weights benchmarks and runs coding agents at frontier level. Full breakdown."
+cover: /covers/glm-5-2.png
 ---
 
 Zhipu AI (Z.AI) dropped GLM 5.2 on June 13, 2026, and it didn't just raise the bar for open-weights models — it grabbed the bar and threw it across the room. With a 744B Mixture-of-Experts architecture, a usable 1-million-token context window, and an MIT license, this is the strongest argument yet that you don't need a closed API to run frontier-level AI.
