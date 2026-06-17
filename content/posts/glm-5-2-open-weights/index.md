@@ -1,7 +1,7 @@
 ---
 title: "GLM 5.2 Just Became the Best Open-Weights Model — Here's What That Means"
-date: 2026-06-17T18:28:00+07:00
-topic: ["AI", "Open Source"]
+date: 2026-06-17T19:30:00+07:00
+topics: ["AI", "Open Source"]
 tags: ["GLM-5.2", "Z.AI", "open-weights", "benchmarks", "LLM", "coding-agents"]
 slug: glm-5-2-open-weights
 description: "Z.AI's GLM 5.2 (744B MoE, 1M context, MIT license) tops open-weights benchmarks and runs coding agents at frontier level. Full breakdown."
