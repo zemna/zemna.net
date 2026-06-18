@@ -5,7 +5,7 @@ draft: false
 slug: "linear-design-system-hugo"
 description: "I told my AI agent my blog looked like garbage. It loaded 54 real-world design systems, ran a comparative analysis, and rebuilt the entire theme with Linear.app's design tokens. Swapped between three AI models mid-task and learned which one handles structure vs. polish. 1,500 lines of CSS, 3 commits, one afternoon."
 cover: "covers/linear-design-system.png"
-topic: ["Build"]
+topics: ["Build"]
 tags: ["design-system", "hugo", "linear", "css", "ai-agent", "build-in-public", "hermes"]
 ---
 

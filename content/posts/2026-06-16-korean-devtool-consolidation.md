@@ -2,7 +2,7 @@
 title: "The quiet consolidation in Korean dev tooling"
 date: 2026-06-16
 description: "Three acquisitions in twelve months. Korean dev tools are no longer a fragmented market — they're a small oligopoly, and the API surfaces are starting to look the same."
-topic: ["News"]
+topics: ["News"]
 tags: ["korea", "devtools", "industry"]
 draft: false
 series: "Korean Tech in 2026"
