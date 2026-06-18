@@ -1,0 +1,52 @@
+{
+  "saved_path": "/home/linuxuser/projects/zemna.net/static/covers/opencode-fable5-shakeup.png",
+  "prompt": "Bold editorial tech illustration, a cracked golden crown falling off a computer monitor, dramatic single light source, deep navy background with off-white highlights and one vermilion accent, flat vector style with subtle grain, large clean empty space on right for text overlay, high contrast, 16:9 landscape, no text in image. navy + off-white + vermilion accent, flat editorial, subtle grain, no text in image",
+  "model": "gpt-5.4",
+  "image_model": "gpt-image-2",
+  "reasoning_effort": "medium",
+  "prompt_mode": "fidelity",
+  "enhancement_profile": "none",
+  "research": "off",
+  "size": "1024x576",
+  "quality": "medium",
+  "background": "auto",
+  "format": "png",
+  "moderation": "low",
+  "action": "auto",
+  "count": 1,
+  "index": 1,
+  "inputs": {
+    "edit_image": null,
+    "reference_images": []
+  },
+  "revised_prompt": "Bold editorial tech illustration, a cracked golden crown falling off a computer monitor, dramatic single light source, deep navy background with off-white highlights and one vermilion accent, flat vector style with subtle grain, large clean empty space on right for text overlay, high contrast, 16:9 landscape, no text in image. navy + off-white + vermilion accent, flat editorial, subtle grain, no text in image",
+  "usage": {
+    "input_tokens": 3350,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 104,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 3454
+  },
+  "web_search_calls": 0,
+  "events_saved": null,
+  "raw_event_count": 14,
+  "event_types": {
+    "response.created": 1,
+    "response.in_progress": 1,
+    "response.output_item.added": 2,
+    "response.image_generation_call.in_progress": 1,
+    "response.image_generation_call.generating": 1,
+    "response.image_generation_call.partial_image": 1,
+    "response.output_item.done": 2,
+    "response.content_part.added": 1,
+    "response.output_text.done": 1,
+    "response.content_part.done": 1,
+    "response.completed": 2
+  },
+  "partial_images": 1,
+  "created_at": "2026-06-18T08:05:10.568596"
+}
