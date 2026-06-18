@@ -5,8 +5,8 @@ draft: false
 slug: "linear-design-system-hugo"
 description: "I told my AI agent my blog looked like garbage. It loaded 54 real-world design systems, ran a comparative analysis, and rebuilt the entire theme with Linear.app's design tokens. Swapped between three AI models mid-task and learned which one handles structure vs. polish. 1,500 lines of CSS, 3 commits, one afternoon."
 cover: "covers/linear-design-system.png"
-topics: ["Build"]
-tags: ["Design-System", "Hugo", "Linear", "CSS", "AI-Agent", "Build-in-Public", "Hermes"]
+topic: ["Build"]
+tags: ["design-system", "hugo", "linear", "css", "ai-agent", "build-in-public", "hermes"]
 ---
 
 This morning I opened my blog and thought: this looks like a 2015 Tistory template. So I told my Hermes agent, in exactly these words: "This looks like garbage. Go through all 54 design systems and rebuild it with the best one."

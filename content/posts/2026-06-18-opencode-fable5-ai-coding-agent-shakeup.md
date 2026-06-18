@@ -2,7 +2,7 @@
 title: "OpenCode Dethroned Cursor — and Claude Fable 5 Got Suspended. What June 2026's AI Coding Shakeup Means for You"
 date: 2026-06-18T08:00:00+07:00
 topic: ["AI", "Developer Tools"]
-tags: ["OpenCode", "Claude Fable 5", "Cursor", "AI coding agents", "benchmarks", "LLM"]
+tags: ["opencode", "claude-fable-5", "cursor", "ai-coding-agents", "benchmarks", "llm"]
 slug: opencode-fable5-ai-coding-shakeup
 description: "OpenCode hit 160K GitHub stars and dethroned Cursor as the #1 AI dev tool. Claude Fable 5 launched with record benchmarks — then got suspended 3 days later. Here's what actually matters for your workflow."
 cover: /covers/opencode-fable5-shakeup.png
