@@ -1,0 +1,53 @@
+{
+  "saved_path": "/home/linuxuser/projects/zemna.net/static/covers/vue-3-6-vapor-mode.png",
+  "prompt": "Editorial tech cover illustration for a developer publication. Vue 3.6 Vapor Mode concept: a virtual DOM tree structure on the left dissolving into thin vapor/mist, revealing fast direct DOM connections underneath. The dissolving VDOM is rendered in off-white (#FCFBF8), and the new direct rendering path is traced in bold vermilion (#E34234) lines — the vermilion accent must be prominent and occupy 15-25% of the image. Deep navy (#1A2238) background. Single vermilion-glow light source from upper right. Clean vector aesthetic, Bauhaus and Swiss design influence, minimal, premium. 16:9 landscape editorial cover. No text, no logos, no faces, no photographic elements.",
+  "model": "gpt-5.4",
+  "image_model": "gpt-image-2",
+  "reasoning_effort": "medium",
+  "prompt_mode": "enhanced",
+  "enhancement_profile": "safe-polish",
+  "research": "off",
+  "size": "1024x576",
+  "quality": "high",
+  "background": "auto",
+  "format": "png",
+  "moderation": "low",
+  "action": "auto",
+  "count": 1,
+  "index": 1,
+  "inputs": {
+    "edit_image": null,
+    "reference_images": []
+  },
+  "revised_prompt": "Editorial tech cover illustration for a developer publication. 16:9 landscape composition. Vue 3.6 Vapor Mode concept: on the left, a virtual DOM tree structure dissolving into thin vapor and mist, revealing faster direct DOM connections underneath. The dissolving VDOM is rendered in off-white (#FCFBF8). The new direct rendering path is traced in bold vermilion (#E34234) lines, with the vermilion accent prominent and occupying roughly 15–25% of the image. Deep navy background (#1A2238). Single upper-right vermilion glow light source shaping the scene. Clean vector aesthetic with Bauhaus and Swiss design influence, minimal, premium, crisp details, clean lines, balanced composition, strong contrast. Abstract technical diagram feel, elegant negative space. No text, no logos, no faces, no photographic elements, no watermark, no signature, no cropped elements.",
+  "usage": {
+    "input_tokens": 5286,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 203,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 5489
+  },
+  "web_search_calls": 0,
+  "events_saved": null,
+  "raw_event_count": 16,
+  "event_types": {
+    "response.created": 1,
+    "response.in_progress": 1,
+    "response.output_item.added": 2,
+    "response.image_generation_call.in_progress": 1,
+    "response.image_generation_call.generating": 1,
+    "response.image_generation_call.partial_image": 2,
+    "keepalive": 1,
+    "response.output_item.done": 2,
+    "response.content_part.added": 1,
+    "response.output_text.done": 1,
+    "response.content_part.done": 1,
+    "response.completed": 2
+  },
+  "partial_images": 2,
+  "created_at": "2026-06-21T08:17:49.006710"
+}

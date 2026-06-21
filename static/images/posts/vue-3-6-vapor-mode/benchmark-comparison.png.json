@@ -1,0 +1,52 @@
+{
+  "saved_path": "/home/linuxuser/projects/zemna.net/static/images/posts/vue-3-6-vapor-mode/benchmark-comparison.png",
+  "prompt": "Editorial infographic: benchmark comparison visualization. Five clean vertical bars on deep navy (#1A2238) background. Three tall bars (Vue Vapor, Svelte 5, Solid.js) in off-white (#FCFBF8). One medium bar (React 19) in off-white. One shorter reference bar. The critical element: the Vue Vapor bar must have a prominent vermilion (#E34234) highlight — either the entire bar in vermilion, or a strong vermilion accent stripe running through it, making it visually dominant. Vermilion accent must occupy 15-25% of total image area. Clean vector aesthetic, Bauhaus influence, informational abstract. No text labels, no numbers, no faces, no photographic elements. Premium developer publication quality.",
+  "model": "gpt-5.4",
+  "image_model": "gpt-image-2",
+  "reasoning_effort": "medium",
+  "prompt_mode": "enhanced",
+  "enhancement_profile": "safe-polish",
+  "research": "off",
+  "size": "1024x576",
+  "quality": "high",
+  "background": "auto",
+  "format": "png",
+  "moderation": "low",
+  "action": "auto",
+  "count": 1,
+  "index": 1,
+  "inputs": {
+    "edit_image": null,
+    "reference_images": []
+  },
+  "revised_prompt": "Editorial infographic benchmark comparison visualization in a clean vector aesthetic with subtle Bauhaus influence, informational abstract, premium developer publication quality. Composition: five clean vertical bars on a deep navy background (#1A2238), centered with balanced spacing and strong negative space. Three tall bars representing Vue Vapor, Svelte 5, and Solid.js in off-white (#FCFBF8). One medium-height bar representing React 19 in off-white (#FCFBF8). One shorter reference bar. Critical emphasis: the Vue Vapor bar must be visually dominant with a prominent vermilion highlight (#E34234) — either the entire bar in vermilion or a strong vermilion accent stripe running through it. Ensure the vermilion accent occupies approximately 15–25% of the total image area. Flat geometric forms, crisp edges, clean lines, balanced composition, appropriate contrast, refined editorial layout. No text labels, no numbers, no faces, no photographic elements, no gradients if avoidable, no watermark, no signature, no cropped bars, no duplicates.",
+  "usage": {
+    "input_tokens": 5187,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 231,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 5418
+  },
+  "web_search_calls": 0,
+  "events_saved": null,
+  "raw_event_count": 15,
+  "event_types": {
+    "response.created": 1,
+    "response.in_progress": 1,
+    "response.output_item.added": 2,
+    "response.image_generation_call.in_progress": 1,
+    "response.image_generation_call.generating": 1,
+    "response.image_generation_call.partial_image": 2,
+    "response.output_item.done": 2,
+    "response.content_part.added": 1,
+    "response.output_text.done": 1,
+    "response.content_part.done": 1,
+    "response.completed": 2
+  },
+  "partial_images": 2,
+  "created_at": "2026-06-21T08:15:07.657499"
+}

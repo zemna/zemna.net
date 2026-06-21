@@ -1,0 +1,52 @@
+{
+  "saved_path": "/home/linuxuser/projects/zemna.net/static/images/posts/vue-3-6-vapor-mode/vapor-architecture.png",
+  "prompt": "Editorial infographic: Vue Vapor Mode architecture concept. A stark split composition. Left third: a tall column of dark off-white (#FCFBF8) VNode boxes with a bold vermilion (#E34234) X striking through them. Right two-thirds: clean direct lines from reactive signal dots to DOM nodes in vermilion (#E34234) color, showing the new direct-rendering path. Deep navy (#1A2238) background. The vermilion accent is essential and must be prominent — at least 15-25% of the image area in vermilion. Clean vector aesthetic, Bauhaus style, informational but abstract. Premium developer publication quality. No text labels, no faces, no photographic elements.",
+  "model": "gpt-5.4",
+  "image_model": "gpt-image-2",
+  "reasoning_effort": "medium",
+  "prompt_mode": "enhanced",
+  "enhancement_profile": "safe-polish",
+  "research": "off",
+  "size": "1024x576",
+  "quality": "high",
+  "background": "auto",
+  "format": "png",
+  "moderation": "low",
+  "action": "auto",
+  "count": 1,
+  "index": 1,
+  "inputs": {
+    "edit_image": null,
+    "reference_images": []
+  },
+  "revised_prompt": "Editorial infographic: Vue Vapor Mode architecture concept. Stark split composition on a deep navy background (#1A2238). Left third: a tall vertical column of dark off-white (#FCFBF8) VNode boxes, arranged cleanly and evenly, with a bold oversized vermilion (#E34234) X striking through the entire column. Right two-thirds: clean direct connecting lines in prominent vermilion (#E34234) from small reactive signal dots to simplified DOM node shapes, clearly illustrating a new direct-rendering path. Vermilion accent is essential and highly prominent, occupying roughly 15–25% of the image area. Clean vector aesthetic, Bauhaus style, informational yet abstract, premium developer publication quality. Crisp details, clean lines, balanced composition, strong contrast, no text labels, no faces, no photographic elements, no watermark, no signature, no cropped elements.",
+  "usage": {
+    "input_tokens": 5145,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 198,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 5343
+  },
+  "web_search_calls": 0,
+  "events_saved": null,
+  "raw_event_count": 15,
+  "event_types": {
+    "response.created": 1,
+    "response.in_progress": 1,
+    "response.output_item.added": 2,
+    "response.image_generation_call.in_progress": 1,
+    "response.image_generation_call.generating": 1,
+    "response.image_generation_call.partial_image": 2,
+    "response.output_item.done": 2,
+    "response.content_part.added": 1,
+    "response.output_text.done": 1,
+    "response.content_part.done": 1,
+    "response.completed": 2
+  },
+  "partial_images": 2,
+  "created_at": "2026-06-21T08:14:23.466673"
+}

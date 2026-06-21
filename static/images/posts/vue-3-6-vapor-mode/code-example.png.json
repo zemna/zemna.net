@@ -1,0 +1,53 @@
+{
+  "saved_path": "/home/linuxuser/projects/zemna.net/static/images/posts/vue-3-6-vapor-mode/code-example.png",
+  "prompt": "Editorial infographic: code transformation concept on deep navy (#1A2238) background. A Vue component template shown as clean off-white (#FCFBF8) geometric blocks (rectangle shapes, bracket forms) on the left. A bold vermilion (#E34234) transformation arrow connecting to smaller, leaner output blocks on the right. The vermilion arrow must be the most visually prominent element — thick, bold, occupying 15-25% of image area. The arrow represents the vapor compilation: same code, smaller output. Clean vector aesthetic, Bauhaus style, premium developer publication quality, informational abstract. No text, no faces, no photographic elements.",
+  "model": "gpt-5.4",
+  "image_model": "gpt-image-2",
+  "reasoning_effort": "medium",
+  "prompt_mode": "enhanced",
+  "enhancement_profile": "safe-polish",
+  "research": "off",
+  "size": "1024x576",
+  "quality": "high",
+  "background": "auto",
+  "format": "png",
+  "moderation": "low",
+  "action": "auto",
+  "count": 1,
+  "index": 1,
+  "inputs": {
+    "edit_image": null,
+    "reference_images": []
+  },
+  "revised_prompt": "Editorial infographic: code transformation concept on deep navy (#1A2238) background. On the left, a Vue component template represented as clean off-white (#FCFBF8) geometric blocks and bracket-like forms, arranged like abstract code structure. A bold vermilion (#E34234) transformation arrow connects from left to right, and the arrow must be the most visually prominent element: thick, bold, occupying approximately 15–25% of the image area. On the right, smaller, leaner off-white output blocks indicating the same code transformed into a reduced output. Clean vector aesthetic, Bauhaus style, premium developer publication quality, informational abstract. No text, no faces, no photographic elements. Crisp details, clean lines, balanced composition, appropriate contrast and color, no blur, no noise, no watermark, no signature, no cropped elements, no duplicates.",
+  "usage": {
+    "input_tokens": 5128,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 194,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 5322
+  },
+  "web_search_calls": 0,
+  "events_saved": null,
+  "raw_event_count": 17,
+  "event_types": {
+    "response.created": 1,
+    "response.in_progress": 1,
+    "response.output_item.added": 2,
+    "response.image_generation_call.in_progress": 1,
+    "response.image_generation_call.generating": 1,
+    "keepalive": 2,
+    "response.image_generation_call.partial_image": 2,
+    "response.output_item.done": 2,
+    "response.content_part.added": 1,
+    "response.output_text.done": 1,
+    "response.content_part.done": 1,
+    "response.completed": 2
+  },
+  "partial_images": 2,
+  "created_at": "2026-06-21T08:16:35.287301"
+}
