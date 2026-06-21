@@ -1,6 +1,6 @@
 ---
 title: "Vue 3.6 Vapor Mode — No Virtual DOM, No Rewrite"
-date: 2026-06-21T10:00:00+07:00
+date: 2026-06-21T07:00:00+07:00
 draft: false
 topics: ["frontend", "vue", "performance"]
 cover: /covers/vue-3-6-vapor-mode.png
