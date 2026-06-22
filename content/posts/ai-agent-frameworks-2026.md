@@ -14,7 +14,7 @@ Nobody asks what happens at 3AM when the cron job fires, the agent spawns a suba
 
 I run autonomous agent cron pipelines. Enough of them to know that the frameworks comparison charts are what you read before you deploy. The rest of this post is what you learn after — sometimes the hard way, sometimes from developers like Nathaniel Hamlett, who runs 23 autonomous cron jobs cycling through discovery, research, and output stages without human intervention.
 
-<!-- IMAGE: Framework comparison — a visual map showing SDKs (LangGraph, CrewAI, OpenAI SDK, AutoGen) vs deterministic orchestrators (Conductor) vs agent-native tools (Claude Code, OpenCode) -->
+![Framework comparison map — SDKs, deterministic orchestrators, and agent-native tools](/img/ai-agent-frameworks-2026-1.png)
 
 ## The Framework Landscape, Organized by What Actually Matters
 
@@ -118,7 +118,7 @@ Three things matter here. First, `BEGIN IMMEDIATE` — without it, SQLite defers
 
 This externalized state model is the difference between losing hours of work and losing a single API call.
 
-<!-- IMAGE: Zombie task detection flow — diagram showing the 4 stall patterns (Infinite Wait, Compaction Loop, Subagent Black Hole, Rate Limit Sleep) with heartbeat-based recovery -->
+![Zombie task detection flow — 4 stall patterns with heartbeat-based recovery](/img/ai-agent-frameworks-2026-2.png)
 
 Here's the watchdog that makes zombie detection automatic:
 
@@ -258,7 +258,7 @@ This is context degradation. It's one of six failure modes MindStudio identified
 
 What fixes context degradation is context engineering. The emerging discipline, named by ByteByteGo as a 2026 trend, means controlling what information reaches an agent at each step. The agent doesn't browse. It doesn't explore. It gets exactly what it needs.
 
-<!-- IMAGE: Context engineering comparison — side-by-side showing accumulate/last_only/explicit modes with token savings -->
+![Context engineering comparison — accumulate vs last_only vs explicit, with token savings](/img/ai-agent-frameworks-2026-3.png)
 
 Microsoft Conductor formalizes this with three context modes:
 
