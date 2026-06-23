@@ -112,7 +112,7 @@ This isn't theoretical. The O'Reilly AI Agents Stack report from June 2026 ident
 
 ## The Pricing Problem No One Talks About
 
-Anthropic charges $5 per million input tokens and $25 per million output tokens for Claude Opus 4.7. OpenAI hasn't published GPT-5.5's API pricing. Qwen 3.7 Max costs $2.50/$7.50.
+Anthropic charges $5 per million input tokens and $25 per million output tokens for Claude Opus 4.7. OpenAI's GPT-5.5 costs $5/$30 per million input/output tokens. Qwen 3.7 Max costs $2.50/$7.50.
 
 These numbers seem abstract until you run them through a real workload. A medium-complexity feature — say, adding OAuth with role-based access control to an existing API — might consume 200K input tokens (the codebase context) and produce 50K output tokens (the implementation). On Opus 4.7, that's roughly $2.25 per run. On Qwen 3.7 Max, it's about $0.87.
 
