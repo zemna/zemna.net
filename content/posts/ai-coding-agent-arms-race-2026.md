@@ -43,7 +43,7 @@ models:
     model: qwen/qwen-3-7-max
   local:
     provider: ollama
-    model: deepseek-coder-v3:33b
+    model: deepseek-coder:33b
 ```
 
 That's it. Three models, three different providers, zero code changes in your workflow. When Anthropic has an outage — and they've had at least two significant ones in Q2 2026 alone — your team doesn't stop. When a new model drops and benchmarks look promising, you test it against your actual codebase in 30 seconds.
@@ -54,13 +54,13 @@ OpenCode made a different bet: that the model landscape will keep shifting, and 
 
 ## The Model Landscape Shifts Every Quarter
 
-Consider the current leaderboard. Claude Opus 4.7 holds the WebDev Arena crown at 1567 Elo. GPT-5.5 leads Terminal-Bench 2.0 at 82.7%. Qwen 3.7 Max pulled off 35-hour autonomous runs with 1,158 tool calls without derailing — and costs $2.50/$7.50 per million tokens, compared to Opus 4.7's $5/$25.
+Consider the current leaderboard. Claude Opus 4.7 holds the WebDev Arena crown at 1567 Elo. GPT-5.5 leads Terminal-Bench 2.0 at 82.7%. Qwen 3.7 Max pulled off 35-hour autonomous runs with 1,158 tool calls without derailing — and costs $1.25/$3.75 per million tokens, compared to Opus 4.7's $5/$25.
 
 ![Timeline of AI model leaderboard changes Q1 2025 to Q2 2026 — no model held #1 more than 4 months](/img/ai-agent-arms-race-3.png)
 
 Six months ago, none of these numbers existed. Six months from now, they'll be different. The average tenure of a #1-ranked model on any major benchmark in 2025-2026 has been roughly one quarter. If your tool is locked to a model that was #1 last quarter, you're optimizing for a snapshot that's already stale.
 
-The Qwen 3.7 Max story is particularly instructive. At $2.50 per million input tokens, it delivers MCP-Atlas scores within 1% of Claude Opus 4.7 (76.4% vs 77.3%) at half the price. For long-running autonomous tasks — the kind where you kick off a refactor and come back after lunch — the cost difference is material. A 35-hour session at Opus 4.7 pricing could cost hundreds of dollars. The same session on Qwen 3.7 Max might cost $50. Over a team of 20 engineers running a few autonomous sessions each per week, that's not a rounding error.
+The Qwen 3.7 Max story is particularly instructive. At $1.25 per million input tokens, it delivers MCP-Atlas scores within 1% of Claude Opus 4.7 (76.4% vs 77.3%) at roughly a quarter of the price. For long-running autonomous tasks — the kind where you kick off a refactor and come back after lunch — the cost difference is material. A 35-hour session at Opus 4.7 pricing could cost hundreds of dollars. The same session on Qwen 3.7 Max might cost $30. Over a team of 20 engineers running a few autonomous sessions each per week, that's not a rounding error.
 
 But here's the thing: Qwen 3.7 Max is text-only. If your workflow depends on vision capabilities — screenshots, diagrams, UI mockups — you're back to Opus or GPT. The point isn't that any one model is best. The point is that "best" depends entirely on what you're doing right now.
 
@@ -86,7 +86,7 @@ TASK_ROUTING = {
     "terraform": "openai/gpt-5-5",                 # best infra correctness
     "autonomous": "qwen/qwen-3-7-max",             # cost-effective long runs
     "documentation": "google/gemini-3-pro",        # strong at prose generation
-    "local_only": "ollama/deepseek-coder-v3:33b",  # air-gapped, zero cost
+    "local_only": "ollama/deepseek-coder:33b",  # air-gapped, zero cost
 }
 
 def route_task(task_type: str, context: dict) -> str:
@@ -112,11 +112,11 @@ This isn't theoretical. The O'Reilly AI Agents Stack report from June 2026 ident
 
 ## The Pricing Problem No One Talks About
 
-Anthropic charges $5 per million input tokens and $25 per million output tokens for Claude Opus 4.7. OpenAI's GPT-5.5 costs $5/$30 per million input/output tokens. Qwen 3.7 Max costs $2.50/$7.50.
+Anthropic charges $5 per million input tokens and $25 per million output tokens for Claude Opus 4.7. OpenAI's GPT-5.5 costs $5/$30 per million input/output tokens. Qwen 3.7 Max costs $1.25/$3.75.
 
-These numbers seem abstract until you run them through a real workload. A medium-complexity feature — say, adding OAuth with role-based access control to an existing API — might consume 200K input tokens (the codebase context) and produce 50K output tokens (the implementation). On Opus 4.7, that's roughly $2.25 per run. On Qwen 3.7 Max, it's about $0.87.
+These numbers seem abstract until you run them through a real workload. A medium-complexity feature — say, adding OAuth with role-based access control to an existing API — might consume 200K input tokens (the codebase context) and produce 50K output tokens (the implementation). On Opus 4.7, that's roughly $2.25 per run. On Qwen 3.7 Max, it's about $0.44.
 
-Now multiply by 50 such features per sprint across a 10-person team. Opus: $1,125 per sprint. Qwen: $435. Over a year, the difference is roughly $18,000. For a single team.
+Now multiply by 50 such features per sprint across a 10-person team. Opus: $1,125 per sprint. Qwen: $220. Over a year, the difference is roughly $23,500. For a single team.
 
 ![Cost comparison of AI models — Claude Opus vs GPT-5.5 vs Qwen 3.7 Max vs local models](/img/ai-agent-arms-race-5.png)
 
@@ -140,11 +140,11 @@ Here's what an air-gapped OpenCode setup looks like:
 
 ```bash
 # Pull a local model for completely offline operation
-ollama pull deepseek-coder-v3:33b
+ollama pull deepseek-coder:33b
 
 # Configure OpenCode to use only local models
 opencode config set provider.default ollama
-opencode config set model.default deepseek-coder-v3:33b
+opencode config set model.default deepseek-coder:33b
 
 # Verify air-gapped mode — no external API calls
 opencode run --offline "Refactor the auth module to use Argon2id"
