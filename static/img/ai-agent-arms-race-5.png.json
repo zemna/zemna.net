@@ -1,0 +1,53 @@
+{
+  "saved_path": "/home/linuxuser/projects/zemna.net/static/img/ai-agent-arms-race-5.png",
+  "prompt": "Clean comparison table infographic, 16:9 landscape. A table with 4 rows comparing AI model pricing: Claude Opus 4.7 (/5), GPT-5.5 (unpublished), Qwen 3.7 Max (.50/.50), Local Ollama (/usr/bin/bash). Columns: Model, Input Price, Output Price, Annual Cost (10 devs). Show Qwen as cheapest frontier option in vermilion highlight.   Dark navy background, off-white table grid and text, vermilion highlight row. Flat editorial, clean readable labels. No faces.",
+  "model": "gpt-5.4",
+  "image_model": "gpt-image-2",
+  "reasoning_effort": "medium",
+  "prompt_mode": "fidelity",
+  "enhancement_profile": "none",
+  "research": "off",
+  "size": "1024x576",
+  "quality": "medium",
+  "background": "auto",
+  "format": "png",
+  "moderation": "low",
+  "action": "auto",
+  "count": 1,
+  "index": 1,
+  "inputs": {
+    "edit_image": null,
+    "reference_images": []
+  },
+  "revised_prompt": "Clean comparison table infographic, 16:9 landscape. A table with 4 rows comparing AI model pricing: Claude Opus 4.7 ($15/$75), GPT-5.5 (unpublished), Qwen 3.7 Max ($0.50/$0.50), Local Ollama (/usr/bin/bash). Columns: Model, Input Price, Output Price, Annual Cost (10 devs). Show Qwen as cheapest frontier option in vermilion highlight. Dark navy background, off-white table grid and text, vermilion highlight row. Flat editorial, clean readable labels. No faces.\n\nExact visible text:\nModel\nInput Price\nOutput Price\nAnnual Cost (10 devs)\nClaude Opus 4.7\n$15\n$75\nGPT-5.5\nunpublished\nQwen 3.7 Max\n$0.50\nLocal Ollama\n/usr/bin/bash",
+  "usage": {
+    "input_tokens": 3488,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 209,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 3697
+  },
+  "web_search_calls": 0,
+  "events_saved": null,
+  "raw_event_count": 15,
+  "event_types": {
+    "response.created": 1,
+    "response.in_progress": 1,
+    "response.output_item.added": 2,
+    "response.image_generation_call.in_progress": 1,
+    "response.image_generation_call.generating": 1,
+    "keepalive": 1,
+    "response.image_generation_call.partial_image": 1,
+    "response.output_item.done": 2,
+    "response.content_part.added": 1,
+    "response.output_text.done": 1,
+    "response.content_part.done": 1,
+    "response.completed": 2
+  },
+  "partial_images": 1,
+  "created_at": "2026-06-23T08:11:13.258908"
+}

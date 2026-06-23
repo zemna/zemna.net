@@ -1,0 +1,53 @@
+{
+  "saved_path": "/home/linuxuser/projects/zemna.net/static/img/ai-agent-arms-race-3.png",
+  "prompt": "Clean infographic timeline, 16:9 landscape. A horizontal timeline from Q1 2025 to Q2 2026 showing quarterly leaderboard changes. Each quarter has a crown icon switching between different model names: Q1'25 (Claude Opus 4.5), Q2'25 (GPT-4.5), Q3'25 (Claude Opus 4.6), Q4'25 (GPT-5.2), Q1'26 (Claude Opus 4.7), Q2'26 (GPT-5.5). Below, a label: 'No model held #1 more than 4 months'.   Dark navy background, off-white timeline and labels, vermilion crown icons. Flat editorial. No faces.",
+  "model": "gpt-5.4",
+  "image_model": "gpt-image-2",
+  "reasoning_effort": "medium",
+  "prompt_mode": "fidelity",
+  "enhancement_profile": "none",
+  "research": "off",
+  "size": "1024x576",
+  "quality": "medium",
+  "background": "auto",
+  "format": "png",
+  "moderation": "low",
+  "action": "auto",
+  "count": 1,
+  "index": 1,
+  "inputs": {
+    "edit_image": null,
+    "reference_images": []
+  },
+  "revised_prompt": "Clean infographic timeline, 16:9 landscape. A horizontal timeline from Q1 2025 to Q2 2026 showing quarterly leaderboard changes. Each quarter has a crown icon switching between different model names: Q1'25 (Claude Opus 4.5), Q2'25 (GPT-4.5), Q3'25 (Claude Opus 4.6), Q4'25 (GPT-5.2), Q1'26 (Claude Opus 4.7), Q2'26 (GPT-5.5). Below, a label: 'No model held #1 more than 4 months'.   Dark navy background, off-white timeline and labels, vermilion crown icons. Flat editorial. No faces.\n\nExact visible text items:\nQ1'25\nClaude Opus 4.5\nQ2'25\nGPT-4.5\nQ3'25\nClaude Opus 4.6\nQ4'25\nGPT-5.2\nQ1'26\nClaude Opus 4.7\nQ2'26\nGPT-5.5\nNo model held #1 more than 4 months",
+  "usage": {
+    "input_tokens": 3577,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 263,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 3840
+  },
+  "web_search_calls": 0,
+  "events_saved": null,
+  "raw_event_count": 15,
+  "event_types": {
+    "response.created": 1,
+    "response.in_progress": 1,
+    "response.output_item.added": 2,
+    "response.image_generation_call.in_progress": 1,
+    "response.image_generation_call.generating": 1,
+    "keepalive": 1,
+    "response.image_generation_call.partial_image": 1,
+    "response.output_item.done": 2,
+    "response.content_part.added": 1,
+    "response.output_text.done": 1,
+    "response.content_part.done": 1,
+    "response.completed": 2
+  },
+  "partial_images": 1,
+  "created_at": "2026-06-23T08:08:42.312924"
+}
