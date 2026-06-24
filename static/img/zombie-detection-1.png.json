@@ -1,0 +1,52 @@
+{
+  "saved_path": "/home/linuxuser/projects/zemna.net/static/img/zombie-detection-1.png",
+  "prompt": "Editorial infographic showing a monitoring dashboard split in two. Left side: green status indicators labeled 'CPU OK', 'Memory OK', 'Process Running' with checkmarks. Right side: a task list where 6 tasks show 'stalled 2-47min' in red text. A large red arrow points from the green indicators to the stalled tasks with the caption 'The Gap: process alive vs work happening'. Deep navy + off-white + vermilion accent, flat editorial, clean readable text labels. No faces. 16:9 landscape.",
+  "model": "gpt-5.4",
+  "image_model": "gpt-image-2",
+  "reasoning_effort": "medium",
+  "prompt_mode": "fidelity",
+  "enhancement_profile": "none",
+  "research": "off",
+  "size": "1024x576",
+  "quality": "medium",
+  "background": "auto",
+  "format": "png",
+  "moderation": "low",
+  "action": "auto",
+  "count": 1,
+  "index": 1,
+  "inputs": {
+    "edit_image": null,
+    "reference_images": []
+  },
+  "revised_prompt": "Editorial infographic showing a monitoring dashboard split in two. Left side: green status indicators labeled 'CPU OK', 'Memory OK', 'Process Running' with checkmarks. Right side: a task list where 6 tasks show 'stalled 2-47min' in red text. A large red arrow points from the green indicators to the stalled tasks with the caption 'The Gap: process alive vs work happening'. Deep navy + off-white + vermilion accent, flat editorial, clean readable text labels. No faces. 16:9 landscape.\n\nVisible text items only:\nCPU OK\nMemory OK\nProcess Running\nstalled 2-47min\nThe Gap: process alive vs work happening",
+  "usage": {
+    "input_tokens": 5352,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 163,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 5515
+  },
+  "web_search_calls": 0,
+  "events_saved": null,
+  "raw_event_count": 15,
+  "event_types": {
+    "response.created": 1,
+    "response.in_progress": 1,
+    "response.output_item.added": 2,
+    "response.image_generation_call.in_progress": 1,
+    "response.image_generation_call.generating": 1,
+    "response.image_generation_call.partial_image": 2,
+    "response.output_item.done": 2,
+    "response.content_part.added": 1,
+    "response.output_text.done": 1,
+    "response.content_part.done": 1,
+    "response.completed": 2
+  },
+  "partial_images": 2,
+  "created_at": "2026-06-24T08:12:01.893409"
+}

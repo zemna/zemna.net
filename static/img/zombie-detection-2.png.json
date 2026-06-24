@@ -1,0 +1,52 @@
+{
+  "saved_path": "/home/linuxuser/projects/zemna.net/static/img/zombie-detection-2.png",
+  "prompt": "Timeline infographic, 16:9 landscape. Top track: healthy task writing checkpoints at 0, 2, 4, 6, 8 minutes with green dots and file icons. Bottom track: zombie task with checkpoints at 0 and 2 minutes, then a long gap to 47 minutes with a red 'STALL DETECTED' marker. Labels: 'Healthy: checkpoint every 2 min' and 'Zombie: last checkpoint 47 min ago'. Deep navy + off-white + vermilion accent, flat editorial, clean readable text labels. No faces.",
+  "model": "gpt-5.4",
+  "image_model": "gpt-image-2",
+  "reasoning_effort": "medium",
+  "prompt_mode": "fidelity",
+  "enhancement_profile": "none",
+  "research": "off",
+  "size": "1024x576",
+  "quality": "medium",
+  "background": "auto",
+  "format": "png",
+  "moderation": "low",
+  "action": "auto",
+  "count": 1,
+  "index": 1,
+  "inputs": {
+    "edit_image": null,
+    "reference_images": []
+  },
+  "revised_prompt": "Timeline infographic, 16:9 landscape. Top track: healthy task writing checkpoints at 0, 2, 4, 6, 8 minutes with green dots and file icons. Bottom track: zombie task with checkpoints at 0 and 2 minutes, then a long gap to 47 minutes with a red 'STALL DETECTED' marker. Labels: 'Healthy: checkpoint every 2 min' and 'Zombie: last checkpoint 47 min ago'. Deep navy + off-white + vermilion accent, flat editorial, clean readable text labels. No faces.\n\nVisible text items:\nHealthy: checkpoint every 2 min\nZombie: last checkpoint 47 min ago\nSTALL DETECTED\n0\n2\n4\n6\n8\n47",
+  "usage": {
+    "input_tokens": 5371,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 176,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 5547
+  },
+  "web_search_calls": 0,
+  "events_saved": null,
+  "raw_event_count": 15,
+  "event_types": {
+    "response.created": 1,
+    "response.in_progress": 1,
+    "response.output_item.added": 2,
+    "response.image_generation_call.in_progress": 1,
+    "response.image_generation_call.generating": 1,
+    "response.image_generation_call.partial_image": 2,
+    "response.output_item.done": 2,
+    "response.content_part.added": 1,
+    "response.output_text.done": 1,
+    "response.content_part.done": 1,
+    "response.completed": 2
+  },
+  "partial_images": 2,
+  "created_at": "2026-06-24T08:13:20.790353"
+}

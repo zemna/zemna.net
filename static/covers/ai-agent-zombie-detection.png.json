@@ -1,0 +1,53 @@
+{
+  "saved_path": "/home/linuxuser/projects/zemna.net/static/covers/ai-agent-zombie-detection.png",
+  "prompt": "Bold editorial tech blog cover, landscape 4:3 aspect ratio. Title text 'Your AI Agent Pipeline Has No Zombie Detection' in large off-white typography on the left. Deep navy background (#1A2238) with a glowing red 'ZOMBIE' alert icon on the right. Abstract tech illustration suggesting a stalled process. Vermilion (#E34234) accent elements. Flat editorial, subtle grain. No faces. Clean readable text labels.",
+  "model": "gpt-5.4",
+  "image_model": "gpt-image-2",
+  "reasoning_effort": "medium",
+  "prompt_mode": "fidelity",
+  "enhancement_profile": "none",
+  "research": "off",
+  "size": "1024x768",
+  "quality": "high",
+  "background": "auto",
+  "format": "png",
+  "moderation": "low",
+  "action": "auto",
+  "count": 1,
+  "index": 1,
+  "inputs": {
+    "edit_image": null,
+    "reference_images": []
+  },
+  "revised_prompt": "Bold editorial tech blog cover, landscape 4:3 aspect ratio. Title text 'Your AI Agent Pipeline Has No Zombie Detection' in large off-white typography on the left. Deep navy background (#1A2238) with a glowing red 'ZOMBIE' alert icon on the right. Abstract tech illustration suggesting a stalled process. Vermilion (#E34234) accent elements. Flat editorial, subtle grain. No faces. Clean readable text labels.\n\nVisible text:\nYour AI Agent Pipeline Has No Zombie Detection\nZOMBIE",
+  "usage": {
+    "input_tokens": 3349,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 129,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 3478
+  },
+  "web_search_calls": 0,
+  "events_saved": null,
+  "raw_event_count": 15,
+  "event_types": {
+    "response.created": 1,
+    "response.in_progress": 1,
+    "response.output_item.added": 2,
+    "response.image_generation_call.in_progress": 1,
+    "response.image_generation_call.generating": 1,
+    "keepalive": 1,
+    "response.image_generation_call.partial_image": 1,
+    "response.output_item.done": 2,
+    "response.content_part.added": 1,
+    "response.output_text.done": 1,
+    "response.content_part.done": 1,
+    "response.completed": 2
+  },
+  "partial_images": 1,
+  "created_at": "2026-06-24T08:10:03.955234"
+}
