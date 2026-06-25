@@ -1,0 +1,52 @@
+{
+  "saved_path": "/home/linuxuser/projects/zemna.net/static/img/i-swapped-my-llm-backend-3.png",
+  "prompt": "Two bar charts side by side comparison. Left chart labeled 'Structural Evals' showing two bars: one tall green bar labeled 'GPT-5.4: 96%' and one slightly shorter green bar labeled 'DeepSeek: 94%' — they look nearly identical. Right chart labeled 'Semantic Evals' showing one tall green bar labeled 'GPT-5.4: 96%' and one much shorter red bar labeled 'DeepSeek: 71%' — dramatic visual contrast. Deep navy background, off-white labels, vermilion accent on the red bar. Flat editorial style. Clean readable labels. No faces.",
+  "model": "gpt-5.4",
+  "image_model": "gpt-image-2",
+  "reasoning_effort": "medium",
+  "prompt_mode": "fidelity",
+  "enhancement_profile": "none",
+  "research": "off",
+  "size": "1024x576",
+  "quality": "medium",
+  "background": "auto",
+  "format": "png",
+  "moderation": "low",
+  "action": "auto",
+  "count": 1,
+  "index": 1,
+  "inputs": {
+    "edit_image": null,
+    "reference_images": []
+  },
+  "revised_prompt": "Two bar charts side by side comparison. Left chart labeled 'Structural Evals' showing two bars: one tall green bar labeled 'GPT-5.4: 96%' and one slightly shorter green bar labeled 'DeepSeek: 94%' — they look nearly identical. Right chart labeled 'Semantic Evals' showing one tall green bar labeled 'GPT-5.4: 96%' and one much shorter red bar labeled 'DeepSeek: 71%' — dramatic visual contrast. Deep navy background, off-white labels, vermilion accent on the red bar. Flat editorial style. Clean readable labels. No faces.\n\nExact visible text:\nStructural Evals\nGPT-5.4: 96%\nDeepSeek: 94%\nSemantic Evals\nGPT-5.4: 96%\nDeepSeek: 71%",
+  "usage": {
+    "input_tokens": 5397,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 193,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 5590
+  },
+  "web_search_calls": 0,
+  "events_saved": null,
+  "raw_event_count": 15,
+  "event_types": {
+    "response.created": 1,
+    "response.in_progress": 1,
+    "response.output_item.added": 2,
+    "response.image_generation_call.in_progress": 1,
+    "response.image_generation_call.generating": 1,
+    "response.image_generation_call.partial_image": 2,
+    "response.output_item.done": 2,
+    "response.content_part.added": 1,
+    "response.output_text.done": 1,
+    "response.content_part.done": 1,
+    "response.completed": 2
+  },
+  "partial_images": 2,
+  "created_at": "2026-06-25T08:09:40.757829"
+}
