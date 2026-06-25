@@ -18,31 +18,31 @@ LLM pricing dropped roughly 80% between 2025 and 2026. That kind of cost compres
 
 | Model | Input (per 1M tokens) | Output (per 1M tokens) |
 |---|---|---|
-| GPT-5.4 | $2.50 | $15.00 |
+| GPT-5.5 | $5.00 | $30.00 |
 | Claude Sonnet 4.6 | $3.00 | $15.00 |
-| DeepSeek V3.2 | $0.14 | $0.28 |
+| DeepSeek V4 Pro | $0.43 | $0.87 |
 
-Running a code-review agent that processes 40,000 diffs per month, averaging 800 input tokens and 400 output tokens each, looks like this on GPT-5.4:
-
-```
-Monthly input:  40,000 × 800 tokens  = 32M tokens × $2.50/1M = $80.00
-Monthly output: 40,000 × 400 tokens  = 16M tokens × $15.00/1M = $240.00
-Total: $320.00/month
-```
-
-On DeepSeek V3.2, the same workload:
+Running a code-review agent that processes 40,000 diffs per month, averaging 800 input tokens and 400 output tokens each, looks like this on GPT-5.5:
 
 ```
-Monthly input:  32M tokens × $0.14/1M = $4.48
-Monthly output: 16M tokens × $0.28/1M = $4.48
-Total: $8.96/month
+Monthly input:  40,000 × 800 tokens  = 32M tokens × $5.00/1M = $160.00
+Monthly output: 40,000 × 400 tokens  = 16M tokens × $30.00/1M = $480.00
+Total: $640.00/month
 ```
 
-That's a 35x cost difference. You would be negligent to not at least evaluate the cheaper option. The problem is that "evaluating" it is not a benchmark run. It's a systems integration project.
+On DeepSeek V4 Pro, the same workload:
+
+```
+Monthly input:  32M tokens × $0.43/1M = $13.76
+Monthly output: 16M tokens × $0.87/1M = $13.92
+Total: $27.68/month
+```
+
+That's a 23x cost difference. You would be negligent to not at least evaluate the cheaper option. The problem is that "evaluating" it is not a benchmark run. It's a systems integration project.
 
 ## Prompt Re-Engineering Is Not Optional
 
-Every model responds to prompts differently. This is not a secret. It is also not something you can paper over with a translation layer. We had 23 prompts in production across our classification agent, our summarization pipeline, our RAG synthesis loop, and our test generation workflow. Of those 23, seven produced materially different output on DeepSeek compared to GPT-5.4 using the identical prompt string.
+Every model responds to prompts differently. This is not a secret. It is also not something you can paper over with a translation layer. We had 23 prompts in production across our classification agent, our summarization pipeline, our RAG synthesis loop, and our test generation workflow. Of those 23, seven produced materially different output on DeepSeek V4 Pro compared to GPT-5.5 using the identical prompt string.
 
 The failure mode was not refusal or hallucination. It was subtler: changes in output formatting, different default verbosity levels, and inconsistent handling of negative constraints.
 
@@ -60,7 +60,7 @@ Do not include any text outside the JSON object.
 """
 ```
 
-GPT-5.4 followed the "no text outside JSON" instruction 99.2% of the time. DeepSeek V3.2 did it 91% of the time — and the 8% failures weren't random. They correlated with diffs longer than 600 tokens, which meant our longer, more complex PRs (the ones where correctness mattered most) were the ones getting out-of-band text prepended to the response. Our JSON parser was permissive enough to handle it, which meant the downstream consumer was reading summaries that the model had smuggled in as prose.
+GPT-5.5 followed the "no text outside JSON" instruction 99.2% of the time. DeepSeek V4 Pro did it 91% of the time — and the 8% failures weren't random. They correlated with diffs longer than 600 tokens, which meant our longer, more complex PRs (the ones where correctness mattered most) were the ones getting out-of-band text prepended to the response. Our JSON parser was permissive enough to handle it, which meant the downstream consumer was reading summaries that the model had smuggled in as prose.
 
 The fix was model-specific prompt engineering:
 
@@ -83,7 +83,7 @@ Diff to analyze:
 
 This is the tax of model portability. Your prompts are not portable. Every model is a different user with different defaults, and your system prompt is the only lever you have. Budget time for re-engineering every prompt in your system. Multiply your estimate by three.
 
-![Prompt compatibility heatmap across GPT-5.4, Claude Sonnet 4.6, and DeepSeek V3.2](/img/i-swapped-my-llm-backend-2.png)
+![Prompt compatibility heatmap across GPT-5.5, Claude Sonnet 4.6, and DeepSeek V4 Pro](/img/i-swapped-my-llm-backend-2.png)
 
 ## Embedding Reindexing Will Catch You Off Guard
 
@@ -135,7 +135,7 @@ We shifted traffic 5% → 25% → 50% → 100% over four days. Day at 25% was wh
 
 ## Eval Suite Blind Spots Are Where Death Lives
 
-Our eval suite had 847 test cases. It reported 96% pass rate on GPT-5.4. After the switch, it reported 94% pass rate on DeepSeek. Two percentage points. Management saw a near-identical number. Engineering knew that the number was lying.
+Our eval suite had 847 test cases. It reported 96% pass rate on GPT-5.5. After the switch, it reported 94% pass rate on DeepSeek V4 Pro. Two percentage points. Management saw a near-identical number. Engineering knew that the number was lying.
 
 Here is why: our eval cases were checking for structural correctness, not semantic correctness. They validated:
 
