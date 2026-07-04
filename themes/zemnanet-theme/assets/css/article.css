@@ -413,8 +413,9 @@
 
 .zn-article__share {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--zn-space-3);
+  flex-wrap: wrap;
 }
 .zn-article__share-label {
   font-size: var(--zn-text-label);
@@ -422,6 +423,50 @@
   font-weight: var(--zn-wt-ui);
   letter-spacing: var(--zn-tracking-wide);
   text-transform: uppercase;
+  padding-top: 0.45rem;
+}
+
+.zn-article__share-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--zn-space-2);
+  flex-wrap: wrap;
+}
+
+.zn-share-button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0.38rem 0.7rem;
+  border: 1px solid var(--zn-border);
+  border-radius: var(--zn-radius-pill);
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--zn-text-200);
+  font-family: var(--zn-font-sans);
+  font-size: var(--zn-text-label);
+  font-weight: var(--zn-wt-ui);
+  line-height: 1;
+  letter-spacing: var(--zn-tracking-wide);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--zn-duration-fast) var(--zn-ease-out), border-color var(--zn-duration-fast) var(--zn-ease-out), background var(--zn-duration-fast) var(--zn-ease-out), transform var(--zn-duration-fast) var(--zn-ease-out);
+}
+
+.zn-share-button:hover,
+.zn-share-button:focus-visible {
+  color: var(--zn-text-100);
+  border-color: var(--zn-indigo-500);
+  background: rgba(113, 112, 255, 0.12);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.zn-share-button--copy.is-copied {
+  color: var(--zn-success);
+  border-color: color-mix(in srgb, var(--zn-success) 60%, transparent);
+  background: color-mix(in srgb, var(--zn-success) 12%, transparent);
 }
 
 /* ---- Related posts ---- */

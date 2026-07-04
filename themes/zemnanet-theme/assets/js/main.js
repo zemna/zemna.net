@@ -92,4 +92,30 @@
     window.addEventListener('scroll', updateProgress, { passive: true });
     updateProgress();
   }
+  // ---- Share: copy article URL ----
+  const copyButtons = document.querySelectorAll('[data-copy-url]');
+  copyButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const url = btn.getAttribute('data-copy-url');
+      if (!url) return;
+
+      function markCopied() {
+        const original = btn.textContent;
+        btn.textContent = 'Copied';
+        btn.classList.add('is-copied');
+        setTimeout(function () {
+          btn.textContent = original || 'Copy link';
+          btn.classList.remove('is-copied');
+        }, 1800);
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(markCopied).catch(function () {
+          window.prompt('Copy this link:', url);
+        });
+      } else {
+        window.prompt('Copy this link:', url);
+      }
+    });
+  });
 })();
