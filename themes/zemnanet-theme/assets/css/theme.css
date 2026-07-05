@@ -321,6 +321,12 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 @media (max-width: 640px) { .zn-grid--2, .zn-grid--3, .zn-grid--4, .zn-grid--5 { grid-template-columns: 1fr; } }
 
 .zn-proof-grid { align-items: stretch; }
+@media (max-width: 640px) {
+  .zn-proof-grid.zn-grid--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--zn-space-3);
+  }
+}
 .zn-proof-card {
   display: flex;
   flex-direction: column;
