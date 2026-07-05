@@ -1,13 +1,15 @@
 ---
-title: "Work"
-description: "Selected engineering work by Shinjae Kang — Laravel SaaS projects, Windows utilities, DevOps workflows, and the zemna.net publishing stack."
+title: "Portfolio"
+description: "Selected engineering portfolio by Shinjae Kang — Laravel SaaS projects, Windows utilities, DevOps workflows, and the zemna.net publishing stack."
 draft: false
 layout: "page"
+aliases:
+  - /work/
 ---
 
-## Selected engineering work
+## Selected engineering portfolio
 
-This is not a full portfolio. It is a map of the kind of engineering work behind the writing on this site: Laravel SaaS projects, desktop utilities, automation, infrastructure, and tools that solve concrete operational problems.
+This is a curated portfolio of systems I built: Laravel SaaS projects, desktop utilities, automation, infrastructure, and tools that solve concrete operational problems.
 
 ## Laravel SaaS projects
 

@@ -49,7 +49,7 @@ That is the lens I use when writing about AI, devtools, frontend systems, backen
 
 I keep a small set of public projects and tools under my personal GitHub account, and Modoo project repositories under the [`modoo-id`](https://github.com/modoo-id) organization. Together they show the range of work behind this blog: Laravel/Vue SaaS projects, documentation systems, Windows utilities, desktop tooling, networking helpers, serial communication testers, and the zemna.net publishing stack itself.
 
-See the curated list on the [Work page](/work/), visit [github.com/zemna](https://github.com/zemna), or browse [github.com/modoo-id](https://github.com/modoo-id).
+See the curated list on the [Portfolio page](/portfolio/), visit [github.com/zemna](https://github.com/zemna), or browse [github.com/modoo-id](https://github.com/modoo-id).
 
 ## What this site is
 

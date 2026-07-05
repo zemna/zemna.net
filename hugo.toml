@@ -75,8 +75,8 @@ summaryLength = 35
   weight = 28
 
 [[menu.main]]
-  name = "Work"
-  url = "/work/"
+  name = "Portfolio"
+  url = "/portfolio/"
   weight = 29
 
 [[menu.main]]
