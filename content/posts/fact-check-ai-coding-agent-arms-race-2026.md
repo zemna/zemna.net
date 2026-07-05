@@ -1,3 +1,12 @@
+---
+title: "Fact-Check Report: The AI Coding Agent Arms Race"
+date: 2026-06-23T08:00:00+07:00
+draft: true
+_build:
+  list: never
+  render: never
+---
+
 # Fact-Check Report: "The AI Coding Agent Arms Race — Why Model Portability Matters More Than Benchmarks"
 
 **Date:** June 23, 2026  
