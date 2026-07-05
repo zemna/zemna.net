@@ -72,18 +72,11 @@ brew upgrade hugo  # local
 
 Then bump the env var in the Cloudflare Pages dashboard.
 
-### i18n
+### Language
 
-The site is configured for `en` (default), `ko`, `id`. To add Korean/Bahasa content, create:
+The site is intentionally configured as **English-only**. Do not add Hugo multilingual configuration until there is an active translation workflow and real localized content to publish.
 
-```
-content/ko/posts/my-post.md
-content/id/posts/my-post.md
-```
-
-With `language: "ko"` / `language: "id"` in the frontmatter. Hugo will pick the right file based on URL prefix (`/ko/posts/...`).
-
-For now, the Korean and Bahasa pages are stubs. Translate as needed.
+Keeping the site single-language avoids thin `/ko/` and `/id/` stub pages, duplicate feeds, and unnecessary sitemap noise.
 
 ### Custom 404 page
 

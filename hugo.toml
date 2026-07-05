@@ -5,7 +5,6 @@
 
 baseURL = "https://zemna.net/"
 languageCode = "en-us"
-defaultContentLanguage = "en"
 title = "zemnanet"
 theme = "zemnanet-theme"
 summaryLength = 35
@@ -216,29 +215,3 @@ summaryLength = 35
 [[module.mounts]]
   source = "assets"
   target = "assets"
-
-# Per-language config (English base; i18n ready)
-[languages]
-  [languages.en]
-    languageName = "English"
-    weight = 1
-    title = "zemnanet"
-    description = "IT, AI, and dev tooling insights from a Korean senior dev working in Southeast Asia."
-    [languages.en.params]
-      ogLocale = "en_US"
-
-  [languages.ko]
-    languageName = "한국어"
-    weight = 2
-    title = "zemnanet"
-    description = "자카르타 기반 한국 시니어 개발자의 IT, AI, 개발 도구 인사이트."
-    [languages.ko.params]
-      ogLocale = "ko_KR"
-
-  [languages.id]
-    languageName = "Bahasa Indonesia"
-    weight = 3
-    title = "zemnanet"
-    description = "Wawasan IT, AI, dan dev tooling dari developer senior Korea yang berkarya di Asia Tenggara."
-    [languages.id.params]
-      ogLocale = "id_ID"

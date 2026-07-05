@@ -25,7 +25,7 @@ zemna.net/
 ├── CONTRIBUTING.md           ← how to add posts / extend the design system
 ├── LICENSE                   ← MIT
 │
-├── hugo.toml                 ← site config (params, menu, taxonomies, i18n)
+├── hugo.toml                 ← site config (params, menu, taxonomies)
 │
 ├── design-system/            ← token-first design system v1.0.0
 │   ├── tokens.json           ← JSON source of truth
