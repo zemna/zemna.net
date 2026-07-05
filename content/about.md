@@ -7,7 +7,7 @@ layout: "page"
 
 ## Hi, I'm **Shinjae Kang**
 
-I'm a **programmer and software architect** based in **Indonesia**, working with **Modoo Digisol Indonesia** and building software across web, backend, desktop, mobile, and operations. The `modoo-id` GitHub organization contains the Modoo product work I treat as part of my engineering portfolio.
+I'm a **programmer and software architect** based in **Indonesia**, building software across web, backend, desktop, mobile, and operations. The `modoo-id` GitHub organization contains Modoo projects I developed and treat as part of my engineering portfolio.
 
 My work sits at the intersection of practical product engineering and infrastructure: **Laravel, VueJS, Tailwind CSS, PHP, DevOps, .NET, C#, WPF, VB, HTML, CSS, WordPress, and Flutter**. I care less about framework hype and more about systems that survive real users, real teams, and real maintenance.
 
@@ -18,7 +18,7 @@ I've lived and worked in Jakarta for more than 15 years, which gives this site i
 | Area | What I care about |
 |---|---|
 | **Software architecture** | Boundaries, maintainability, rollback paths, and systems that are still understandable six months later. |
-| **Web product engineering** | Laravel, VueJS, Tailwind CSS, PHP, WordPress, and the Modoo SaaS/product stack behind real business software. |
+| **Web product engineering** | Laravel, VueJS, Tailwind CSS, PHP, WordPress, and Modoo Laravel/Vue SaaS projects behind real business software. |
 | **DevOps & automation** | Cron jobs, CI/CD, artifact checks, deployment discipline, and workflows that prove they worked. |
 | **AI agents & developer tools** | Agent workflows, model portability, verification gates, and the difference between a demo and a production-adjacent system. |
 | **Desktop and legacy systems** | .NET, C#, WPF, VB, Windows utilities, serial communication tools, and older systems that still matter. |
@@ -29,7 +29,7 @@ I've lived and worked in Jakarta for more than 15 years, which gives this site i
 - **Backend / Web:** Laravel, PHP, WordPress
 - **Frontend:** VueJS, Tailwind CSS, HTML, CSS
 - **Operations:** DevOps, cron workflows, deployment checks, artifact verification
-- **Product systems:** Modoo Smart, Permit, Order, PickPack, Ingredient, Apps, Catalog, Marketing, and documentation systems
+- **Laravel SaaS projects:** Modoo Smart, Permit, Order, PickPack, Ingredient, Apps, Catalog, Website, and documentation systems
 - **Desktop / Windows:** .NET, C#, WPF, VB, Windows shell extensions
 - **Mobile / Cross-platform:** Flutter
 - **Automation / AI:** AI agents, publishing pipelines, verification gates, model/tool evaluation
@@ -47,7 +47,7 @@ That is the lens I use when writing about AI, devtools, frontend systems, backen
 
 ## What I build
 
-I keep a small set of public projects and tools under my personal GitHub account, and Modoo product repositories under the [`modoo-id`](https://github.com/modoo-id) organization. Together they show the range of work behind this blog: Laravel/Vue SaaS products, documentation systems, Windows utilities, desktop tooling, networking helpers, serial communication testers, and the zemna.net publishing stack itself.
+I keep a small set of public projects and tools under my personal GitHub account, and Modoo project repositories under the [`modoo-id`](https://github.com/modoo-id) organization. Together they show the range of work behind this blog: Laravel/Vue SaaS projects, documentation systems, Windows utilities, desktop tooling, networking helpers, serial communication testers, and the zemna.net publishing stack itself.
 
 See the curated list on the [Work page](/work/), visit [github.com/zemna](https://github.com/zemna), or browse [github.com/modoo-id](https://github.com/modoo-id).
 

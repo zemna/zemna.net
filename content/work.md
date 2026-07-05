@@ -1,13 +1,41 @@
 ---
 title: "Work"
-description: "Selected engineering work by Shinjae Kang — web systems, Windows utilities, DevOps workflows, and the zemna.net publishing stack."
+description: "Selected engineering work by Shinjae Kang — Laravel SaaS projects, Windows utilities, DevOps workflows, and the zemna.net publishing stack."
 draft: false
 layout: "page"
 ---
 
 ## Selected engineering work
 
-This is not a full portfolio. It is a map of the kind of engineering work behind the writing on this site: web systems, desktop utilities, automation, infrastructure, and tools that solve small but concrete problems.
+This is not a full portfolio. It is a map of the kind of engineering work behind the writing on this site: Laravel SaaS projects, desktop utilities, automation, infrastructure, and tools that solve concrete operational problems.
+
+## Laravel SaaS projects
+
+Modoo appears here as a set of software projects I built, not as an employer label. Each project is listed by repository/project name, system purpose, and link.
+
+| Project | System | Stack signal | Link |
+|---|---|---|---|
+| **Modoo Smart** | Smart business solution for managing operational workflows across a business platform. | PHP / Laravel-style backend system | [modoo-smart](https://github.com/modoo-id/modoo-smart) |
+| **Modoo Permit** | Company permit management SaaS for tracking permit-related business processes. | Vue-based SaaS UI | [modoo-permit](https://github.com/modoo-id/modoo-permit) |
+| **Modoo Order** | Order workflow system for handling order-side business operations. | Vue-based product system | [modoo-order](https://github.com/modoo-id/modoo-order) |
+| **Modoo PickPack** | Fulfillment solution for pick-and-pack operational workflows. | Laravel / PHP fulfillment system | [modoo-pickpack](https://github.com/modoo-id/modoo-pickpack) |
+| **Modoo Ingredient** | Ingredient management SaaS for cataloging and managing ingredient data. | Vue-based SaaS UI | [modoo-ingredient](https://github.com/modoo-id/modoo-ingredient) |
+| **Modoo Apps** | Application platform layer for the Modoo product ecosystem. | JavaScript application platform | [modoo-apps](https://github.com/modoo-id/modoo-apps) |
+| **Modoo Catalog** | Catalog management SaaS for managing product/catalog data. | Vue-based SaaS UI | [modoo-catalog](https://github.com/modoo-id/modoo-catalog) |
+| **Modoo Website** | Website for the Modoo project surface. | Blade / Laravel presentation layer | [modoo-website](https://github.com/modoo-id/modoo-website) |
+
+**Engineering signal:** these are product systems, not portfolio mockups. They represent the Laravel/Vue/PHP/Blade side of my work: SaaS-style business tools, operational workflows, catalog/order/permit/fulfillment domains, documentation, and deployment/maintenance discipline.
+
+## Documentation and automation projects
+
+| Project | System | Link |
+|---|---|---|
+| **Modoo Docs** | Product and developer documentation surface. | [docs](https://github.com/modoo-id/docs) |
+| **Modoo Mintlify Docs** | MDX/Mintlify documentation project. | [mintlify-docs](https://github.com/modoo-id/mintlify-docs) |
+| **Autoworker YouTube** | Python automation work. | [autoworker-youtube](https://github.com/modoo-id/autoworker-youtube) |
+| **GitHub organization profile** | Organization-level GitHub metadata and automation surface. | [.github](https://github.com/modoo-id/.github) |
+
+**Engineering signal:** product software is not only application code. It also includes docs, automation, dependency maintenance, security updates, and repository hygiene.
 
 ## Current platform
 
@@ -18,35 +46,6 @@ A Hugo-based technical blog with a custom theme, token-first design system, Clou
 **Why it matters:** this site is not just a publication surface. It is a working lab for design systems, AI-assisted writing, fact-check gates, image generation constraints, social distribution, and deployment verification.
 
 **Stack:** Hugo, custom CSS design tokens, Cloudflare Pages, automation, content pipeline tooling.
-
-## Modoo Digisol Indonesia product systems
-
-The [`modoo-id`](https://github.com/modoo-id) GitHub organization is part of my work history. Authenticated repository access currently shows a mix of private product repositories and public documentation repositories under Modoo Digisol Indonesia.
-
-### Modoo product suite
-
-| Repository | Product signal | Primary language |
-|---|---|---|
-| `modoo-smart` | Smart Business Solution | PHP |
-| `modoo-permit` | Company Permit Management SaaS | Vue |
-| `modoo-order` | Order workflow/product system | Vue |
-| `modoo-pickpack` | Fulfillment solution built with Laravel | PHP |
-| `modoo-ingredient` | Ingredient Management SaaS | Vue |
-| `modoo-apps` | Modoo Apps platform | JavaScript |
-| `modoo-catalog` | Catalog Management SaaS | Vue |
-| `modoo-website` | Modoo Digisol Indonesia website | Blade |
-
-**Why it matters:** these are real product systems, not demo repositories. They represent the Laravel/Vue/PHP/Blade side of my work: SaaS-style business tools, operational workflows, catalog/order/permit/fulfillment domains, documentation, and deployment/maintenance discipline.
-
-### Documentation and automation
-
-| Repository | Signal |
-|---|---|
-| `docs` / `mintlify-docs` | Product and developer documentation in MDX |
-| `autoworker-youtube` | Python automation work |
-| `.github` | Organization-level GitHub profile and automation surface |
-
-**Engineering signal:** product software is not only application code. It also includes docs, automation, dependency maintenance, security updates, and GitHub organization hygiene.
 
 ## Windows and desktop utilities
 
@@ -90,7 +89,9 @@ A C++ RS-232C communication device tester.
 
 The through-line is not one framework. It is the habit of building practical systems across layers:
 
-- web products and publishing systems
+- Laravel/Vue SaaS projects
+- product documentation and automation
+- web publishing systems
 - Windows desktop utilities
 - shell extensions and workflow helpers
 - network configuration tools
