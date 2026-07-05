@@ -15,6 +15,9 @@
   gtag('config', '{{ . }}');
 </script>
 {{- end }}
+{{- with .Site.Params.ahrefsAnalytics }}
+<script async src="https://analytics.ahrefs.com/analytics.js" data-key="{{ . }}"></script>
+{{- end }}
 
 {{- /* Theme color follows design tokens */ -}}
 <meta name="theme-color" content="#08090a" media="(prefers-color-scheme: light)">
