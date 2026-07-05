@@ -19,6 +19,35 @@ A Hugo-based technical blog with a custom theme, token-first design system, Clou
 
 **Stack:** Hugo, custom CSS design tokens, Cloudflare Pages, automation, content pipeline tooling.
 
+## Modoo Digisol Indonesia product systems
+
+The [`modoo-id`](https://github.com/modoo-id) GitHub organization is part of my work history. Authenticated repository access currently shows a mix of private product repositories and public documentation repositories under Modoo Digisol Indonesia.
+
+### Modoo product suite
+
+| Repository | Product signal | Primary language |
+|---|---|---|
+| `modoo-smart` | Smart Business Solution | PHP |
+| `modoo-permit` | Company Permit Management SaaS | Vue |
+| `modoo-order` | Order workflow/product system | Vue |
+| `modoo-pickpack` | Fulfillment solution built with Laravel | PHP |
+| `modoo-ingredient` | Ingredient Management SaaS | Vue |
+| `modoo-apps` | Modoo Apps platform | JavaScript |
+| `modoo-catalog` | Catalog Management SaaS | Vue |
+| `modoo-website` | Modoo Digisol Indonesia website | Blade |
+
+**Why it matters:** these are real product systems, not demo repositories. They represent the Laravel/Vue/PHP/Blade side of my work: SaaS-style business tools, operational workflows, catalog/order/permit/fulfillment domains, documentation, and deployment/maintenance discipline.
+
+### Documentation and automation
+
+| Repository | Signal |
+|---|---|
+| `docs` / `mintlify-docs` | Product and developer documentation in MDX |
+| `autoworker-youtube` | Python automation work |
+| `.github` | Organization-level GitHub profile and automation surface |
+
+**Engineering signal:** product software is not only application code. It also includes docs, automation, dependency maintenance, security updates, and GitHub organization hygiene.
+
 ## Windows and desktop utilities
 
 ### [ZemnaNameCopier](https://github.com/zemna/ZemnaNameCopier)
