@@ -130,7 +130,8 @@
   padding: var(--zn-space-4) var(--zn-space-5);
   border-bottom: 1px solid var(--zn-border-subtle);
 }
-.zn-mobile-nav__head .zn-logo { height: 22px; }
+.zn-mobile-nav__head .zn-logo__icon { width: 22px; height: 22px; }
+.zn-mobile-nav__head .zn-logo__wordmark { font-size: 18px; }
 
 .zn-mobile-nav__list {
   list-style: none;

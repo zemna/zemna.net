@@ -78,12 +78,35 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
 }
 
 /* ---- Logo ---- */
-.zn-logo { height: 34px; width: auto; color: var(--zn-text-100); }
+.zn-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--zn-space-3);
+  color: var(--zn-text-100);
+  text-decoration: none;
+}
+.zn-logo__icon {
+  display: block;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+.zn-logo__wordmark {
+  font-family: D2Coding, Inter, system-ui, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
 .zn-logo__dot { fill: var(--zn-vermilion-500); filter: drop-shadow(0 0 8px rgba(227, 66, 52, 0.45)); }
-.zn-logo__accent { fill: var(--zn-text-200); }
-.zn-header__logo .zn-logo { height: 36px; }
-.zn-footer__brand .zn-logo { height: 36px; }
-@media (max-width: 480px) { .zn-logo { height: 32px; } }
+.zn-logo__accent { color: var(--zn-text-200); fill: var(--zn-text-200); }
+.zn-header__logo .zn-logo__icon { width: 36px; height: 36px; }
+.zn-footer__brand .zn-logo__icon { width: 36px; height: 36px; }
+@media (max-width: 480px) {
+  .zn-logo__icon { width: 32px; height: 32px; }
+  .zn-logo__wordmark { font-size: 22px; }
+}
 
 /* ---- Icon button (Linear: rgba white bg, circle) ---- */
 .zn-icon-button {
