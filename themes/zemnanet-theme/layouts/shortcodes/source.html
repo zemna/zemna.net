@@ -1,0 +1,8 @@
+{{- $href := .Get "href" | default (.Get 0) -}}
+{{- $label := .Get "label" | default (.Get 1) | default $href -}}
+{{- $note := .Get "note" -}}
+<p class="zn-source">
+  <span class="zn-source__label">Source</span>
+  <a href="{{ $href | safeURL }}" rel="noopener noreferrer" target="_blank">{{ $label }}</a>
+  {{- with $note }}<span class="zn-source__note">{{ . }}</span>{{- end }}
+</p>

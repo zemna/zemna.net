@@ -180,5 +180,38 @@
       });
     });
   }
+  // ============ Code block copy buttons ============
+  if ({{ if site.Params.codeCopyButton }}true{{ else }}false{{ end }}) {
+    document.querySelectorAll('.zn-prose .highlight').forEach(function(block) {
+      if (block.querySelector('.zn-code-copy')) return;
+      var code = block.querySelector('code');
+      if (!code) return;
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'zn-code-copy';
+      button.textContent = 'Copy';
+      button.setAttribute('aria-label', 'Copy code');
+      block.insertBefore(button, block.firstChild);
+    });
+
+    document.addEventListener('click', function(e) {
+      var copyBtn = e.target.closest('.zn-code-copy');
+      if (!copyBtn) return;
+      var block = copyBtn.closest('.highlight');
+      var code = block ? block.querySelector('code') : null;
+      if (!code) return;
+      navigator.clipboard.writeText(code.innerText).then(function() {
+        copyBtn.textContent = 'Copied';
+        copyBtn.classList.add('is-copied');
+        setTimeout(function() {
+          copyBtn.textContent = 'Copy';
+          copyBtn.classList.remove('is-copied');
+        }, 1400);
+      }).catch(function() {
+        copyBtn.textContent = 'Failed';
+        setTimeout(function() { copyBtn.textContent = 'Copy'; }, 1400);
+      });
+    });
+  }
 })();
 </script>

@@ -1,0 +1,5 @@
+{{- $summary := .Get "summary" | default (.Get 0) | default "Details" -}}
+<details class="zn-details">
+  <summary>{{ $summary }}</summary>
+  <div class="zn-details__body">{{ .Inner | markdownify }}</div>
+</details>

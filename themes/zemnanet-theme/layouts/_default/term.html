@@ -33,8 +33,8 @@
         </a>
         <div class="zn-card__body">
           <div class="zn-card__meta">
-            {{- with index .Params.categories 0 }}
-            <span class="zn-card__category zn-card__category--{{ . | lower }}">{{ . }}</span>
+            {{- with index (.Params.topics | default .Params.categories) 0 }}
+            <span class="zn-card__category zn-card__category--{{ . | urlize }}">{{ . }}</span>
             <span class="zn-card__meta-dot">·</span>
             {{- end }}
             <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "Jan 2" }}</time>

@@ -18,7 +18,7 @@
     <div class="zn-filter" data-filter-group="category">
       <button class="zn-filter__btn is-active" data-filter="all">All</button>
       {{- range .Site.Taxonomies.topics.Alphabetical }}
-      <button class="zn-filter__btn" data-filter="{{ .Page.Title | lower }}">{{ .Page.Title }}</button>
+      <button class="zn-filter__btn" data-filter="{{ .Page.Title | urlize }}">{{ .Page.Title }}</button>
       {{- end }}
     </div>
 
@@ -29,7 +29,7 @@
     {{- $featured := index $sorted 0 }}
     {{- $rest := after 1 $sorted }}
 
-    <article class="zn-featured" data-category="{{ with index $featured.Params.categories 0 }}{{ . | lower }}{{ end }}">
+    <article class="zn-featured" data-category="{{ with index ($featured.Params.topics | default $featured.Params.categories) 0 }}{{ . | urlize }}{{ end }}">
       <a class="zn-featured__cover" href="{{ $featured.RelPermalink }}" aria-label="{{ $featured.Title }}">
         {{- if $featured.Params.cover }}
         <img src="{{ $featured.Params.cover | relURL }}" alt="" loading="eager">
@@ -39,8 +39,8 @@
       </a>
       <div class="zn-featured__body">
         <div class="zn-featured__meta">
-          {{- with index $featured.Params.categories 0 }}
-          <span class="zn-card__category zn-card__category--{{ . | lower }}">{{ . }}</span>
+          {{- with index ($featured.Params.topics | default $featured.Params.categories) 0 }}
+          <span class="zn-card__category zn-card__category--{{ . | urlize }}">{{ . }}</span>
           <span class="zn-card__meta-dot">·</span>
           {{- end }}
           <time datetime="{{ $featured.PublishDate.Format "2006-01-02" }}">{{ $featured.PublishDate.Format "January 2, 2006" }}</time>
@@ -67,7 +67,7 @@
     {{- if gt (len $rest) 0 }}
     <div class="zn-grid zn-grid--3 zn-grid--posts">
       {{- range $rest }}
-      <article class="zn-card" data-category="{{ with index .Params.categories 0 }}{{ . | lower }}{{ end }}">
+      <article class="zn-card" data-category="{{ with index (.Params.topics | default .Params.categories) 0 }}{{ . | urlize }}{{ end }}">
         <a class="zn-card__cover" href="{{ .RelPermalink }}" aria-label="{{ .Title }}">
           {{- if .Params.cover }}
           <img src="{{ .Params.cover | relURL }}" alt="" loading="lazy">
@@ -77,8 +77,8 @@
         </a>
         <div class="zn-card__body">
           <div class="zn-card__meta">
-            {{- with index .Params.categories 0 }}
-            <span class="zn-card__category zn-card__category--{{ . | lower }}">{{ . }}</span>
+            {{- with index (.Params.topics | default .Params.categories) 0 }}
+            <span class="zn-card__category zn-card__category--{{ . | urlize }}">{{ . }}</span>
             <span class="zn-card__meta-dot">·</span>
             {{- end }}
             <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "Jan 2" }}</time>

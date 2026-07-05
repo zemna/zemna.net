@@ -17,7 +17,7 @@
       "title": {{ $p.Title | jsonify }},
       "summary": {{ $p.Description | default ($p.Summary | plainify | truncate 200) | jsonify }},
       "tags": {{ $p.Params.tags | default (slice) | jsonify }},
-      "categories": {{ $p.Params.categories | default (slice) | jsonify }},
+      "categories": {{ $p.Params.topics | default $p.Params.categories | default (slice) | jsonify }},
       "date_published": {{ $p.PublishDate.Format "2006-01-02T15:04:05Z07:00" | jsonify }}
     }
     {{- end }}

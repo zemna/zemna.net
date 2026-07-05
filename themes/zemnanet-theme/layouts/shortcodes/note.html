@@ -1,0 +1,6 @@
+{{- $type := .Get "type" | default "note" -}}
+{{- $title := .Get "title" | default (title $type) -}}
+<aside class="zn-callout zn-callout--{{ $type | urlize }}">
+  <strong class="zn-callout__title">{{ $title }}</strong>
+  <div class="zn-callout__body">{{ .Inner | markdownify }}</div>
+</aside>
