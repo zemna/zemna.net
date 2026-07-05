@@ -70,13 +70,28 @@
 
     {{- /* Footer: tags + share */ -}}
     <footer class="zn-article__footer">
-      {{- with .Params.tags }}
-      <div class="zn-article__tags">
-        {{- range . }}
-        <a class="zn-tag" href="/tags/{{ . | urlize }}/">{{ . }}</a>
+      <div class="zn-article__taxonomy" aria-label="Article topics and tags">
+        {{- with (.Params.topics | default .Params.categories) }}
+        <div class="zn-article__taxonomy-row">
+          <span class="zn-article__taxonomy-label">Topics</span>
+          <div class="zn-article__tags">
+            {{- range . }}
+            <a class="zn-tag" href="/topics/{{ . | urlize }}/">{{ . }}</a>
+            {{- end }}
+          </div>
+        </div>
+        {{- end }}
+        {{- with .Params.tags }}
+        <div class="zn-article__taxonomy-row">
+          <span class="zn-article__taxonomy-label">Tags</span>
+          <div class="zn-article__tags">
+            {{- range . }}
+            <a class="zn-tag" href="/tags/{{ . | urlize }}/">#{{ . }}</a>
+            {{- end }}
+          </div>
+        </div>
         {{- end }}
       </div>
-      {{- end }}
 
       {{- $shareText := printf "%s — %s" .Title .Permalink -}}
       <div class="zn-article__share" aria-label="Share this article">
@@ -98,12 +113,30 @@
   </div>
 </article>
 
-{{- /* Related posts */ -}}
-{{- $related := .Site.RegularPages.Related . | first 3 }}
+{{- /* Related posts with fallback: Hugo related first, then latest posts */ -}}
+{{- $scratch := newScratch -}}
+{{- $scratch.Set "relatedItems" (slice) -}}
+{{- $scratch.Set "relatedUrls" (slice .RelPermalink) -}}
+{{- range (.Site.RegularPages.Related . | first 3) }}
+  {{- if not (in ($scratch.Get "relatedUrls") .RelPermalink) -}}
+    {{- $scratch.Add "relatedItems" (slice .) -}}
+    {{- $scratch.Add "relatedUrls" (slice .RelPermalink) -}}
+  {{- end -}}
+{{- end }}
+{{- if lt (len ($scratch.Get "relatedItems")) 3 }}
+  {{- range (where .Site.RegularPages "Section" "posts") }}
+    {{- if and (lt (len ($scratch.Get "relatedItems")) 3) (not (in ($scratch.Get "relatedUrls") .RelPermalink)) -}}
+      {{- $scratch.Add "relatedItems" (slice .) -}}
+      {{- $scratch.Add "relatedUrls" (slice .RelPermalink) -}}
+    {{- end -}}
+  {{- end }}
+{{- end }}
+{{- $related := $scratch.Get "relatedItems" -}}
 {{- if gt (len $related) 0 }}
-<section class="zn-related">
+<section class="zn-related" aria-labelledby="related-posts-title">
   <div class="zn-container zn-container--default">
-    <h2 class="zn-related__title">Related posts</h2>
+    <h2 id="related-posts-title" class="zn-related__title">Related posts</h2>
+    <p class="zn-related__intro">More posts connected by topic, tag, or recent publishing context.</p>
     <div class="zn-grid zn-grid--3">
       {{- range $related }}
       <article class="zn-card">
