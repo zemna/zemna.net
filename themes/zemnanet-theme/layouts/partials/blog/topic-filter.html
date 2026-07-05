@@ -1,0 +1,8 @@
+{{- $currentTopic := .currentTopic | default "" -}}
+<div class="zn-filter" aria-label="Filter posts by topic">
+  <a class="zn-filter__btn{{ if eq $currentTopic "" }} is-active{{ end }}" href="/blog/">All</a>
+  {{- range site.Taxonomies.topics.Alphabetical }}
+  {{- $topicSlug := .Page.Title | urlize -}}
+  <a class="zn-filter__btn{{ if eq $currentTopic $topicSlug }} is-active{{ end }}" href="{{ .Page.RelPermalink }}">{{ .Page.Title }}</a>
+  {{- end }}
+</div>

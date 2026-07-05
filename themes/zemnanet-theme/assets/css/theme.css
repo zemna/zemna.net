@@ -565,6 +565,7 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
   font-size: var(--zn-text-caption);
   font-weight: var(--zn-wt-ui);
   color: var(--zn-text-300);
+  text-decoration: none;
   background: transparent;
   border: 1px solid transparent;
   border-radius: var(--zn-radius-pill);

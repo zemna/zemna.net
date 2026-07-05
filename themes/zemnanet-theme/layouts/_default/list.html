@@ -14,13 +14,7 @@
       </div>
     </div>
 
-    {{- /* Category filter tabs */ -}}
-    <div class="zn-filter" data-filter-group="category">
-      <button class="zn-filter__btn is-active" data-filter="all">All</button>
-      {{- range .Site.Taxonomies.topics.Alphabetical }}
-      <button class="zn-filter__btn" data-filter="{{ .Page.Title | urlize }}">{{ .Page.Title }}</button>
-      {{- end }}
-    </div>
+    {{- partial "blog/topic-filter.html" (dict "currentTopic" "") -}}
 
     {{- $paginator := .Paginate (where .Site.RegularPages "Section" "posts") }}
     {{- $sorted := $paginator.Pages }}
