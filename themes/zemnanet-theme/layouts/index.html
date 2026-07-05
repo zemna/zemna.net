@@ -9,10 +9,10 @@
     <div class="zn-hero__inner">
       <div class="zn-hero__badge">
         <span class="zn-hero__badge-dot"></span>
-        <span>Publishing daily from Jakarta</span>
+        <span>Programmer &amp; Software Architect in Indonesia</span>
       </div>
       <h1 class="zn-hero__title">
-        Bridging Korean <br class="zn-hide-mobile">&amp; <em>Southeast Asian</em> Tech
+        Practical software systems <br class="zn-hide-mobile">from <em>Indonesia</em>
       </h1>
       <p class="zn-hero__lede">{{ .Site.Params.description | safeHTML }}</p>
       <div class="zn-hero__actions">
@@ -20,24 +20,88 @@
           Read the blog
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
+        <a class="zn-button zn-button--ghost" href="/work/">Selected work</a>
         <a class="zn-button zn-button--ghost" href="/about/">About the author</a>
       </div>
       <div class="zn-hero__stats">
         <div class="zn-hero__stat">
+          <span class="zn-hero__stat-num">15+</span>
+          <span class="zn-hero__stat-label">Years in Indonesia</span>
+        </div>
+        <div class="zn-hero__stat-divider"></div>
+        <div class="zn-hero__stat">
           <span class="zn-hero__stat-num">{{ len (where .Site.RegularPages "Section" "posts") }}</span>
-          <span class="zn-hero__stat-label">Posts</span>
+          <span class="zn-hero__stat-label">Engineering notes</span>
         </div>
         <div class="zn-hero__stat-divider"></div>
         <div class="zn-hero__stat">
-          <span class="zn-hero__stat-num">{{ len .Site.Taxonomies.topics }}</span>
-          <span class="zn-hero__stat-label">Topics</span>
+          <span class="zn-hero__stat-num">11</span>
+          <span class="zn-hero__stat-label">Public GitHub repos</span>
         </div>
         <div class="zn-hero__stat-divider"></div>
         <div class="zn-hero__stat">
-          <span class="zn-hero__stat-num">3</span>
-          <span class="zn-hero__stat-label">Languages</span>
+          <span class="zn-hero__stat-num">2012</span>
+          <span class="zn-hero__stat-label">GitHub since</span>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="zn-section zn-section--tight zn-section--surface">
+  <div class="zn-container zn-container--default">
+    <div class="zn-section__head">
+      <div>
+        <h2 class="zn-section__title">Engineering lens</h2>
+        <p class="zn-section__sub">I write from hands-on software work: web products, DevOps, Windows utilities, AI automation, and the operating constraints of building from Indonesia.</p>
+      </div>
+    </div>
+    <div class="zn-grid zn-grid--4 zn-proof-grid">
+      <a class="zn-proof-card" href="/topics/ai-agents/">
+        <span>AI agents</span>
+        <strong>Verification gates, artifact proof, and production failure modes.</strong>
+      </a>
+      <a class="zn-proof-card" href="/topics/devops/">
+        <span>DevOps</span>
+        <strong>Cron jobs, CI/CD, deployment checks, and operational discipline.</strong>
+      </a>
+      <a class="zn-proof-card" href="/topics/frontend/">
+        <span>Frontend</span>
+        <strong>Vue, Tailwind, CSS, and generated UI that remains maintainable.</strong>
+      </a>
+      <a class="zn-proof-card" href="/work/">
+        <span>Selected work</span>
+        <strong>Web systems, Windows utilities, networking tools, and serial communication testers.</strong>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="zn-section">
+  <div class="zn-container zn-container--default">
+    <div class="zn-section__head">
+      <div>
+        <h2 class="zn-section__title">Start here</h2>
+        <p class="zn-section__sub">A short path through the core argument of this site: agents need maps, automation needs proof, and tools need exit paths.</p>
+      </div>
+    </div>
+    <div class="zn-grid zn-grid--4 zn-proof-grid">
+      <a class="zn-proof-card" href="/posts/agent-edit-contract/">
+        <span>Agent boundaries</span>
+        <strong>The edit contract I use before a coding agent touches a repository.</strong>
+      </a>
+      <a class="zn-proof-card" href="/posts/coding-agent-needs-a-map/">
+        <span>Code structure</span>
+        <strong>Why bigger context is weaker than an explicit repo map.</strong>
+      </a>
+      <a class="zn-proof-card" href="/posts/artifact-health-checks-for-agent-cron-jobs/">
+        <span>Automation proof</span>
+        <strong>Why cron jobs are not healthy until artifacts prove the work.</strong>
+      </a>
+      <a class="zn-proof-card" href="/posts/beta-library-exit-path/">
+        <span>Tool judgment</span>
+        <strong>How to prove the exit path before a beta library becomes load-bearing.</strong>
+      </a>
     </div>
   </div>
 </section>

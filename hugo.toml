@@ -18,8 +18,8 @@ summaryLength = 35
   authorRole = "Programmer & Software Architect"
   authorAvatar = "/img/shinjae-kang-avatar.jpg"
   authorBio = "Programmer and software architect at Modoo Digisol Indonesia. Laravel, VueJS, Tailwind CSS, PHP, DevOps, .NET, C#, WPF, VB, HTML, CSS, WordPress, and Flutter. Based in Indonesia, bridging Korean and Southeast Asian tech."
-  description = "IT, AI, and dev tooling insights from a Korean senior dev working in Southeast Asia."
-  tagline = "Bridging Korean & Southeast Asian Tech"
+  description = "Practical software notes from a Korean programmer and software architect in Indonesia — Laravel, Vue, DevOps, AI agents, and the Korea to Southeast Asia tech bridge."
+  tagline = "Practical software systems from Indonesia"
   email = "zemna@zemna.net"
   twitter = "@zemnanet"
   instagram = "@zemna"
@@ -73,6 +73,11 @@ summaryLength = 35
   name = "Tags"
   url = "/tags/"
   weight = 28
+
+[[menu.main]]
+  name = "Work"
+  url = "/work/"
+  weight = 29
 
 [[menu.main]]
   name = "About"

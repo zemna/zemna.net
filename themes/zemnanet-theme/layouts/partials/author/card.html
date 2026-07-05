@@ -1,0 +1,16 @@
+<section class="zn-author-card" aria-label="About the author">
+  <img class="zn-author-card__avatar" src="{{ site.Params.authorAvatar | relURL }}" alt="{{ site.Params.author }} profile photo" loading="lazy" decoding="async">
+  <div class="zn-author-card__body">
+    <span class="zn-author-card__eyebrow">About the author</span>
+    <h2 class="zn-author-card__name">{{ site.Params.author }}</h2>
+    <p class="zn-author-card__role">{{ site.Params.authorRole }} · {{ site.Params.authorLocation }}</p>
+    <p class="zn-author-card__bio">{{ site.Params.authorBio }}</p>
+    <div class="zn-author-card__links">
+      <a href="/about/">About</a>
+      <a href="/work/">Work</a>
+      <a href="https://github.com/{{ site.Params.github }}" rel="me noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/{{ site.Params.linkedin }}/" rel="me noopener">LinkedIn</a>
+      <a href="https://x.com/{{ strings.TrimPrefix "@" site.Params.twitter }}" rel="me noopener">X</a>
+    </div>
+  </div>
+</section>

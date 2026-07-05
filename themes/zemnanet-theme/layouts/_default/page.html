@@ -1,4 +1,5 @@
 {{ define "main" }}
+{{- if eq .File.BaseFileName "about" }}
 <article class="zn-about">
   <div class="zn-container zn-container--default">
     <nav class="zn-article__breadcrumb" aria-label="Breadcrumb">
@@ -50,4 +51,22 @@
     </div>
   </div>
 </article>
+{{- else }}
+<article class="zn-about zn-page">
+  <div class="zn-container zn-container--default">
+    <nav class="zn-article__breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span class="zn-article__breadcrumb__sep">/</span>
+      <span aria-current="page">{{ .Title }}</span>
+    </nav>
+    <header class="zn-page__header">
+      <h1 class="zn-about__title">{{ .Title }}</h1>
+      {{- with .Description }}<p class="zn-about__subtitle">{{ . }}</p>{{- end }}
+    </header>
+    <div class="zn-prose zn-about__body">
+      {{ .Content }}
+    </div>
+  </div>
+</article>
+{{- end }}
 {{ end }}

@@ -93,6 +93,8 @@
         {{- end }}
       </div>
 
+      {{- partial "author/card.html" . }}
+
       {{- $shareText := printf "%s — %s" .Title .Permalink -}}
       <div class="zn-article__share" aria-label="Share this article">
         <span class="zn-article__share-label">Share</span>
