@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 44" role="img" aria-labelledby="title desc">
+  <title id="title">ZEMNA.NET developer logo</title>
+  <desc id="desc">A compact handheld code screen with d-pad, run button, and ZEMNA.NET wordmark.</desc>
+  <rect x="1.5" y="1.5" width="39" height="39" rx="10" fill="#141516" stroke="#F7F8F8" stroke-width="2.4"/>
+  <rect x="7.5" y="7" width="27" height="20" rx="4" fill="#D9F99D" stroke="#F7F8F8" stroke-width="1.8"/>
+  <path d="M16 14l-5 3.8 5 3.8" fill="none" stroke="#08090A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M25 12.5l-5.5 11" fill="none" stroke="#08090A" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M28 14l5 3.8-5 3.8" fill="none" stroke="#08090A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M11 33h8M15 29v8" fill="none" stroke="#F7F8F8" stroke-width="2.2" stroke-linecap="round"/>
+  <rect x="25" y="31" width="5" height="5" rx="1.3" fill="#F7F8F8" opacity="0.75"/>
+  <rect x="32" y="31" width="5" height="5" rx="1.3" fill="#E34234"/>
+  <text x="52" y="29" font-family="D2Coding, Inter, system-ui, sans-serif" font-weight="700" font-size="24" letter-spacing="-0.045em" fill="#F7F8F8">ZEMNA<tspan fill="#B9BDC7">.NET</tspan></text>
+</svg>
