@@ -221,11 +221,11 @@
   /* ============================================================
      CONTAINERS
      ============================================================ */
-  --zn-container-prose:   125ch;
-  --zn-container-narrow:  936px;
-  --zn-container-default: 1560px;
-  --zn-container-wide:    1820px;
-  --zn-container-full:    2180px;
+  --zn-container-prose:   96ch;
+  --zn-container-narrow:  720px;
+  --zn-container-default: 1200px;
+  --zn-container-wide:    1400px;
+  --zn-container-full:    1680px;
 
   /* ============================================================
      BREAKPOINTS

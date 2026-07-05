@@ -177,8 +177,10 @@
   border-top-color: rgba(0, 0, 0, 0.08);
 }
 
-/* Prose container */
+/* Prose container — only article pages get the 1.3x reading width.
+   Global container tokens stay unchanged for lists, home, taxonomy pages. */
 .zn-article .zn-container--prose {
+  max-width: 125ch;
   padding-block: var(--zn-space-10);
 }
 
