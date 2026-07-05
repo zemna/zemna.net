@@ -16,7 +16,7 @@
       </h1>
       <p class="zn-hero__lede">{{ .Site.Params.description | safeHTML }}</p>
       <div class="zn-hero__actions">
-        <a class="zn-button zn-button--primary" href="/posts/">
+        <a class="zn-button zn-button--primary" href="/blog/">
           Read the blog
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
@@ -86,19 +86,19 @@
       </div>
     </div>
     <div class="zn-grid zn-grid--4 zn-proof-grid">
-      <a class="zn-proof-card" href="/posts/agent-edit-contract/">
+      <a class="zn-proof-card" href="/blog/agent-edit-contract/">
         <span>Agent boundaries</span>
         <strong>The edit contract I use before a coding agent touches a repository.</strong>
       </a>
-      <a class="zn-proof-card" href="/posts/coding-agent-needs-a-map/">
+      <a class="zn-proof-card" href="/blog/coding-agent-needs-a-map/">
         <span>Code structure</span>
         <strong>Why bigger context is weaker than an explicit repo map.</strong>
       </a>
-      <a class="zn-proof-card" href="/posts/artifact-health-checks-for-agent-cron-jobs/">
+      <a class="zn-proof-card" href="/blog/artifact-health-checks-for-agent-cron-jobs/">
         <span>Automation proof</span>
         <strong>Why cron jobs are not healthy until artifacts prove the work.</strong>
       </a>
-      <a class="zn-proof-card" href="/posts/beta-library-exit-path/">
+      <a class="zn-proof-card" href="/blog/beta-library-exit-path/">
         <span>Tool judgment</span>
         <strong>How to prove the exit path before a beta library becomes load-bearing.</strong>
       </a>
@@ -114,7 +114,7 @@
         <h2 class="zn-section__title">Latest writing</h2>
         <p class="zn-section__sub">One post per day. Mon&nbsp;=&nbsp;news · Tue&nbsp;=&nbsp;code · Wed&nbsp;=&nbsp;Indonesia · Thu&nbsp;=&nbsp;tools · Fri&nbsp;=&nbsp;debate · Sat&nbsp;=&nbsp;build · Sun&nbsp;=&nbsp;free.</p>
       </div>
-      <a class="zn-button zn-button--ghost" href="/posts/">All posts →</a>
+      <a class="zn-button zn-button--ghost" href="/blog/">All posts →</a>
     </div>
 
     {{- $posts := where .Site.RegularPages "Section" "posts" }}

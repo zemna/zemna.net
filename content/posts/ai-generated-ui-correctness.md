@@ -167,7 +167,7 @@ The JavaScript versions are longer, more bug-prone, and harder to maintain. They
 
 Tailwind CSS v4.3's release is relevant here — it ships first-party scrollbar styling utilities (`scrollbar-thumb-*`, `scrollbar-track-*`), additional logical property utilities, zoom and tab-size utilities, and improved `@variant` support [Source: https://tailwindcss.com/blog/tailwindcss-v4-3]. These are the kinds of features that eliminate JavaScript: scrollbar theming that used to require `::-webkit-scrollbar` hacks is now a utility class.
 
-We covered this in depth in a prior post — [The JavaScript I Deleted with CSS: A 2026 Survival Guide](https://zemna.net/posts/the-javascript-i-deleted-with-css-a-2026-survival-guide/) — so we will not repeat the full catalog here. The point for this discussion is different: **when you review AI-generated UI, the first question is not "does this JavaScript work?" The first question is "should this be JavaScript at all?"**
+We covered this in depth in a prior post — [The JavaScript I Deleted with CSS: A 2026 Survival Guide](https://zemna.net/blog/the-javascript-i-deleted-with-css-a-2026-survival-guide/) — so we will not repeat the full catalog here. The point for this discussion is different: **when you review AI-generated UI, the first question is not "does this JavaScript work?" The first question is "should this be JavaScript at all?"**
 
 A generated `IntersectionObserver`-based fade-in is correct JavaScript. It is also unnecessary JavaScript. The CSS `@starting-style` rule handles entrance animations natively, with better performance, no bundle cost, and no cleanup. But the AI will not tell you this, because the AI optimizes for "generate code that works," not "generate the minimal correct solution."
 
@@ -232,7 +232,7 @@ The broader lesson: **if you want generated code you can trust, choose architect
 
 **3. Add an effect-cleanup linter rule.** If you are on React, enforce that every `useEffect` with an event listener or async operation has a cleanup function. This catches the most common generated-code bug before it reaches production.
 
-**4. Audit generated JavaScript for CSS replacements.** For every `scroll` listener, `IntersectionObserver`, `ResizeObserver`, and manual positioning calculation in generated code, check whether a CSS property — `animation-timeline`, `anchor-name`, `:has()`, `@starting-style` — can replace it. Delete the JavaScript when CSS works [Source: https://zemna.net/posts/the-javascript-i-deleted-with-css-a-2026-survival-guide/].
+**4. Audit generated JavaScript for CSS replacements.** For every `scroll` listener, `IntersectionObserver`, `ResizeObserver`, and manual positioning calculation in generated code, check whether a CSS property — `animation-timeline`, `anchor-name`, `:has()`, `@starting-style` — can replace it. Delete the JavaScript when CSS works [Source: https://zemna.net/blog/the-javascript-i-deleted-with-css-a-2026-survival-guide/].
 
 **5. Evaluate your architecture.** If reviewing generated frontend code feels like archaeology — digging through hooks and context to understand what the code does — the problem is the architecture, not the AI. Frameworks that enforce explicit state flow make generated code cheaper to verify. Look at how Foldkit structures state around Messages and update functions [Source: https://foldkit.dev/ai/overview], and ask whether your current stack gives you the same legibility.
 
@@ -244,7 +244,7 @@ The broader lesson: **if you want generated code you can trust, choose architect
 - [Foldkit AI Overview](https://foldkit.dev/ai/overview) — How the Message/update loop makes programs machine-legible as state machines.
 - [AI-Generated UI Is Inaccessible by Default — Frontend Masters Blog](https://frontendmasters.com/blog/ai-generated-ui-is-inaccessible-by-default/) — Why default AI output fails accessibility and requires systematic enforcement.
 - [Tailwind CSS v4.3 — Scrollbars, New Colors, and More](https://tailwindcss.com/blog/tailwindcss-v4-3) — First-party scrollbar utilities, logical properties, and other features that replace JavaScript hacks.
-- [The JavaScript I Deleted with CSS: A 2026 Survival Guide](https://zemna.net/posts/the-javascript-i-deleted-with-css-a-2026-survival-guide/) — A catalog of CSS features — anchor positioning, `:has()`, scroll-driven animations, `@starting-style`, `base-select` — that replace common JavaScript patterns.
+- [The JavaScript I Deleted with CSS: A 2026 Survival Guide](https://zemna.net/blog/the-javascript-i-deleted-with-css-a-2026-survival-guide/) — A catalog of CSS features — anchor positioning, `:has()`, scroll-driven animations, `@starting-style`, `base-select` — that replace common JavaScript patterns.
 
 ---
 

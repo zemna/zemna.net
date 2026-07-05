@@ -52,7 +52,7 @@ That sentence forces decisions that logs hide.
 
 For a database backup, the artifact is a compressed dump file. It must be larger than a minimum size, newer than the schedule window, and restorable enough that `pg_restore --list` can read it.
 
-For a static-site blog job, the artifact is not `/tmp/blog-draft.md`. A draft is an intermediate. The real artifact is the published post under `content/posts/`, the generated page under `public/posts/<slug>/`, the pushed commit, and the live URL returning HTTP 200.
+For a static-site blog job, the artifact is not `/tmp/blog-draft.md`. A draft is an intermediate. The real artifact is the published post under `content/posts/`, the generated page under `public/blog/<slug>/`, the pushed commit, and the live URL returning HTTP 200.
 
 For an analytics job, the artifact is not "script finished." It is a JSON snapshot containing a date, platform names, and numeric metrics. An empty array may be valid for some systems, but if your daily social report normally contains platform metrics, an empty array is a failure until proven otherwise.
 
@@ -231,8 +231,8 @@ set -euo pipefail
 
 POST_SLUG="$1"
 POST_FILE="$HOME/projects/zemna.net/content/posts/${POST_SLUG}.md"
-PUBLIC_DIR="$HOME/projects/zemna.net/public/posts/${POST_SLUG}"
-URL="https://zemna.net/posts/${POST_SLUG}/"
+PUBLIC_DIR="$HOME/projects/zemna.net/public/blog/${POST_SLUG}"
+URL="https://zemna.net/blog/${POST_SLUG}/"
 
 test -s "$POST_FILE"
 grep -q '^topics:' "$POST_FILE"
@@ -316,7 +316,7 @@ jobs:
       - name: Verify artifact
         run: |
           python3 scripts/verify_artifact.py \
-            --path public/posts/latest/index.html \
+            --path public/blog/latest/index.html \
             --max-age-minutes 30 \
             --min-bytes 5000
       - name: Ping monitor after artifact check

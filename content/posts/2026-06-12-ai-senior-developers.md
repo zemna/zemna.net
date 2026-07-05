@@ -57,4 +57,4 @@ If you are a manager:
 
 ---
 
-_This is the second post in an ongoing series on AI and the developer career. If you want the first one, it's [here](/posts/)._
+_This is the second post in an ongoing series on AI and the developer career. If you want the first one, it's [here](/blog/)._

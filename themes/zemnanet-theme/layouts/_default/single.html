@@ -20,7 +20,7 @@
         <nav class="zn-article__breadcrumb" aria-label="Breadcrumb">
           <a href="/">Home</a>
           <span class="zn-article__breadcrumb__sep">/</span>
-          <a href="/posts/">Blog</a>
+          <a href="/blog/">Blog</a>
           {{- with index (.Params.topics | default .Params.categories) 0 }}
           <span class="zn-article__breadcrumb__sep">/</span>
           <a href="/topics/{{ . | urlize }}/">{{ . }}</a>

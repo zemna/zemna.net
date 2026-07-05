@@ -103,6 +103,6 @@ Three Git commits. 21 files changed. 1,500+ lines of CSS rewritten. One cover im
 
 Live site: [zemna.net](https://zemna.net)
 
-Post URL: [zemna.net/posts/linear-design-system-hugo/](https://zemna.net/posts/linear-design-system-hugo/)
+Post URL: [zemna.net/blog/linear-design-system-hugo/](https://zemna.net/blog/linear-design-system-hugo/)
 
 GitHub: [github.com/zemna/zemna.net](https://github.com/zemna/zemna.net)

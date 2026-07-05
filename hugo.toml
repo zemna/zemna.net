@@ -61,7 +61,7 @@ summaryLength = 35
 
 [[menu.main]]
   name = "Blog"
-  url = "/posts/"
+  url = "/blog/"
   weight = 20
 
 [[menu.main]]
@@ -189,7 +189,7 @@ summaryLength = 35
 
 # Permalinks: clean URLs
 [permalinks]
-  posts = "/posts/:slug/"
+  posts = "/blog/:slug/"
   series = "/series/:slug/"
 
 # Build stats

@@ -53,7 +53,7 @@ artifact:
   required:
     - path: /tmp/blog-draft.md
       min_words: 2500
-    - expected_url: https://zemna.net/posts/closed-loop-beats-more-automation/
+    - expected_url: https://zemna.net/blog/closed-loop-beats-more-automation/
       expected_status_after_publish: 200
     - file: /tmp/factcheck.json
       min_score: 98
@@ -146,7 +146,7 @@ def record(event_type: str, **fields):
 record("signal_read", source="tomorrow-content-strategy.md", freshness_hours=10)
 record("artifact_created", kind="blog_draft", path="/tmp/blog-draft.md", words=">=2500")
 record("gate_passed", gate="fact_check", score=100)
-record("publish_candidate", expected_url="https://zemna.net/posts/closed-loop-beats-more-automation/", status="pending")
+record("publish_candidate", expected_url="https://zemna.net/blog/closed-loop-beats-more-automation/", status="pending")
 record("readback_scheduled", metric="X ER >= 5% or one reply/bookmark", date="2026-07-05")
 ```
 
@@ -242,9 +242,9 @@ Here is the minimal contract I would start with:
 {
   "workflow": "daily-blog",
   "artifact": {
-    "path": "/home/linuxuser/projects/zemna.net/public/posts/closed-loop-beats-more-automation/index.html",
+    "path": "/home/linuxuser/projects/zemna.net/public/blog/closed-loop-beats-more-automation/index.html",
     "min_bytes": 10000,
-    "public_url_after_publish": "https://zemna.net/posts/closed-loop-beats-more-automation/",
+    "public_url_after_publish": "https://zemna.net/blog/closed-loop-beats-more-automation/",
     "expected_status_after_publish": 200
   },
   "gates": {
