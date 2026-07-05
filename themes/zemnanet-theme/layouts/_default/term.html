@@ -45,8 +45,8 @@
           <p class="zn-card__excerpt">{{ .Description | default (.Summary | plainify | truncate 140) }}</p>
           <div class="zn-card__footer">
             <span class="zn-card__author">
-              <span class="zn-card__author-avatar">{{ substr (.Params.author | default "S") 0 1 }}</span>
-              {{ .Params.author | default "Shinjae Kang" }}
+              <img class="zn-card__author-avatar" src="{{ site.Params.authorAvatar | relURL }}" alt="{{ .Params.author | default site.Params.author }} profile photo" loading="lazy" decoding="async">
+              {{ .Params.author | default site.Params.author }}
             </span>
             <a class="zn-card__cta" href="{{ .RelPermalink }}">Read</a>
           </div>

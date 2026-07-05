@@ -15,7 +15,9 @@ summaryLength = 35
 [params]
   author = "Shinjae Kang"
   authorLocation = "Jakarta, Indonesia"
-  authorBio = "Senior Korean developer, 15 years in Jakarta. Bridging Korean & Southeast Asian tech."
+  authorRole = "Programmer & Software Architect"
+  authorAvatar = "/img/shinjae-kang-avatar.jpg"
+  authorBio = "Programmer and software architect at Modoo Digisol Indonesia. Laravel, VueJS, Tailwind CSS, PHP, DevOps, .NET, C#, WPF, VB, HTML, CSS, WordPress, and Flutter. Based in Indonesia, bridging Korean and Southeast Asian tech."
   description = "IT, AI, and dev tooling insights from a Korean senior dev working in Southeast Asia."
   tagline = "Bridging Korean & Southeast Asian Tech"
   email = "zemna@zemna.net"

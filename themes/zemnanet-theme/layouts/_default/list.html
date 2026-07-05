@@ -53,9 +53,9 @@
         <p class="zn-featured__excerpt">{{ $featured.Description | default ($featured.Summary | plainify | truncate 280) }}</p>
         <div class="zn-featured__footer">
           <div class="zn-featured__author">
-            <div class="zn-featured__avatar">{{ substr ($featured.Params.author | default "S") 0 1 }}</div>
+            <img class="zn-featured__avatar" src="{{ site.Params.authorAvatar | relURL }}" alt="{{ $featured.Params.author | default site.Params.author }} profile photo" loading="lazy" decoding="async">
             <div>
-              <span class="zn-featured__author-name">{{ $featured.Params.author | default "Shinjae Kang" }}</span>
+              <span class="zn-featured__author-name">{{ $featured.Params.author | default site.Params.author }}</span>
               <span class="zn-featured__author-loc">{{ $featured.Params.authorLocation | default "Jakarta, Indonesia" }}</span>
             </div>
           </div>
@@ -89,8 +89,8 @@
           <p class="zn-card__excerpt">{{ .Description | default (.Summary | plainify | truncate 140) }}</p>
           <div class="zn-card__footer">
             <span class="zn-card__author">
-              <span class="zn-card__author-avatar">{{ substr (.Params.author | default "S") 0 1 }}</span>
-              {{ .Params.author | default "Shinjae Kang" }}
+              <img class="zn-card__author-avatar" src="{{ site.Params.authorAvatar | relURL }}" alt="{{ .Params.author | default site.Params.author }} profile photo" loading="lazy" decoding="async">
+              {{ .Params.author | default site.Params.author }}
             </span>
             <a class="zn-card__cta" href="{{ .RelPermalink }}">Read</a>
           </div>

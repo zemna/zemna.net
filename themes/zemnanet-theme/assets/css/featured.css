@@ -113,6 +113,8 @@
   border-radius: var(--zn-radius-full);
   background: var(--zn-gradient-accent);
   color: #FFFFFF;
+  object-fit: cover;
+  border: 1px solid var(--zn-border-strong);
   display: flex;
   align-items: center;
   justify-content: center;
