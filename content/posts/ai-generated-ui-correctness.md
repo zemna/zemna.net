@@ -261,3 +261,10 @@ A rendered UI is only the first checkpoint. The real review asks whether the sta
 ---
 
 Generated UI is not the enemy. Sloppy acceptance criteria are. When the bar is "it renders," every generated component passes and half of them are wrong. Raise the bar to "it provably handles every state, cleans up every effect, passes accessibility audit, and uses CSS where CSS belongs" — and generated code becomes genuinely useful. The tools are ready. The review process is what needs to catch up.
+
+## What you should do Monday morning
+
+1. Choose one AI-generated screen that “looks done” and write down the user task it must actually complete.
+2. Add a browser or DOM-level check for the critical interaction, not just a screenshot review.
+3. Test one narrow viewport and one realistic data edge case.
+4. Keep the fix small, then re-run the same check before merging.

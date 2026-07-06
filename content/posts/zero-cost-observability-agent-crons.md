@@ -437,3 +437,10 @@ If those answers exist, then a dashboard has something real to display. If they 
 - {{< source href="https://posthog.com/docs/product-analytics" label="PostHog product analytics documentation" >}}
 
 A small team does not need to observe everything on Monday. It needs one artifact, one alert, and one rollback path that actually work. Start there. Everything else can earn its place.
+
+## What you should do Monday morning
+
+1. Pick one agent cron that already writes a file or sends a message.
+2. Add a second proof point: timestamp freshness, row count, rendered URL, or API readback.
+3. Store the proof next to the cron output so future runs can compare deltas.
+4. Alert only when the proof is stale, empty, or inconsistent with the expected schedule.

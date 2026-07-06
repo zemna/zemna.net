@@ -308,3 +308,10 @@ The teams that benefit most won't be the ones who pick a single model and commit
 ---
 
 *The cost gap is real. The capability gap isn't. Build accordingly.*
+
+## What you should do Monday morning
+
+1. List the model calls in your product by latency, cost, and failure impact.
+2. Move one non-critical path to an open-weight or cheaper backend behind the same interface.
+3. Keep the rollback path to the current API provider.
+4. Measure quality with real task output, not benchmark headlines.

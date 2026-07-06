@@ -303,3 +303,10 @@ The satisfying part isn't just the bundle size. It's that the platform is conver
 - [CSS Anchor Positioning API](https://developer.chrome.com/blog/anchor-positioning-api) — the Chrome team's introduction, still the clearest reference for `anchor()`, `position-try-fallbacks`, and the `@position-try` rule.
 - [CSS in 2026 (LogRocket)](https://blog.logrocket.com/css-in-2026/) — a broader survey of what landed this year, including the features I skipped here (container queries maturity, text-wrap balance, field-sizing).
 - [Scroll-Driven Animations (Josh Comeau)](https://www.joshwcomeau.com/animation/scroll-driven-animations/) — the best walkthrough of `view()` timelines and `animation-range` I've read, with interactive demos that make the ranges click.
+
+## What you should do Monday morning
+
+1. Find one small JavaScript behavior that only controls presentation.
+2. Replace it with a CSS-native primitive if the browser support is acceptable.
+3. Keep JavaScript for state, persistence, and product logic.
+4. Verify the interaction with keyboard navigation and a mobile viewport before deleting the old code.

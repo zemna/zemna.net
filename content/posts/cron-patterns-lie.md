@@ -272,3 +272,10 @@ Here is an actionable checklist. Pick the highest-impact items first.
 - **[Why Cron Jobs Fail Silently in Production](https://cloudray.io/articles/why-cron-job-fails-silently-in-production)** — CloudRay's deep dive on the `set -euo pipefail` baseline and why redirect patterns are the root of most silent cron failures.
 - **[Your Crontab Is Silently Failing — The 5 Silent Killers of VPS-Based Cron Jobs](https://dev.to/chalom_ellezam_5989bce65e/your-crontab-is-silently-failing-the-5-silent-killers-of-vps-based-cron-jobs-and-the-modern-setup-29g6)** — Practical walkthrough of environment variable issues, PATH differences, and shell defaults that make cron jobs fail silently on VPS infrastructure.
 - **[How to Monitor Cron Jobs in 2026](https://dev.to/cronmonitor/how-to-monitor-cron-jobs-in-2026-a-complete-guide-28g9)** — Comparison of monitoring approaches from simple log shipping to dead man's switches, with specific tool recommendations.
+
+## What you should do Monday morning
+
+1. Pick one cron job that currently reports success only by exit code.
+2. Add one artifact check: a file, JSON row, database count, or API readback that proves the job produced the intended result.
+3. Make empty output a warning, not a silent success.
+4. Send the next alert with the artifact path or external URL, so the operator can verify the job without opening the server.
