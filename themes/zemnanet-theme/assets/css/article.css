@@ -203,22 +203,26 @@
   border-top-color: rgba(0, 0, 0, 0.08);
 }
 
-/* Prose container - article pages use a reading column with an optional right rail. */
+/* Prose container - article pages use a wider reading column plus a right rail. */
 .zn-article .zn-container--prose {
-  max-width: min(1120px, calc(100vw - var(--zn-space-8)));
+  max-width: min(1320px, calc(100vw - var(--zn-space-8)));
   padding-block: var(--zn-space-10);
 }
 
 .zn-article__body-layout {
+  --zn-article-copy-width: 96ch; /* 74ch * 1.3, requested wider reading column */
+  --zn-article-toc-width: 260px;
   display: grid;
-  grid-template-columns: minmax(0, 74ch) minmax(220px, 260px);
-  gap: clamp(var(--zn-space-8), 4vw, var(--zn-space-12));
+  grid-template-columns: minmax(0, var(--zn-article-copy-width)) minmax(220px, var(--zn-article-toc-width));
+  gap: clamp(var(--zn-space-7), 3vw, var(--zn-space-10));
   align-items: start;
+  width: min(100%, calc(var(--zn-article-copy-width) + var(--zn-article-toc-width) + var(--zn-space-10)));
+  margin-inline: auto;
 }
 
 .zn-article__body-layout--solo {
   display: block;
-  max-width: 78ch;
+  max-width: 96ch;
   margin-inline: auto;
 }
 

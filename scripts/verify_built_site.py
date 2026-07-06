@@ -52,6 +52,7 @@ def main() -> int:
     post = (PUBLIC / "blog" / "zero-cost-observability-agent-crons" / "index.html").read_text(errors="replace")
     blog = (PUBLIC / "blog" / "index.html").read_text(errors="replace")
     sitemap = (PUBLIC / "sitemap.xml").read_text(errors="replace")
+    css = (PUBLIC / "css" / "article.min.css").read_text(errors="replace")
 
     for label, html, required_types in [
         ("home", home, {"WebSite", "Person", "ProfilePage"}),
@@ -69,8 +70,8 @@ def main() -> int:
         if missing:
             fail(f"{label}: missing JSON-LD types {sorted(missing)}", issues)
 
-    if "zn-article__toc" not in post:
-        fail("post: missing article TOC", issues)
+    if "grid-template-columns:minmax(0,var(--zn-article-copy-width))minmax(220px,var(--zn-article-toc-width))" not in css.replace(" ", ""):
+        fail("css: article TOC/right rail grid is missing", issues)
     for banned in ["facebook.com/sharer", "api.whatsapp.com", "reddit.com/submit", "t.me/share", "mailto:?subject"]:
         if banned in post:
             fail(f"post: untrimmed share target remains: {banned}", issues)
