@@ -2,7 +2,7 @@
 title: "Autonomous AI Agents on Cron: A Zombie-Task Postmortem"
 date: 2026-06-20T08:00:00+07:00
 draft: false
-topics: ["AI"]
+topics: ["ai"]
 cover: /covers/autonomous-ai-agent-cron-pipelines.png
 description: "What actually breaks when you run AI agents on cron 24/7 — zombie tasks, subagent black holes, and the architectural patterns that make autonomous pipelines reliable."
 ---

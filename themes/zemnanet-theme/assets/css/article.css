@@ -39,11 +39,14 @@
   inset: 0;
   z-index: 0;
 }
+.zn-article__hero-bg picture,
 .zn-article__hero-bg img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+.zn-article__hero-bg img {
   filter: brightness(0.45) saturate(0.75);
 }
 [data-theme="light"] .zn-article__hero-bg img {
@@ -205,6 +208,47 @@
 .zn-article .zn-container--prose {
   max-width: 125ch;
   padding-block: var(--zn-space-10);
+}
+
+.zn-article__toc {
+  margin: 0 0 var(--zn-space-8);
+  padding: var(--zn-space-5) var(--zn-space-6);
+  border: 1px solid var(--zn-border);
+  border-radius: var(--zn-radius-xl);
+  background: var(--zn-surface-2);
+}
+.zn-article__toc-label {
+  margin-bottom: var(--zn-space-3);
+  color: var(--zn-indigo-300);
+  font-size: var(--zn-text-label);
+  font-weight: var(--zn-wt-ui);
+  letter-spacing: var(--zn-tracking-widest);
+  text-transform: uppercase;
+}
+.zn-article__toc nav,
+.zn-article__toc ul {
+  margin: 0;
+  padding-left: var(--zn-space-5);
+}
+.zn-article__toc li {
+  margin: var(--zn-space-1) 0;
+  color: var(--zn-text-400);
+  font-size: var(--zn-text-small);
+  line-height: 1.5;
+}
+.zn-article__toc a {
+  color: var(--zn-text-200);
+  text-decoration: none;
+}
+.zn-article__toc a:hover {
+  color: var(--zn-indigo-300);
+}
+
+@media (min-width: 1280px) {
+  .zn-article__toc {
+    position: sticky;
+    top: var(--zn-space-8);
+  }
 }
 
 @media (max-width: 640px) {
@@ -749,6 +793,45 @@
   margin: calc(var(--zn-space-6) * -1) 0 var(--zn-space-8);
   color: var(--zn-text-300);
   font-size: var(--zn-text-small);
+}
+
+.zn-related__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--zn-space-4);
+}
+
+.zn-related-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--zn-space-3);
+  min-height: 100%;
+  padding: var(--zn-space-5);
+  border: 1px solid var(--zn-border);
+  border-radius: var(--zn-radius-xl);
+  background: var(--zn-surface-2);
+}
+
+.zn-related-card__title {
+  margin: 0;
+  color: var(--zn-text-100);
+  font-size: var(--zn-text-body-l);
+  line-height: 1.35;
+  letter-spacing: var(--zn-tracking-12);
+}
+.zn-related-card__title a { color: inherit; text-decoration: none; }
+.zn-related-card__title a:hover { color: var(--zn-indigo-300); }
+
+.zn-related-card__desc {
+  flex: 1;
+  margin: 0;
+  color: var(--zn-text-300);
+  font-size: var(--zn-text-small);
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .zn-related__list { grid-template-columns: 1fr; }
 }
 
 /* ---- Inline footnote / disclosure ---- */

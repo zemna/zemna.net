@@ -1,0 +1,16 @@
+{{- $src := .Destination | safeURL -}}
+{{- $alt := .Text | plainify -}}
+{{- $title := .Title | plainify -}}
+{{- $webp := replaceRE `\.(png|jpg|jpeg)$` ".webp" $src -}}
+{{- $hasWebp := and (hasPrefix $src "/") (ne $webp $src) (fileExists (printf "static%s" $webp)) -}}
+<figure class="zn-prose__figure">
+  {{- if $hasWebp }}
+  <picture>
+    <source srcset="{{ $webp | relURL }}" type="image/webp">
+    <img src="{{ $src | relURL }}" alt="{{ $alt }}" loading="lazy" decoding="async">
+  </picture>
+  {{- else }}
+  <img src="{{ $src }}" alt="{{ $alt }}" loading="lazy" decoding="async">
+  {{- end }}
+  {{- with $title }}<figcaption>{{ . }}</figcaption>{{ end -}}
+</figure>

@@ -2,6 +2,7 @@
 title: "Before You Adopt a Beta Library, Prove the Exit Path"
 date: 2026-07-02T07:00:00+07:00
 draft: false
+description: "A practical test for adopting beta libraries: prove the rollback path, migration cost, and ownership model before they enter production."
 topics: ["devtools"]
 cover: /covers/beta-library-exit-path.png
 ---

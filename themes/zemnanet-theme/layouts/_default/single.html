@@ -9,7 +9,7 @@
   <header class="zn-article__hero">
     {{- if .Params.cover }}
     <div class="zn-article__hero-bg">
-      <img src="{{ .Params.cover | relURL }}" alt="" aria-hidden="true">
+      {{- partial "media/picture.html" (dict "src" .Params.cover "alt" "" "loading" "eager" "ariaHidden" true) -}}
     </div>
     {{- end }}
     <div class="zn-article__hero-overlay"></div>
@@ -64,6 +64,13 @@
 
   {{- /* Prose body */ -}}
   <div class="zn-container zn-container--prose">
+    {{- $tocItems := findRE "<li" .TableOfContents -}}
+    {{- if ge (len $tocItems) 3 }}
+    <aside class="zn-article__toc" aria-labelledby="article-toc-title">
+      <div class="zn-article__toc-label" id="article-toc-title">On this page</div>
+      {{ .TableOfContents }}
+    </aside>
+    {{- end }}
     <div class="zn-prose" itemprop="articleBody">
       {{ .Content }}
     </div>
@@ -95,20 +102,14 @@
 
       {{- partial "author/card.html" . }}
 
-      {{- $shareText := printf "%s — %s" .Title .Permalink -}}
+      {{- $shareText := printf "%s %s" .Title .Permalink -}}
       <div class="zn-article__share" aria-label="Share this article">
         <span class="zn-article__share-label">Share</span>
         <div class="zn-article__share-actions">
-          <a class="zn-share-button" href="https://x.com/intent/tweet?text={{ .Title | safeURL }}&amp;url={{ .Permalink | safeURL }}" rel="noopener" target="_blank" aria-label="Share on X">X</a>
-          <a class="zn-share-button" href="https://www.threads.net/intent/post?text={{ $shareText | safeURL }}" rel="noopener" target="_blank" aria-label="Share on Threads">Threads</a>
-          <a class="zn-share-button" href="https://www.facebook.com/sharer/sharer.php?u={{ .Permalink | safeURL }}" rel="noopener" target="_blank" aria-label="Share on Facebook">Facebook</a>
-          <a class="zn-share-button" href="https://www.linkedin.com/sharing/share-offsite/?url={{ .Permalink | safeURL }}" rel="noopener" target="_blank" aria-label="Share on LinkedIn">LinkedIn</a>
-          <a class="zn-share-button" href="https://api.whatsapp.com/send?text={{ $shareText | safeURL }}" rel="noopener" target="_blank" aria-label="Share on WhatsApp">WhatsApp</a>
-          <a class="zn-share-button" href="https://t.me/share/url?url={{ .Permalink | safeURL }}&amp;text={{ .Title | safeURL }}" rel="noopener" target="_blank" aria-label="Share on Telegram">Telegram</a>
-          <a class="zn-share-button" href="https://www.reddit.com/submit?url={{ .Permalink | safeURL }}&amp;title={{ .Title | safeURL }}" rel="noopener" target="_blank" aria-label="Share on Reddit">Reddit</a>
-          <a class="zn-share-button" href="mailto:?subject={{ .Title | safeURL }}&amp;body={{ $shareText | safeURL }}" aria-label="Share by email">Email</a>
-          <a class="zn-share-button" href="https://www.instagram.com/" rel="noopener" target="_blank" aria-label="Open Instagram to share manually">Instagram</a>
           <button class="zn-share-button zn-share-button--copy" type="button" data-copy-url="{{ .Permalink }}" aria-label="Copy article link">Copy link</button>
+          <a class="zn-share-button" href="https://x.com/intent/tweet?text={{ .Title | safeURL }}&amp;url={{ .Permalink | safeURL }}" rel="noopener" target="_blank" aria-label="Share on X">X</a>
+          <a class="zn-share-button" href="https://www.linkedin.com/sharing/share-offsite/?url={{ .Permalink | safeURL }}" rel="noopener" target="_blank" aria-label="Share on LinkedIn">LinkedIn</a>
+          <a class="zn-share-button" href="https://www.threads.net/intent/post?text={{ $shareText | safeURL }}" rel="noopener" target="_blank" aria-label="Share on Threads">Threads</a>
         </div>
       </div>
     </footer>
@@ -138,29 +139,22 @@
 <section class="zn-related" aria-labelledby="related-posts-title">
   <div class="zn-container zn-container--default">
     <h2 id="related-posts-title" class="zn-related__title">Related posts</h2>
-    <p class="zn-related__intro">More posts connected by topic, tag, or recent publishing context.</p>
-    <div class="zn-grid zn-grid--3">
+    <p class="zn-related__intro">Curated follow-up reading connected by topic, tag, or operating pattern.</p>
+    <div class="zn-related__list">
       {{- range $related }}
-      <article class="zn-card">
-        <a class="zn-card__cover" href="{{ .RelPermalink }}" aria-label="{{ .Title }}">
-          {{- if .Params.cover }}
-          <img src="{{ .Params.cover | relURL }}" alt="" loading="lazy">
-          {{- else }}
-          <div class="zn-card__cover-placeholder">{{ .Section }} / {{ .Date.Format "2006" }}</div>
+      <article class="zn-related-card">
+        <div class="zn-card__meta">
+          {{- with index (.Params.topics | default .Params.categories) 0 }}
+          <span class="zn-card__category zn-card__category--{{ . | urlize }}">{{ . }}</span>
+          <span class="zn-card__meta-dot">·</span>
           {{- end }}
-        </a>
-        <div class="zn-card__body">
-          <div class="zn-card__meta">
-            {{- with index (.Params.topics | default .Params.categories) 0 }}
-            <span class="zn-card__category zn-card__category--{{ . | urlize }}">{{ . }}</span>
-            <span class="zn-card__meta-dot">·</span>
-            {{- end }}
-            <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "Jan 2" }}</time>
-            <span class="zn-card__meta-dot">·</span>
-            <span>{{ .ReadingTime }} min</span>
-          </div>
-          <h3 class="zn-card__title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+          <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "Jan 2" }}</time>
+          <span class="zn-card__meta-dot">·</span>
+          <span>{{ .ReadingTime }} min</span>
         </div>
+        <h3 class="zn-related-card__title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+        <p class="zn-related-card__desc">{{ .Description | default (.Summary | plainify | truncate 150) }}</p>
+        <a class="zn-card__cta" href="{{ .RelPermalink }}">Read next</a>
       </article>
       {{- end }}
     </div>

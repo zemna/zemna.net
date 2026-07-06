@@ -2,6 +2,7 @@
 title: "Vue 3.6 Vapor Mode — No Virtual DOM, No Rewrite"
 date: 2026-06-21T07:00:00+07:00
 draft: false
+description: "What Vue 3.6 Vapor Mode changes, why skipping the Virtual DOM matters, and how teams can evaluate it without rewriting existing apps."
 topics: ["frontend", "vue", "performance"]
 cover: /covers/vue-3-6-vapor-mode.png
 summary: "Vue 3.6 Vapor Mode compiles SFC templates directly to DOM operations, hitting Solid.js-speed renders without rewriting your codebase. Here's how it works, what it can't do yet, and why teams should start piloting it now."

@@ -2,6 +2,7 @@
 title: "Closed Loop Beats More Automation"
 date: 2026-07-05T07:00:00+07:00
 draft: false
+description: "Why automation only compounds when it closes the loop with metrics, review, and next actions instead of simply generating more output."
 topics: ["workflow"]
 cover: /covers/closed-loop-beats-more-automation.png
 ---

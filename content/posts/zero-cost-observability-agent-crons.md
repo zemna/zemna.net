@@ -4,7 +4,7 @@ date: 2026-07-06T07:00:00+07:00
 draft: false
 topics: ["devops", "reliability"]
 tags: ["observability", "cron", "ai-agents", "laravel", "vue", "posthog", "sentry", "opentelemetry"]
-description: "Before buying a larger automation dashboard, prove one artifact, one alert, and one rollback path. This is a practical observability setup for small teams running AI agents, cron jobs, SaaS workflows, and content pipelines that report success without evidence."
+description: "A low-cost observability pattern for agent crons using logs, artifacts, summaries, and delivery checks before adding paid monitoring tools."
 cover: /covers/zero-cost-observability-agent-crons.png
 slug: zero-cost-observability-agent-crons
 ---

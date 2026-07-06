@@ -2,6 +2,7 @@
 title: "The Agent Edit Contract I Use Before a Coding Agent Touches a Repo"
 date: 2026-07-04T07:00:00+07:00
 draft: false
+description: "A practical contract for giving coding agents repository context, edit boundaries, verification steps, and rollback paths before they touch code."
 topics: ["tutorial", "ai-agents"]
 cover: /covers/agent-edit-contract.png
 ---

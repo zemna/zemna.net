@@ -1,0 +1,15 @@
+{{- $src := .src -}}
+{{- $alt := .alt | default "" -}}
+{{- $loading := .loading | default "lazy" -}}
+{{- $class := .class | default "" -}}
+{{- $ariaHidden := .ariaHidden | default false -}}
+{{- $webp := replaceRE `\.(png|jpg|jpeg)$` ".webp" $src -}}
+{{- $hasWebp := and (ne $webp $src) (fileExists (printf "static%s" $webp)) -}}
+{{- if $hasWebp -}}
+<picture{{ with $class }} class="{{ . }}"{{ end }}>
+  <source srcset="{{ $webp | relURL }}" type="image/webp">
+  <img src="{{ $src | relURL }}" alt="{{ $alt }}" loading="{{ $loading }}" decoding="async"{{ if $ariaHidden }} aria-hidden="true"{{ end }}>
+</picture>
+{{- else -}}
+<img{{ with $class }} class="{{ . }}"{{ end }} src="{{ $src | relURL }}" alt="{{ $alt }}" loading="{{ $loading }}" decoding="async"{{ if $ariaHidden }} aria-hidden="true"{{ end }}>
+{{- end -}}

@@ -2,6 +2,7 @@
 title: "I Swapped My LLM Backend — The API Call Worked on the First Try"
 date: 2026-06-25T07:00:00+07:00
 draft: false
+description: "A field report on changing an LLM backend cleanly: where provider abstraction helps, where costs shift, and what still needs verification."
 topics: ["ai"]
 cover: /covers/i-swapped-my-llm-backend.png
 ---

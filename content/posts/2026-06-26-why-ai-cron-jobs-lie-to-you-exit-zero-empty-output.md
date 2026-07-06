@@ -2,6 +2,7 @@
 title: "Why AI Cron Jobs Lie to You: The Exit 0 With Empty Output Pattern"
 date: 2026-06-26T07:00:00+07:00
 draft: false
+description: "Why a green cron exit can still mean failed work, and how to verify agent jobs by checking useful output instead of process status."
 topics: ["ai"]
 cover: /covers/ai-cron-jobs-lie-exit-zero-empty-output.png
 ---

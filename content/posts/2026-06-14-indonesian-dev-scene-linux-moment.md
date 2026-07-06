@@ -2,7 +2,7 @@
 title: "The Indonesian developer scene is having its Linux moment"
 date: 2026-06-14
 description: "Five years of quiet, distributed, community-driven tooling work. The results are starting to show up in the kinds of projects that get adopted outside the country."
-topics: ["Indonesia"]
+topics: ["indonesia"]
 tags: ["indonesia", "open-source", "community"]
 draft: false
 cover: "/covers/indonesia-cover.png"

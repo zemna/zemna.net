@@ -2,6 +2,7 @@
 title: "Your Coding Agent Needs a Map, Not a Bigger Context Window"
 date: 2026-07-03T07:00:00+07:00
 draft: false
+description: "Why coding agents need compact repository maps, ownership boundaries, and verification paths more than bigger context windows."
 topics: ["ai"]
 cover: /covers/coding-agent-needs-a-map.png
 ---

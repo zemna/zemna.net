@@ -2,6 +2,7 @@
 title: "Your Cron Job Is Not Healthy Until the Artifact Proves It"
 date: 2026-06-30T07:00:00+07:00
 draft: false
+description: "A production checklist for cron jobs that proves useful artifacts exist, are fresh, and can be consumed downstream after the process exits."
 topics: ["tutorial", "reliability"]
 cover: /covers/artifact-health-checks-for-agent-cron-jobs.png
 ---

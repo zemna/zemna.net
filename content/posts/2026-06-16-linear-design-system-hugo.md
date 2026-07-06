@@ -3,9 +3,9 @@ title: "How I Dissected 54 Design Systems and Transplanted Linear.app DNA Into M
 date: 2026-06-16T18:00:00+07:00
 draft: false
 slug: "linear-design-system-hugo"
-description: "I told my AI agent my blog looked like garbage. It loaded 54 real-world design systems, ran a comparative analysis, and rebuilt the entire theme with Linear.app's design tokens. Swapped between three AI models mid-task and learned which one handles structure vs. polish. 1,500 lines of CSS, 3 commits, one afternoon."
+description: "How a Hugo blog adopted a token-driven design system from real references, turning brand choices into reusable CSS and publishing rules."
 cover: "covers/linear-design-system.png"
-topics: ["Build"]
+topics: ["build"]
 tags: ["design-system", "hugo", "linear", "css", "ai-agent", "build-in-public", "hermes"]
 ---
 

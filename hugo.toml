@@ -88,6 +88,16 @@ summaryLength = 35
 
 # Footer menu
 [[menu.footer]]
+  name = "Start Here"
+  url = "/start-here/"
+  weight = 5
+
+[[menu.footer]]
+  name = "Uses"
+  url = "/uses/"
+  weight = 8
+
+[[menu.footer]]
   name = "RSS"
   url = "/index.xml"
   weight = 10

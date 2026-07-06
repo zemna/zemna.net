@@ -2,7 +2,8 @@
 title: "AI Agent Frameworks in 2026 — What the Comparison Charts Don't Tell You"
 date: 2026-06-22T07:00:00+07:00
 draft: false
-topics: ["AI"]
+description: "A pragmatic guide to choosing AI agent frameworks by operating model, integration cost, lock-in risk, and production failure modes."
+topics: ["ai"]
 cover: /covers/ai-agent-frameworks-2026.png
 ---
 

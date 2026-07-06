@@ -1,0 +1,72 @@
+{{- $graph := slice -}}
+
+{{- $sameAs := slice (printf "https://x.com/%s" (replace site.Params.twitter "@" "")) (printf "https://instagram.com/%s" (replace site.Params.instagram "@" "")) (printf "https://github.com/%s" site.Params.github) (printf "https://www.linkedin.com/in/%s/" site.Params.linkedin) -}}
+{{- $person := dict
+  "@type" "Person"
+  "@id" (printf "%s#person" site.BaseURL)
+  "name" site.Params.author
+  "jobTitle" site.Params.authorRole
+  "url" site.BaseURL
+  "image" (absURL site.Params.authorAvatar)
+  "sameAs" $sameAs
+  "knowsAbout" (slice "AI agents" "Software architecture" "Laravel" "Vue" "DevOps" "Indonesia tech" "Korean tech" "Static publishing")
+-}}
+
+{{- $website := dict
+  "@type" "WebSite"
+  "@id" (printf "%s#website" site.BaseURL)
+  "url" site.BaseURL
+  "name" site.Title
+  "description" site.Params.description
+  "publisher" (dict "@id" (printf "%s#person" site.BaseURL))
+  "potentialAction" (dict "@type" "SearchAction" "target" (printf "%s?search={search_term_string}" site.BaseURL) "query-input" "required name=search_term_string")
+-}}
+{{- $graph = $graph | append $website -}}
+{{- $graph = $graph | append $person -}}
+
+{{- if not .IsHome -}}
+  {{- $crumbs := slice (dict "@type" "ListItem" "position" 1 "name" "Home" "item" site.BaseURL) -}}
+  {{- if eq .Section "posts" -}}
+    {{- $crumbs = $crumbs | append (dict "@type" "ListItem" "position" 2 "name" "Blog" "item" (absURL "blog/")) -}}
+    {{- $crumbs = $crumbs | append (dict "@type" "ListItem" "position" 3 "name" .Title "item" .Permalink) -}}
+  {{- else -}}
+    {{- $crumbs = $crumbs | append (dict "@type" "ListItem" "position" 2 "name" .Title "item" .Permalink) -}}
+  {{- end -}}
+  {{- $graph = $graph | append (dict "@type" "BreadcrumbList" "@id" (printf "%s#breadcrumb" .Permalink) "itemListElement" $crumbs) -}}
+{{- end -}}
+
+{{- if .IsHome -}}
+  {{- $graph = $graph | append (dict "@type" "ProfilePage" "@id" (printf "%s#profile" site.BaseURL) "url" site.BaseURL "name" (printf "%s profile" site.Params.author) "mainEntity" (dict "@id" (printf "%s#person" site.BaseURL))) -}}
+{{- else if and .IsPage (eq .Section "posts") -}}
+  {{- $image := cond (isset .Params "cover") (absURL .Params.cover) (absURL "og-default.png") -}}
+  {{- $keywords := slice -}}
+  {{- with .Params.tags }}{{- $keywords = $keywords | append . -}}{{- end -}}
+  {{- with .Params.topics }}{{- $keywords = $keywords | append . -}}{{- end -}}
+  {{- $article := dict
+    "@type" "BlogPosting"
+    "@id" (printf "%s#article" .Permalink)
+    "headline" .Title
+    "description" (.Description | default (.Summary | plainify))
+    "image" (slice $image)
+    "datePublished" (.PublishDate.Format "2006-01-02T15:04:05Z07:00")
+    "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00")
+    "author" (dict "@id" (printf "%s#person" site.BaseURL))
+    "publisher" (dict "@id" (printf "%s#person" site.BaseURL))
+    "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink)
+    "isPartOf" (dict "@id" (printf "%s#website" site.BaseURL))
+    "wordCount" .WordCount
+    "keywords" $keywords
+    "articleSection" (.Params.topics | default .Params.categories)
+  -}}
+  {{- $graph = $graph | append $article -}}
+{{- else if or (eq .Kind "section") (eq .Kind "taxonomy") (eq .Kind "term") -}}
+  {{- $items := slice -}}
+  {{- range $idx, $page := first 20 .Pages -}}
+    {{- $items = $items | append (dict "@type" "ListItem" "position" (add $idx 1) "name" $page.Title "url" $page.Permalink) -}}
+  {{- end -}}
+  {{- $graph = $graph | append (dict "@type" "CollectionPage" "@id" (printf "%s#collection" .Permalink) "name" .Title "url" .Permalink "isPartOf" (dict "@id" (printf "%s#website" site.BaseURL)) "mainEntity" (dict "@type" "ItemList" "itemListElement" $items)) -}}
+{{- end -}}
+
+<script type="application/ld+json">
+{{ dict "@context" "https://schema.org" "@graph" $graph | jsonify (dict "indent" "  ") | safeJS }}
+</script>

@@ -2,6 +2,7 @@
 title: "Long-Running AI Agents — From Demos to Production"
 date: 2026-06-19
 draft: false
+description: "How to move AI agents from demos to production by adding checkpoints, logs, artifact proof, budget limits, and human-readable recovery paths."
 cover: /covers/long-running-agents.png
 topics: ["ai-agents", "software-engineering", "devops", "llm"]
 ---

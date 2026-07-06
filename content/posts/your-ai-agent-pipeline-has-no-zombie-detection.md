@@ -2,6 +2,7 @@
 title: "Your AI Agent Pipeline Has No Zombie Detection — Here's How to Add It"
 date: 2026-06-24T07:00:00+07:00
 draft: false
+description: "How to detect zombie AI agent pipelines with freshness checks, artifact validation, and downstream proof instead of trusting running processes."
 topics: ["ai"]
 cover: /covers/ai-agent-zombie-detection.png
 ---

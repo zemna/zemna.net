@@ -430,11 +430,14 @@ img, svg, video { max-width: 100%; height: auto; display: block; }
   position: relative;
   overflow: hidden;
 }
+.zn-card__cover picture,
 .zn-card__cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+.zn-card__cover img {
   transition: transform var(--zn-duration-slow) var(--zn-ease-out);
 }
 .zn-card:hover .zn-card__cover img { transform: scale(1.04); }

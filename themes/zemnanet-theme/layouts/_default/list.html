@@ -26,7 +26,7 @@
     <article class="zn-featured" data-category="{{ with index ($featured.Params.topics | default $featured.Params.categories) 0 }}{{ . | urlize }}{{ end }}">
       <a class="zn-featured__cover" href="{{ $featured.RelPermalink }}" aria-label="{{ $featured.Title }}">
         {{- if $featured.Params.cover }}
-        <img src="{{ $featured.Params.cover | relURL }}" alt="" loading="eager">
+        {{- partial "media/picture.html" (dict "src" $featured.Params.cover "alt" "" "loading" "eager") -}}
         {{- else }}
         <div class="zn-featured__placeholder">{{ $featured.Section }} / {{ $featured.Date.Format "2006" }}</div>
         {{- end }}
@@ -64,7 +64,7 @@
       <article class="zn-card" data-category="{{ with index (.Params.topics | default .Params.categories) 0 }}{{ . | urlize }}{{ end }}">
         <a class="zn-card__cover" href="{{ .RelPermalink }}" aria-label="{{ .Title }}">
           {{- if .Params.cover }}
-          <img src="{{ .Params.cover | relURL }}" alt="" loading="lazy">
+          {{- partial "media/picture.html" (dict "src" .Params.cover "alt" "" "loading" "lazy") -}}
           {{- else }}
           <div class="zn-card__cover-placeholder">{{ .Section }} / {{ .Date.Format "2006" }}</div>
           {{- end }}

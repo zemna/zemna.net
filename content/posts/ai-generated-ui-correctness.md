@@ -2,6 +2,7 @@
 title: "Code That Renders Is Not Code You Can Trust"
 date: 2026-07-01T07:00:00+07:00
 draft: false
+description: "A field note on why rendered UI is not enough, and how to verify AI-generated interfaces against behavior, accessibility, and maintenance risk."
 topics: ["frontend"]
 cover: /covers/ai-generated-ui-correctness.png
 ---

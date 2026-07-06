@@ -2,6 +2,7 @@
 title: "The JavaScript I Deleted With CSS: A 2026 Survival Guide"
 date: 2026-06-27T07:00:00+07:00
 draft: false
+description: "A 2026 frontend survival guide for replacing unnecessary JavaScript with modern CSS features while keeping behavior accessible and maintainable."
 topics: ["frontend"]
 cover: /covers/css-deleting-javascript-2026.png
 ---

@@ -2,7 +2,8 @@
 title: "The AI Coding Agent Arms Race — Why Model Portability Matters More Than Benchmarks"
 date: 2026-06-23T07:00:00+07:00
 draft: false
-topics: ["AI"]
+description: "Why model portability matters more than benchmark wins when AI coding tools must survive cost shifts, outages, and real legacy codebases."
+topics: ["ai"]
 cover: /covers/ai-coding-agent-arms-race-2026.png
 ---
 

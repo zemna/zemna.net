@@ -2,6 +2,7 @@
 title: "The 5 Cron Patterns That Lie to You — Exit 0 Doesn't Mean Success"
 date: 2026-06-28T07:00:00+07:00
 draft: false
+description: "Five cron patterns that look healthy while silently failing, with checks for stale files, empty outputs, partial JSON, and missing delivery."
 topics: ["devops", "infrastructure", "reliability"]
 cover: /covers/cron-patterns-lie.png
 ---

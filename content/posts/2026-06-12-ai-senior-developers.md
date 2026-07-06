@@ -2,7 +2,7 @@
 title: "Why I'm no longer worried about AI replacing senior developers"
 date: 2026-06-12
 description: "Two years of watching the field from Jakarta. The replacement threat was always a junior-developer story. The senior-developer story is the opposite of what most people are writing about."
-topics: ["Opinion"]
+topics: ["opinion"]
 tags: ["ai", "career", "opinion"]
 cover: "/covers/opinion-cover.png"
 draft: false
