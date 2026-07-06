@@ -5,6 +5,12 @@ draft: false
 description: "A practical contract for giving coding agents repository context, edit boundaries, verification steps, and rollback paths before they touch code."
 topics: ["tutorial", "ai-agents"]
 cover: /covers/agent-edit-contract.png
+seo:
+  primaryQuery: "agent edit contract"
+  secondaryQueries:
+    - "AI coding agent handoff"
+    - "agent repository contract"
+    - "coding agent workflow"
 ---
 
 A coding agent should not get write access just because the prompt sounds clear.
@@ -340,6 +346,11 @@ The final handoff format is part of the contract. Without it, the agent chooses 
 That table is the difference between a chat transcript and an engineering record.
 
 ![Review table comparing weak handoff and useful handoff](/img/agent-edit-contract-4.png)
+
+
+{{< field-note title="Field note" >}}
+The contract is not bureaucracy. It is a way to make the agent expose its assumptions before touching the repo. The payoff is fewer impressive diffs that hide broken intent.
+{{< /field-note >}}
 
 ## What you should do Monday morning
 

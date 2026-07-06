@@ -6,6 +6,12 @@ description: "What Vue 3.6 Vapor Mode changes, why skipping the Virtual DOM matt
 topics: ["frontend", "vue", "performance"]
 cover: /covers/vue-3-6-vapor-mode.png
 summary: "Vue 3.6 Vapor Mode compiles SFC templates directly to DOM operations, hitting Solid.js-speed renders without rewriting your codebase. Here's how it works, what it can't do yet, and why teams should start piloting it now."
+seo:
+  primaryQuery: "Vue 3.6 Vapor Mode"
+  secondaryQueries:
+    - "Vue Vapor Mode"
+    - "Vue no virtual DOM"
+    - "Vue 3.6 performance"
 ---
 
 100,000 components mounted in roughly 100 milliseconds. Render times slashed by up to 97% in extreme cases. A baseline bundle under 10KB. These aren't aspirational roadmap slides — they're the numbers Evan You's team delivered at Vue.js Nation 2025, and they're now running in production-adjacent code with v3.6.0-beta.16, released June 17, 2026.
@@ -221,3 +227,13 @@ Vue 3.6 Vapor Mode is a strategic signal, not just a release note. Three practic
 **Third, the migration cost is the lowest in framework history for a transition of this magnitude.** Composition API code is portable. The opt-in is per-file. The interop story, while imperfect, is real. You don't need a rewrite — you need a pilot on two or three high-traffic routes, a feature flag, and instrumentation.
 
 The concrete next step: identify one rendering-bound view in your production application. Add `vapor` to its `<script setup>`. Test it. Deploy it behind a flag. Instrument it. Real benchmarks on real hardware with real users will tell you more than any synthetic 100K-component demo ever could. By the time Vue 3.6 exits beta, you'll already know whether Vapor delivers in your specific context — and which three files to flip next.
+
+{{< field-note title="Field note" >}}
+The right question is not whether Vapor Mode is impressive. It is where a compiler-driven path removes enough runtime cost to matter without making the team relearn the product.
+{{< /field-note >}}
+
+## What you should do Monday morning
+
+1. Pick one isolated Vue component with measurable render cost.
+2. Prototype the new path beside the current implementation.
+3. Measure bundle and interaction cost before talking about migration.

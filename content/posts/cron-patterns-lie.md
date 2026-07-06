@@ -5,6 +5,12 @@ draft: false
 description: "Five cron patterns that look healthy while silently failing, with checks for stale files, empty outputs, partial JSON, and missing delivery."
 topics: ["devops", "infrastructure", "reliability"]
 cover: /covers/cron-patterns-lie.png
+seo:
+  primaryQuery: "cron patterns that lie"
+  secondaryQueries:
+    - "cron job false success"
+    - "cron monitoring patterns"
+    - "scheduled job reliability"
 ---
 
 You set up a cron job — let's say a database backup. It runs every night at 2 AM. The exit code is always 0. The dashboard is green. Six months go by. Then one day you need to restore, and the backup file is 0 bytes. The job never failed. It just never actually worked.
@@ -221,6 +227,11 @@ curl -fsSL -m 10 "$HEALTHCHECK_URL" > /dev/null
 If the job fails (set -e fires), it never reaches the curl and the healthcheck service alerts after the grace period. If the server crashes, the ping never arrives. If cron itself is misconfigured and doesn't run the job, same result. The dead man's switch catches every failure mode except one: the job runs, exits 0, pings success, but produced nothing useful. That's what output verification is for.
 
 ![The output verification trap](/img/cron-patterns-4.png)
+
+
+{{< field-note title="Field note" >}}
+Cron failure usually hides in the space between command success and business success. Treat every scheduled job as a product workflow with an observable output, not just a shell command.
+{{< /field-note >}}
 
 ## What You Should Do Monday Morning
 

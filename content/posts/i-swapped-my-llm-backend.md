@@ -5,6 +5,12 @@ draft: false
 description: "A field report on changing an LLM backend cleanly: where provider abstraction helps, where costs shift, and what still needs verification."
 topics: ["ai"]
 cover: /covers/i-swapped-my-llm-backend.png
+seo:
+  primaryQuery: "swap LLM backend"
+  secondaryQueries:
+    - "LLM backend migration"
+    - "provider abstraction for LLM"
+    - "model backend switching"
 ---
 
 # I Swapped My LLM Backend — The API Call Worked on the First Try
@@ -289,3 +295,13 @@ If I were starting a production LLM project today, here is what I would build in
 The API call is the least interesting part of an LLM integration. Switching models is trivially easy at the transport layer and punishingly difficult at every layer above it. Until you have done it, you will underestimate the cost by a factor of five. Until you have shadow-tested the new model against real traffic, you will assume the wrong things are breaking. Build for portability now, or pay for the migration later. The migration is always more expensive than the preparation.
 
 ![Eleven-minute migration vs three-week fallout — config change is the easy part](/img/i-swapped-my-llm-backend-4.png)
+
+{{< field-note title="Field note" >}}
+A backend swap feels easy when the first API call works. The real test is whether prompts, streaming, tool calls, retries, cost tracking, and fallback semantics still behave the same way under pressure.
+{{< /field-note >}}
+
+## What you should do Monday morning
+
+1. Wrap one LLM call behind a local interface.
+2. Record latency, cost, and output shape before and after the swap.
+3. Keep the old backend available until the failure modes are known.

@@ -5,6 +5,12 @@ draft: false
 description: "How to detect zombie AI agent pipelines with freshness checks, artifact validation, and downstream proof instead of trusting running processes."
 topics: ["ai"]
 cover: /covers/ai-agent-zombie-detection.png
+seo:
+  primaryQuery: "AI agent zombie detection"
+  secondaryQueries:
+    - "zombie AI agent pipeline"
+    - "agent pipeline monitoring"
+    - "detect stuck AI automation"
 ---
 
 I ran an autonomous task system for three months before I realized it had a blind spot the size of a barn door. Processes were "healthy." CPU was fine. Memory was fine. And yet, nothing was getting done.
@@ -300,3 +306,13 @@ If you do one thing after reading this, do this:
 3. **Add output verification for every task that produces artifacts.** Files, database writes, API responses — check existence, size, freshness, and structure before marking complete.
 
 Three layers. Under 150 lines of code. Your agents are already failing silently. The only question is whether you're detecting it.
+
+{{< field-note title="Field note" >}}
+A zombie agent is dangerous because it looks busy enough to avoid attention. The fix is not more logging. The fix is a freshness contract that says what should change, by when, and who gets paged when it does not.
+{{< /field-note >}}
+
+## What you should do Monday morning
+
+1. Add a freshness timestamp to one agent pipeline.
+2. Define the maximum acceptable age for the next artifact.
+3. Alert on stale output, not just crashed processes.

@@ -9,7 +9,12 @@ cover: "/covers/code-cover.png"
 author: "Shinjae Kang"
 authorRole: "Senior Software Developer"
 authorLocation: "Jakarta, Indonesia"
-
+seo:
+  primaryQuery: "stop reaching for a state library"
+  secondaryQueries:
+    - "frontend state library overuse"
+    - "Vue state management decision"
+    - "when not to use state management library"
 ---
 
 Every JavaScript codebase I've touched in the last two years has had a state-management library somewhere in `package.json`. Most of them didn't need one.
@@ -66,3 +71,17 @@ The 12-line store above has no version, no maintainer, no breaking change. It'll
 ---
 
 _Try this on one screen of your app this week. You'll know within an hour whether the library was load-bearing or not._
+
+{{< field-note title="Field note" >}}
+Most frontend state problems I see are ownership problems first. Before adding a store, name who owns the data, when it expires, and which screen is allowed to mutate it. The library should come after that map, not before it.
+{{< /field-note >}}
+
+## What you should do Monday morning
+
+1. Pick one shared state object in your app.
+2. Write its owner, lifetime, and invalidation rule.
+3. Remove one global state path that is only used by a single screen.
+
+## Refresh note
+
+This piece is now part of the site's operating archive. Read it as a decision pattern, not as a frozen news item: check whether the tool, model, or platform detail has changed, then keep the underlying verification habit if it still reduces operational risk.

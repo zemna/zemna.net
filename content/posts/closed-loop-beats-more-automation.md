@@ -5,6 +5,12 @@ draft: false
 description: "Why automation only compounds when it closes the loop with metrics, review, and next actions instead of simply generating more output."
 topics: ["workflow"]
 cover: /covers/closed-loop-beats-more-automation.png
+seo:
+  primaryQuery: "closed loop automation"
+  secondaryQueries:
+    - "automation feedback loop"
+    - "AI automation metrics"
+    - "closed loop content operations"
 ---
 
 A broken automation system is easy to recognize when it crashes. The dangerous one exits cleanly, posts a green check, and teaches you nothing. That is the failure mode I keep seeing in agent workflows, content pipelines, scheduled jobs, and developer tooling: the work runs, the logs look polite, and the system forgets to learn from the thing that just happened.
@@ -219,6 +225,11 @@ I also separate blocking gates from advisory notes. A blocking gate prevents the
 The same distinction helps with human review. A reviewer should not have to decide from scratch whether a warning is fatal. The contract should say which failures stop the run, which failures create a follow-up task, and which failures only affect the next experiment. That is how taste becomes operational without becoming arbitrary.
 
 ![Closed-loop gate checklist](/img/closed-loop-beats-more-automation-3.png)
+
+
+{{< field-note title="Field note" >}}
+Automation without readback creates motion. Closed-loop automation creates judgment. The difference is whether the next run changes because the last run produced evidence.
+{{< /field-note >}}
 
 ## What you should do Monday morning
 

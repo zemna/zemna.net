@@ -9,7 +9,12 @@ cover: "/covers/tools-cover.png"
 author: "Shinjae Kang"
 authorRole: "Senior Software Developer"
 authorLocation: "Jakarta, Indonesia"
-
+seo:
+  primaryQuery: "Hermes Agent review"
+  secondaryQueries:
+    - "Hermes Agent practical review"
+    - "local AI agent workflow"
+    - "AI agent automation review"
 ---
 
 I have been running Hermes as my primary AI agent for about six months. This is a pragmatic review — not sponsored, not a teardown. Just notes from daily use.
@@ -49,3 +54,17 @@ The thing I didn't expect: **the agent's value scales with how much you invest i
 ---
 
 _I keep my full setup notes at [github.com/zemnanet/hermes-config](https://github.com/zemnanet/hermes-config) (mirror only — the real config is on my server)._
+
+{{< field-note title="Field note" >}}
+The useful part of an agent is not the chat transcript. It is the repeatable operating loop around tools, files, cron jobs, and verification. If that loop is not inspectable, the agent feels impressive but cannot be trusted for daily work.
+{{< /field-note >}}
+
+## What you should do Monday morning
+
+1. Choose one recurring assistant task.
+2. Add a real verification step that produces a file, status code, or diff.
+3. Keep the task only if the next run can prove what changed.
+
+## Refresh note
+
+This piece is now part of the site's operating archive. Read it as a decision pattern, not as a frozen news item: check whether the tool, model, or platform detail has changed, then keep the underlying verification habit if it still reduces operational risk.

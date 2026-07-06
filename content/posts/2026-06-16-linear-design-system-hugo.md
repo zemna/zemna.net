@@ -7,6 +7,12 @@ description: "How a Hugo blog adopted a token-driven design system from real ref
 cover: "covers/linear-design-system.png"
 topics: ["build"]
 tags: ["design-system", "hugo", "linear", "css", "ai-agent", "build-in-public", "hermes"]
+seo:
+  primaryQuery: "Linear design system Hugo blog"
+  secondaryQueries:
+    - "Hugo design system"
+    - "Linear app inspired blog design"
+    - "token driven static site"
 ---
 
 This morning I opened my blog and thought: this looks like a 2015 Tistory template. So I told my Hermes agent, in exactly these words: "This looks like garbage. Go through all 54 design systems and rebuild it with the best one."
@@ -106,3 +112,17 @@ Live site: [zemna.net](https://zemna.net)
 Post URL: [zemna.net/blog/linear-design-system-hugo/](https://zemna.net/blog/linear-design-system-hugo/)
 
 GitHub: [github.com/zemna/zemna.net](https://github.com/zemna/zemna.net)
+
+{{< field-note title="Field note" >}}
+A design system only starts paying back when future changes become boring. If a color, spacing rule, or card treatment still needs a one-off decision every time, it is not a system yet. It is a memory burden disguised as taste.
+{{< /field-note >}}
+
+## What you should do Monday morning
+
+1. Pick one repeated component on your site.
+2. Replace any hard-coded color or spacing with a token.
+3. Change the token once and verify the component updates everywhere.
+
+## Refresh note
+
+This piece is now part of the site's operating archive. Read it as a decision pattern, not as a frozen news item: check whether the tool, model, or platform detail has changed, then keep the underlying verification habit if it still reduces operational risk.

@@ -5,6 +5,12 @@ draft: false
 description: "Why model portability matters more than benchmark wins when AI coding tools must survive cost shifts, outages, and real legacy codebases."
 topics: ["ai"]
 cover: /covers/ai-coding-agent-arms-race-2026.png
+seo:
+  primaryQuery: "AI coding agent arms race 2026"
+  secondaryQueries:
+    - "AI coding agent portability"
+    - "coding agent benchmarks"
+    - "model portability for developers"
 ---
 
 Last month, Claude Opus 4.7 hit 1567 Elo on WebDev Arena — the highest any model has ever scored on that benchmark. The same week, GPT-5.5 claimed the Terminal-Bench 2.0 crown at 82.7%. And in Jakarta, where I've been shipping software since before npm existed, nobody in my Slack channels cared. The conversation wasn't about which model is best. It was about which tool lets you use *any* model — and switch when the numbers stop working in your favor.
@@ -164,3 +170,13 @@ The tool you pick today is a multi-year commitment. Teams build workflows, integ
 OpenCode's architecture decision — model-agnostic at the protocol level, MIT-licensed, air-gapped by default — isn't flashy. It doesn't make for a good benchmark score. But it's the right architecture for a world where the best model changes faster than your sprint cycles.
 
 Pick the tool that lets you leave when the model stops being right for you. Not the one that bets everything on a model that might not be #1 next quarter.
+
+{{< field-note title="Field note" >}}
+The arms race rewards switching. Production rewards portability. The team that can move prompts, tests, and acceptance gates across tools gets the upside without becoming a hostage to one vendor cycle.
+{{< /field-note >}}
+
+## What you should do Monday morning
+
+1. Write your coding-agent acceptance checks outside the tool UI.
+2. Run the same change through two agents.
+3. Keep the agent whose output is easiest to verify and rollback.

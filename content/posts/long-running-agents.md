@@ -5,6 +5,12 @@ draft: false
 description: "How to move AI agents from demos to production by adding checkpoints, logs, artifact proof, budget limits, and human-readable recovery paths."
 cover: /covers/long-running-agents.png
 topics: ["ai-agents", "software-engineering", "devops", "llm"]
+seo:
+  primaryQuery: "long running AI agents production"
+  secondaryQueries:
+    - "AI agents from demos to production"
+    - "long running agent failure modes"
+    - "production AI agent orchestration"
 ---
 
 Anthropic found that even frontier models fail 4 specific ways when you let them work longer than 5 minutes. I hit all of them before I figured out the fix.
@@ -241,3 +247,13 @@ If I were starting over today, here's the stack I'd build on:
 5. **E2E tests written by humans, run by agents.** The test suite is the contract. The agent's job is to fulfill it. The human's job is to define what "fulfill" means.
 
 The agents that work across days aren't smarter than the ones that work across minutes. They're wrapped in better engineering. The model is the easy part. The system around it is where the real work lives.
+
+{{< field-note title="Field note" >}}
+Long-running agents do not fail like short prompts. They drift, forget partial decisions, and declare victory against their own checklist. Production needs external checkpoints the agent cannot simply talk past.
+{{< /field-note >}}
+
+## What you should do Monday morning
+
+1. Break one long agent task into checkpoints.
+2. Require a real artifact at each checkpoint.
+3. Stop the run when an artifact is missing instead of letting the agent explain it away.

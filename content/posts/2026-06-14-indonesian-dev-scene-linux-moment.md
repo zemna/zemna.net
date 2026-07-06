@@ -9,7 +9,12 @@ cover: "/covers/indonesia-cover.png"
 author: "Shinjae Kang"
 authorRole: "Senior Software Developer"
 authorLocation: "Jakarta, Indonesia"
-
+seo:
+  primaryQuery: "Indonesian developer scene Linux moment"
+  secondaryQueries:
+    - "Indonesia developers Linux"
+    - "Indonesian software engineering ecosystem"
+    - "Jakarta developer tools"
 ---
 
 I've been in Jakarta long enough to have watched the Indonesian tech scene go through three hype cycles. The current one is different — and more durable — because it's not being driven by outside attention.
@@ -44,3 +49,17 @@ Indonesia is currently at step three. Step four is what makes a tech ecosystem d
 ---
 
 _Lived experience: I've been to four Indonesian tech meetups this year. The energy is different from the 2019 scene — less about exit strategies, more about building things that work here._
+
+{{< field-note title="Field note" >}}
+In Indonesia, tooling shifts rarely arrive as one official migration. They show up in small decisions: a cheaper server, a Linux-first deploy path, a team member comfortable with terminals, and a project that no longer needs a Windows-only workaround.
+{{< /field-note >}}
+
+## What you should do Monday morning
+
+1. Audit one workflow that still assumes a specific desktop OS.
+2. Move the deployment or verification step to a Linux-friendly script.
+3. Document the exact command so the next developer can repeat it.
+
+## Refresh note
+
+This piece is now part of the site's operating archive. Read it as a decision pattern, not as a frozen news item: check whether the tool, model, or platform detail has changed, then keep the underlying verification habit if it still reduces operational risk.

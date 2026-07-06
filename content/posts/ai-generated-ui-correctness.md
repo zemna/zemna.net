@@ -5,6 +5,12 @@ draft: false
 description: "A field note on why rendered UI is not enough, and how to verify AI-generated interfaces against behavior, accessibility, and maintenance risk."
 topics: ["frontend"]
 cover: /covers/ai-generated-ui-correctness.png
+seo:
+  primaryQuery: "AI generated UI correctness"
+  secondaryQueries:
+    - "AI UI code review"
+    - "frontend correctness checks"
+    - "generated UI testing"
 ---
 
 A developer asks an AI agent to build a settings modal. Thirty seconds later, there is a modal on screen. It opens when you click a button. It closes when you click the backdrop. It looks clean. The developer merges the pull request.
@@ -224,6 +230,11 @@ The Foldkit DevTools reinforce this. Because every state change flows through Me
 ![Elm architecture update timeline for auditable frontend state](/img/ai-generated-ui-correctness-5.png)
 
 The broader lesson: **if you want generated code you can trust, choose architectures that make trust cheap.** Unidirectional data flow, explicit state machines, and command-based side effects are not academic preferences. They are practical tools for making generated code reviewable. When the architecture forces correctness, the AI has less room to be wrong, and the reviewer has less surface area to check.
+
+
+{{< field-note title="Field note" >}}
+A rendered UI is only the first checkpoint. The real review asks whether the state transitions, empty states, error states, accessibility labels, and product promises still match the system behind it.
+{{< /field-note >}}
 
 ## What You Should Do Monday Morning
 

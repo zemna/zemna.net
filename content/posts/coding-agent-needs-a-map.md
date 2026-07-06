@@ -5,6 +5,12 @@ draft: false
 description: "Why coding agents need compact repository maps, ownership boundaries, and verification paths more than bigger context windows."
 topics: ["ai"]
 cover: /covers/coding-agent-needs-a-map.png
+seo:
+  primaryQuery: "coding agent repository map"
+  secondaryQueries:
+    - "AI coding agent context map"
+    - "repo map for coding agents"
+    - "agent context engineering"
 ---
 
 A coding agent with a very large context window can still make the wrong change in the wrong file.
@@ -247,6 +253,11 @@ The contract narrows autonomy in the places that matter. The agent is still free
 This also keeps teams honest about tool maturity. `@ttsc/graph` currently rides on the TypeScript-Go / TypeScript v7 release-candidate track [Source: https://github.com/samchon/ttsc/tree/master/packages/graph]. ABCoder's TypeScript parser is a research and open-source indexing path, not a magic production default [Source: https://arxiv.org/html/2604.18413v1]. Detection-as-code practices vary by stack and ownership model. None of this says "install one package and trust the agent." It says the direction is clear enough to start building the harness.
 
 ![Production agent workflow from graph first to handoff with handles](/img/coding-agent-needs-a-map-3.png)
+
+
+{{< field-note title="Field note" >}}
+More context is not the same as better orientation. A small map that names ownership, boundaries, tests, and dangerous files can outperform a giant context window full of noise.
+{{< /field-note >}}
 
 ## What you should do Monday morning
 

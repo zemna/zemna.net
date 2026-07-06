@@ -15,6 +15,9 @@ REQUIRED = [
     PUBLIC / "blog" / "index.html",
     PUBLIC / "start-here" / "index.html",
     PUBLIC / "uses" / "index.html",
+    PUBLIC / "ai-agent-operations" / "index.html",
+    PUBLIC / "laravel-vue-saas" / "index.html",
+    PUBLIC / "developer-tools" / "index.html",
     PUBLIC / "blog" / "zero-cost-observability-agent-crons" / "index.html",
 ]
 

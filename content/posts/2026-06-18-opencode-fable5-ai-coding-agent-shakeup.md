@@ -6,6 +6,12 @@ tags: ["opencode", "claude-fable-5", "cursor", "ai-coding-agents", "benchmarks",
 slug: opencode-fable5-ai-coding-shakeup
 description: "OpenCode hit 160K GitHub stars and dethroned Cursor as the #1 AI dev tool. Claude Fable 5 launched with record benchmarks — then got suspended 3 days later. Here's what actually matters for your workflow."
 cover: /covers/opencode-fable5-shakeup.png
+seo:
+  primaryQuery: "OpenCode AI coding agent shakeup"
+  secondaryQueries:
+    - "OpenCode coding agent"
+    - "AI coding agent market"
+    - "Claude Fable suspension"
 ---
 
 June 2026 is the month the AI coding agent landscape cracked open. Two stories broke within days of each other, and both have real implications for how you build software.
@@ -97,3 +103,17 @@ Two years ago, the question was "which AI coding tool should I use?" In June 202
 The answer: stay terminal-native, stay model-agnostic, and don't trust any single provider's availability guarantees. OpenCode gets this right. The rest of the industry is catching up.
 
 The shakeup isn't over. It's just getting started.
+
+{{< field-note title="Field note" >}}
+The lesson from tool shakeups is not to chase every winner. The lesson is to keep your work portable: prompts, test commands, and acceptance checks should survive when the agent shell changes.
+{{< /field-note >}}
+
+## What you should do Monday morning
+
+1. Move one agent instruction out of a vendor-specific chat and into the repo.
+2. Add the test command beside it.
+3. Try the same task with a second agent and compare only the final verified artifact.
+
+## Refresh note
+
+This piece is now part of the site's operating archive. Read it as a decision pattern, not as a frozen news item: check whether the tool, model, or platform detail has changed, then keep the underlying verification habit if it still reduces operational risk.

@@ -10,7 +10,12 @@ cover: "/covers/news-cover.png"
 author: "Shinjae Kang"
 authorRole: "Senior Software Developer"
 authorLocation: "Jakarta, Indonesia"
-
+seo:
+  primaryQuery: "Korean developer tooling consolidation"
+  secondaryQueries:
+    - "Korean dev tools"
+    - "developer tool consolidation"
+    - "software tooling market Korea"
 ---
 
 The Korean developer-tools market has historically been fragmented. Dozens of small teams shipping one thing well, each with its own API, its own auth model, its own quirks. That era is ending.
@@ -38,3 +43,17 @@ This is the same pattern we saw in the U.S. dev-tools market in 2018–2022. It'
 ---
 
 _Written in Jakarta, while monitoring a deployment that crossed three of these vendors' auth flows at once._
+
+{{< field-note title="Field note" >}}
+Consolidation is easiest to miss when every individual tool still looks useful. The signal is not one tool disappearing. It is the moment procurement, onboarding, and team habit all start preferring the same smaller set.
+{{< /field-note >}}
+
+## What you should do Monday morning
+
+1. List the tools your team pays for and the tools it actually opens daily.
+2. Mark every overlap in review, docs, monitoring, and deployment.
+3. Choose one overlap to remove before buying another seat.
+
+## Refresh note
+
+This piece is now part of the site's operating archive. Read it as a decision pattern, not as a frozen news item: check whether the tool, model, or platform detail has changed, then keep the underlying verification habit if it still reduces operational risk.

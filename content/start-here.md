@@ -13,8 +13,8 @@ If you are new here, read these paths in order.
 
 Start with the contract before the agent touches a repository.
 
-- [The Agent Edit Contract I Use Before a Coding Agent Touches a Repo](/blog/agent-edit-contract/)
-- [Your Coding Agent Needs a Map, Not a Bigger Context Window](/blog/coding-agent-needs-a-map/)
+- [The Agent Edit Contract I Use Before a Coding Agent Touches a Repo](/blog/the-agent-edit-contract-i-use-before-a-coding-agent-touches-a-repo/)
+- [Your Coding Agent Needs a Map, Not a Bigger Context Window](/blog/your-coding-agent-needs-a-map-not-a-bigger-context-window/)
 
 The core idea: context is not the same as permission. A useful agent needs a map, boundaries, verification, and rollback.
 
@@ -22,8 +22,8 @@ The core idea: context is not the same as permission. A useful agent needs a map
 
 Automation is only useful when the output can be trusted.
 
-- [Your Cron Job Is Not Healthy Until the Artifact Proves It](/blog/artifact-health-checks-for-agent-cron-jobs/)
-- [Why AI Cron Jobs Lie to You: The Exit 0 With Empty Output Pattern](/blog/why-ai-cron-jobs-lie-to-you-exit-zero-empty-output/)
+- [Your Cron Job Is Not Healthy Until the Artifact Proves It](/blog/your-cron-job-is-not-healthy-until-the-artifact-proves-it/)
+- [Why AI Cron Jobs Lie to You: The Exit 0 With Empty Output Pattern](/blog/why-ai-cron-jobs-lie-to-you-the-exit-0-with-empty-output-pattern/)
 - [Zero-Cost Observability for Agent Crons](/blog/zero-cost-observability-agent-crons/)
 
 The core idea: process status is not proof of work. Check fresh artifacts, useful output, and downstream delivery.
@@ -32,8 +32,8 @@ The core idea: process status is not proof of work. Check fresh artifacts, usefu
 
 Tools are useful until they become load-bearing without an exit path.
 
-- [Before You Adopt a Beta Library, Prove the Exit Path](/blog/beta-library-exit-path/)
-- [I Swapped My LLM Backend: The API Call Worked on the First Try](/blog/i-swapped-my-llm-backend/)
+- [Before You Adopt a Beta Library, Prove the Exit Path](/blog/before-you-adopt-a-beta-library-prove-the-exit-path/)
+- [I Swapped My LLM Backend: The API Call Worked on the First Try](/blog/i-swapped-my-llm-backend-the-api-call-worked-on-the-first-try/)
 - [Open Weights Just Ate the API Margin](/blog/open-weights-api-margin/)
 
 The core idea: the best tool is the one you can verify, afford, and replace when the assumptions change.

@@ -98,9 +98,24 @@ summaryLength = 35
   weight = 8
 
 [[menu.footer]]
+  name = "AI Ops"
+  url = "/ai-agent-operations/"
+  weight = 9
+
+[[menu.footer]]
+  name = "Laravel/Vue"
+  url = "/laravel-vue-saas/"
+  weight = 10
+
+[[menu.footer]]
+  name = "Dev Tools"
+  url = "/developer-tools/"
+  weight = 11
+
+[[menu.footer]]
   name = "RSS"
   url = "/index.xml"
-  weight = 10
+  weight = 20
 
 [[menu.footer]]
   name = "Sitemap"

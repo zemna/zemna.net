@@ -5,6 +5,12 @@ draft: false
 topics: ["ai"]
 cover: /covers/autonomous-ai-agent-cron-pipelines.png
 description: "What actually breaks when you run AI agents on cron 24/7 — zombie tasks, subagent black holes, and the architectural patterns that make autonomous pipelines reliable."
+seo:
+  primaryQuery: "autonomous AI agent cron pipelines"
+  secondaryQueries:
+    - "AI agent cron pipeline"
+    - "zombie task detection"
+    - "scheduled AI automation"
 ---
 
 Two weeks ago I woke up to a green dashboard. Every cron job had fired, every task reported `status: completed`, every heartbeat was healthy. The content pipeline I run — research, draft, fact-check, design, publish — had apparently done its job overnight while I slept.
@@ -188,3 +194,17 @@ If you are running autonomous agents on cron, verify each of these before you tr
 6. **Output is verified before "complete."** The right file, the right format, non-empty, matching the spec. Exit 0 is not completion.
 
 Autonomous pipelines fail quietly, confidently, and on schedule — which means the system around them has to be loud, skeptical, and willing to kill. Build the watchdog before you need it. The morning you wake up to a green dashboard and an empty blog is the morning you wish you had.
+
+{{< field-note title="Field note" >}}
+A cron agent that only reports success is a liability. A cron agent that leaves a timestamped artifact, a reasoned summary, and a failure path can become part of operations.
+{{< /field-note >}}
+
+## What you should do Monday morning
+
+1. Find one scheduled agent job that says done without a durable artifact.
+2. Make it write a timestamped output file.
+3. Alert only after that file exists and passes a basic sanity check.
+
+## Refresh note
+
+This piece is now part of the site's operating archive. Read it as a decision pattern, not as a frozen news item: check whether the tool, model, or platform detail has changed, then keep the underlying verification habit if it still reduces operational risk.

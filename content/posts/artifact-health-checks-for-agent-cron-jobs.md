@@ -5,6 +5,12 @@ draft: false
 description: "A production checklist for cron jobs that proves useful artifacts exist, are fresh, and can be consumed downstream after the process exits."
 topics: ["tutorial", "reliability"]
 cover: /covers/artifact-health-checks-for-agent-cron-jobs.png
+seo:
+  primaryQuery: "artifact health checks for cron jobs"
+  secondaryQueries:
+    - "cron artifact verification"
+    - "agent cron health check"
+    - "scheduled job monitoring artifact"
 ---
 
 Your cron job exited zero. Fine. Where is the artifact?
@@ -330,6 +336,11 @@ jobs:
 The ordering is the whole point. Run job. Verify artifact. Ping monitor. Report success.
 
 If you ping before verification, the monitor becomes a diary of attempts. If you ping after verification, it becomes a signal of completed work.
+
+
+{{< field-note title="Field note" >}}
+The artifact is the cheapest truth source. If the job claims it updated a report, the report path, modified time, row count, and summary should all be checkable before anyone receives a success message.
+{{< /field-note >}}
 
 ## What you should do Monday morning
 

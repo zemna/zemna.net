@@ -6,7 +6,14 @@ slug: "open-weights-api-margin"
 cover: "/covers/open-weights-api-margin.png"
 topics: ["market", "llm", "devtools"]
 description: "GLM-5.2's MIT-licensed open weights at one-sixth the cost of GPT-5.5 isn't a benchmark story — it's a cost-structure story. Here's what it means for your architecture decisions this week."
+seo:
+  primaryQuery: "open weights API margin"
+  secondaryQueries:
+    - "open weights vs API models"
+    - "LLM API margin"
+    - "open model cost strategy"
 ---
+
 ![Open weights vs API margin](/covers/open-weights-api-margin.png)
 
 If you've been shipping LLM-powered features for the last two years, you've felt it: the API bill that started as a rounding error and is now a line item your CFO asks about in weekly meetings. The model providers built beautiful APIs, priced them per token, and we all built businesses on top of usage-based pricing that only goes in one direction — up.
@@ -254,6 +261,11 @@ vllm serve /models/glm-5.2-fp8 \
 SGLang is the alternative inference engine, and for this model specifically it shows slightly better throughput on agentic workloads due to its radix-attention caching. Both vLLM and SGLang are officially supported by Z.ai. [Source: https://docs.z.ai/guides/llm/glm-5.2]
 
 ---
+
+
+{{< field-note title="Field note" >}}
+The pragmatic move is not to worship open weights or APIs. It is to make the boundary explicit: which calls need managed reliability, which calls need cost control, and which calls must be portable when pricing changes.
+{{< /field-note >}}
 
 ## What You Should Do Monday Morning
 

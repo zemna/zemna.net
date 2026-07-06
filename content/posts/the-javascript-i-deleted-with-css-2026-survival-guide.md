@@ -5,6 +5,12 @@ draft: false
 description: "A 2026 frontend survival guide for replacing unnecessary JavaScript with modern CSS features while keeping behavior accessible and maintainable."
 topics: ["frontend"]
 cover: /covers/css-deleting-javascript-2026.png
+seo:
+  primaryQuery: "CSS replacing JavaScript 2026"
+  secondaryQueries:
+    - "modern CSS features 2026"
+    - "delete JavaScript with CSS"
+    - "frontend performance CSS"
 ---
 
 I deleted 150 lines of JavaScript from a tooltip component last week. The replacement was four lines of CSS. No virtual DOM reconciliation, no `requestAnimationFrame` loop, no `ResizeObserver` to handle container changes, no `scroll` listener for collision detection. The browser does all of it now, natively, on the compositor thread, faster than any framework's JS ever did. The diff went into the PR with a one-line comment: "CSS does this."
@@ -266,6 +272,11 @@ The pattern that works across all of these is progressive enhancement behind `@s
 This is the strategy I use for every feature in the table except typed `attr()`, which is too early and too Chrome-only to bother guarding yet. The anchor positioning, `base-select`, and scroll-driven-animations rules all sit behind `@supports` checks; browsers that fail the check get the fallback styling, browsers that pass get the enhanced version. The cost is a few extra rules. The payoff is no runtime feature-detection JS and graceful behavior on every browser.
 
 Two practical notes on the table. Scroll-driven animations are the most awkward because Firefox lags — if your audience skews Firefox-heavy, feature-detect with `@supports (animation-timeline: scroll())` and keep the JS fallback for that slice. And `appearance: base-select` is Chrome-only for now, which sounds bad but is fine in practice because the failure mode is a normal native select. You ship it, Chrome users get the styled version, everyone else gets a working unstyled select, nobody gets a broken page.
+
+
+{{< field-note title="Field note" >}}
+Deleting JavaScript is not minimalism for its own sake. It is a reliability move when the browser can now handle layout, interaction, or state without another runtime edge case.
+{{< /field-note >}}
 
 ## What You Should Do Monday Morning
 

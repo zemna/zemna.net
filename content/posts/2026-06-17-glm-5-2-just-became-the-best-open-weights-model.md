@@ -6,6 +6,12 @@ tags: ["glm-5.2", "zai", "open-weights", "benchmarks", "llm", "coding-agents"]
 slug: glm-5-2-open-weights
 description: "Z.AI's GLM 5.2 (744B MoE, 1M context, MIT license) tops open-weights benchmarks and runs coding agents at frontier level. Full breakdown."
 cover: /covers/glm-5-2.png
+seo:
+  primaryQuery: "GLM 5.2 open weights model"
+  secondaryQueries:
+    - "best open weights model"
+    - "GLM 5.2 coding"
+    - "open weights LLM operations"
 ---
 
 Zhipu AI (Z.AI) dropped GLM 5.2 on June 13, 2026, and it didn't just raise the bar for open-weights models — it grabbed the bar and threw it across the room. With a 744B Mixture-of-Experts architecture, a usable 1-million-token context window, and an MIT license, this is the strongest argument yet that you don't need a closed API to run frontier-level AI.
@@ -87,3 +93,17 @@ If you've been holding off on self-hosting because the quality gap was too large
 ---
 
 *Try it: [Hugging Face](https://huggingface.co/zai-org) · [Artificial Analysis](https://artificialanalysis.ai/models/glm-5.2)*
+
+{{< field-note title="Field note" >}}
+A model switch is only real when it survives the boring tests: same prompt, same tool contract, same fallback path, and the same budget ceiling. Benchmarks help shortlist. The operating harness decides whether the model belongs in production.
+{{< /field-note >}}
+
+## What you should do Monday morning
+
+1. Run one existing coding prompt against your current model and the candidate model.
+2. Compare diff quality, tool failures, and token cost.
+3. Do not switch until rollback is a config change, not a rewrite.
+
+## Refresh note
+
+This piece is now part of the site's operating archive. Read it as a decision pattern, not as a frozen news item: check whether the tool, model, or platform detail has changed, then keep the underlying verification habit if it still reduces operational risk.

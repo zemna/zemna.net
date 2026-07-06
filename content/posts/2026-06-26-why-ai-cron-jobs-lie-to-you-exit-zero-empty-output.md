@@ -5,6 +5,12 @@ draft: false
 description: "Why a green cron exit can still mean failed work, and how to verify agent jobs by checking useful output instead of process status."
 topics: ["ai"]
 cover: /covers/ai-cron-jobs-lie-exit-zero-empty-output.png
+seo:
+  primaryQuery: "AI cron jobs exit 0 empty output"
+  secondaryQueries:
+    - "cron job exit 0 empty output"
+    - "AI automation verification"
+    - "agent cron reliability"
 ---
 
 My health check cron ran 180 times over six hours. Exit code 0 every time. Green
@@ -301,3 +307,17 @@ thirty minutes per job and saves you from the six-hours-of-silence incident.
   Systems", DEV.to, 2026-05-03.
 - SilentWatch MCP, github.com/temurkhan13/silentwatch-mcp — exit-0-empty-output
   detection, retry storms, action-budget leaks.
+
+{{< field-note title="Field note" >}}
+Exit codes are transport signals, not product truth. For agent jobs, I care more about the object produced, the count changed, and the next consumer that can read it than about the command ending cleanly.
+{{< /field-note >}}
+
+## What you should do Monday morning
+
+1. Add an output-size check to one cron job.
+2. Fail the job when the output is empty or unchanged unexpectedly.
+3. Send the alert with the artifact path, not just the exit code.
+
+## Refresh note
+
+This piece is now part of the site's operating archive. Read it as a decision pattern, not as a frozen news item: check whether the tool, model, or platform detail has changed, then keep the underlying verification habit if it still reduces operational risk.

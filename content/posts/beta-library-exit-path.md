@@ -5,6 +5,12 @@ draft: false
 description: "A practical test for adopting beta libraries: prove the rollback path, migration cost, and ownership model before they enter production."
 topics: ["devtools"]
 cover: /covers/beta-library-exit-path.png
+seo:
+  primaryQuery: "beta library exit path"
+  secondaryQueries:
+    - "adopting beta libraries"
+    - "dependency rollback plan"
+    - "software library exit strategy"
 ---
 
 A beta dependency feels safe right up to the moment it becomes load-bearing.
@@ -272,6 +278,11 @@ I prefer a two-column rollout record in the pull request description:
 That last row matters most. Teams get stuck not because they took a beta risk, but because they took an irreversible beta risk. Irreversible experiments are not experiments. They are unpriced commitments.
 
 ![Dependency upgrade merge gate checklist](/img/beta-library-exit-path-4.png)
+
+
+{{< field-note title="Field note" >}}
+A beta dependency is not risky because it is unfinished. It is risky when the app learns its shape too deeply. The exit path should be designed before the integration spreads.
+{{< /field-note >}}
 
 ## What you should do Monday morning
 

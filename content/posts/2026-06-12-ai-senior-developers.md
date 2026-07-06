@@ -9,7 +9,12 @@ draft: false
 author: "Shinjae Kang"
 authorRole: "Senior Software Developer"
 authorLocation: "Jakarta, Indonesia"
-
+seo:
+  primaryQuery: "ai replacing senior developers"
+  secondaryQueries:
+    - "senior developers and AI"
+    - "AI software engineering judgment"
+    - "why senior developers still matter"
 ---
 
 There's a genre of LinkedIn post that goes: "AI will replace senior developers because seniors are slower, more expensive, and refuse to learn new tools."
@@ -58,3 +63,17 @@ If you are a manager:
 ---
 
 _This is the second post in an ongoing series on AI and the developer career. If you want the first one, it's [here](/blog/)._
+
+{{< field-note title="Field note" >}}
+When I review AI-assisted work, the difference is not whether the model can write a controller or a component. The difference is whether someone notices the missing migration, the weak rollback path, and the quiet product tradeoff. That is still senior work.
+{{< /field-note >}}
+
+## What you should do Monday morning
+
+1. Pick one AI-generated change from last week.
+2. Write down the decision a senior reviewer had to make.
+3. Turn that decision into a reusable checklist item before the next review.
+
+## Refresh note
+
+This piece is now part of the site's operating archive. Read it as a decision pattern, not as a frozen news item: check whether the tool, model, or platform detail has changed, then keep the underlying verification habit if it still reduces operational risk.

@@ -76,6 +76,15 @@ def audit() -> list[str]:
             if tag != tag.lower() or " " in tag:
                 issues.append(f"{path.name}: tag should be lowercase kebab-case: {tag}")
 
+        if not re.search(r"^seo:\s*$", frontmatter, flags=re.M):
+            issues.append(f"{path.name}: missing seo block")
+        if "primaryQuery:" not in frontmatter or "secondaryQueries:" not in frontmatter:
+            issues.append(f"{path.name}: incomplete seo query metadata")
+        if "{{< field-note" not in body:
+            issues.append(f"{path.name}: missing field-note shortcode")
+        if not re.search(r"^## What you should do Monday morning\b", body, flags=re.M | re.I):
+            issues.append(f"{path.name}: missing Monday morning action section")
+
         # Short posts are not a build blocker. They are candidates for future refresh
         # or hub curation, but concise field notes can still be valid professional content.
 

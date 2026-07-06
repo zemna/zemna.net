@@ -7,6 +7,12 @@ tags: ["observability", "cron", "ai-agents", "laravel", "vue", "posthog", "sentr
 description: "A low-cost observability pattern for agent crons using logs, artifacts, summaries, and delivery checks before adding paid monitoring tools."
 cover: /covers/zero-cost-observability-agent-crons.png
 slug: zero-cost-observability-agent-crons
+seo:
+  primaryQuery: "zero cost observability for agent crons"
+  secondaryQueries:
+    - "agent cron observability"
+    - "cron monitoring without paid tools"
+    - "AI automation observability"
 ---
 
 A cron job that says `success` can still leave no customer email sent, no blog post published, no report attached, and no safe way back. AI-assisted development makes that failure mode sharper: the agent often completes the instruction it was given, while the system around it has no proof that the work is usable.
