@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZEMNA.NET <Z> logo options</title>
+<style>
+  :root {
+    --bg: #08090a;
+    --surface: #101216;
+    --surface-2: #151820;
+    --ink: #f7f8f8;
+    --muted: #9aa1ad;
+    --line: rgba(247, 248, 248, .14);
+    --line-strong: rgba(247, 248, 248, .28);
+    --verm: #e34234;
+    --violet: #7170ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at 50% -10%, rgba(113,112,255,.14), transparent 34%), var(--bg);
+    color: var(--ink);
+    font-family: D2Coding, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    padding: 34px;
+  }
+  .page { max-width: 1180px; margin: 0 auto; }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 24px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 18px;
+  }
+  h1 { margin: 0; font-size: 30px; letter-spacing: -0.055em; line-height: 1.05; }
+  .note { margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.55; max-width: 680px; }
+  .pill { color: var(--muted); font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 8px 11px; white-space: nowrap; }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .card {
+    background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.01)), var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 20px;
+  }
+  .stage {
+    min-height: 176px;
+    display: grid;
+    place-items: center;
+    background: #08090a;
+    border: 1px solid rgba(247,248,248,.09);
+    border-radius: 16px;
+    margin-bottom: 16px;
+  }
+  .logo-lockup {
+    width: 262px;
+    max-width: 100%;
+    color: var(--ink);
+    overflow: visible;
+  }
+  .caption { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+  h2 { margin: 0 0 7px; font-size: 15px; letter-spacing: -0.025em; }
+  p { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.55; }
+  .score { font-size: 11px; color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 5px 8px; white-space: nowrap; }
+  .mini-row { display: flex; gap: 10px; align-items: center; margin-top: 15px; color: var(--muted); font-size: 11px; }
+  .mini-box { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); }
+  .mini-box svg { width: 30px; height: 30px; overflow: visible; }
+  .word { font-family: D2Coding, ui-monospace, monospace; font-weight: 700; font-size: 24px; letter-spacing: -0.05em; fill: currentColor; }
+  .muted-fill { fill: #b9bdc7; }
+  .box { fill: none; stroke: currentColor; stroke-width: 2.4; }
+  .soft-box { fill: rgba(247,248,248,.025); stroke: currentColor; stroke-opacity: .92; stroke-width: 2.2; }
+  .z-main { fill: none; stroke: currentColor; stroke-width: 4.2; stroke-linecap: square; stroke-linejoin: miter; }
+  .thin { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .violet { stroke: var(--violet); }
+  .verm-fill { fill: var(--verm); }
+  .verm-stroke { stroke: var(--verm); }
+  @media (max-width: 920px) {
+    body { padding: 18px; }
+    .top { display: block; }
+    .pill { display: inline-flex; margin-top: 14px; }
+    .grid { grid-template-columns: 1fr; }
+    .stage { min-height: 150px; }
+  }
+</style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <h1>ZEMNA.NET &lt;Z&gt; logo options</h1>
+        <p class="note">게임기 제거. 중앙 정렬, 균형, 작은 크기 유지력을 우선한 Z 기반 후보입니다. 색은 기존 navy, off-white, vermilion, violet만 사용했습니다.</p>
+      </div>
+      <div class="pill">centered SVG marks · 64px grid</div>
+    </header>
+
+    <section class="grid" aria-label="logo options">
+      <article class="card">
+        <div class="stage">
+          <svg class="logo-lockup" viewBox="0 0 248 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Option A bracket Z logo">
+            <g transform="translate(0 4)">
+              <rect class="soft-box" x="4" y="4" width="56" height="56" rx="14"/>
+              <path class="thin" d="M23 21l-8 11 8 11"/>
+              <path class="thin" d="M41 21l8 11-8 11"/>
+              <path class="z-main" d="M27 20h14L25 44h16"/>
+              <path class="violet" d="M28 47h18" fill="none" stroke-width="2.2" stroke-linecap="round"/>
+              <circle class="verm-fill" cx="47" cy="18" r="3.6"/>
+            </g>
+            <text class="word" x="76" y="42">ZEMNA<tspan class="muted-fill">.NET</tspan></text>
+          </svg>
+        </div>
+        <div class="caption">
+          <div>
+            <h2>A. Bracket Z</h2>
+            <p>&lt;Z&gt;를 가장 직접적으로 보여주는 타입. 코딩 느낌이 명확하고 favicon에서도 가장 안전합니다.</p>
+          </div>
+          <span class="score">safe</span>
+        </div>
+        <div class="mini-row">favicon check <span class="mini-box"><svg viewBox="0 0 64 64"><rect class="soft-box" x="4" y="4" width="56" height="56" rx="14"/><path class="thin" d="M23 21l-8 11 8 11"/><path class="thin" d="M41 21l8 11-8 11"/><path class="z-main" d="M27 20h14L25 44h16"/><circle class="verm-fill" cx="47" cy="18" r="3.6"/></svg></span></div>
+      </article>
+
+      <article class="card">
+        <div class="stage">
+          <svg class="logo-lockup" viewBox="0 0 248 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Option B signal Z logo">
+            <g transform="translate(0 4)">
+              <rect class="soft-box" x="4" y="4" width="56" height="56" rx="14"/>
+              <path class="thin" d="M20 18h27"/>
+              <path class="z-main" d="M21 20h24L19 44h26"/>
+              <path class="violet" d="M18 47h28" fill="none" stroke-width="2.2" stroke-linecap="round"/>
+              <path class="thin" d="M16 29l-5 4 5 4"/>
+              <path class="thin" d="M48 29l5 4-5 4"/>
+              <circle class="verm-fill" cx="47" cy="17" r="3.8"/>
+            </g>
+            <text class="word" x="76" y="42">ZEMNA<tspan class="muted-fill">.NET</tspan></text>
+          </svg>
+        </div>
+        <div class="caption">
+          <div>
+            <h2>B. Signal Z</h2>
+            <p>Z를 중심에 크게 두고 코드 괄호를 얇게 보조 처리. 세련되고 브랜드 심볼 느낌이 가장 강합니다.</p>
+          </div>
+          <span class="score">brand</span>
+        </div>
+        <div class="mini-row">favicon check <span class="mini-box"><svg viewBox="0 0 64 64"><rect class="soft-box" x="4" y="4" width="56" height="56" rx="14"/><path class="thin" d="M20 18h27"/><path class="z-main" d="M21 20h24L19 44h26"/><path class="thin" d="M16 29l-5 4 5 4"/><path class="thin" d="M48 29l5 4-5 4"/><circle class="verm-fill" cx="47" cy="17" r="3.8"/></svg></span></div>
+      </article>
+
+      <article class="card">
+        <div class="stage">
+          <svg class="logo-lockup" viewBox="0 0 248 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Option C node Z logo">
+            <g transform="translate(0 4)">
+              <rect class="soft-box" x="4" y="4" width="56" height="56" rx="14"/>
+              <path class="z-main" d="M19 19h26L19 45h26"/>
+              <circle cx="19" cy="19" r="3.3" fill="currentColor"/>
+              <circle cx="45" cy="19" r="3.3" fill="currentColor" opacity=".78"/>
+              <circle class="verm-fill" cx="45" cy="45" r="4"/>
+              <circle cx="19" cy="45" r="3.3" fill="currentColor" opacity=".78"/>
+              <path class="violet" d="M26 45h12" fill="none" stroke-width="2.2" stroke-linecap="round"/>
+            </g>
+            <text class="word" x="76" y="42">ZEMNA<tspan class="muted-fill">.NET</tspan></text>
+          </svg>
+        </div>
+        <div class="caption">
+          <div>
+            <h2>C. Node Z</h2>
+            <p>Z 경로에 노드를 얹은 타입. AI agent, graph, workflow 느낌이 나지만 과한 장식은 줄였습니다.</p>
+          </div>
+          <span class="score">ai</span>
+        </div>
+        <div class="mini-row">favicon check <span class="mini-box"><svg viewBox="0 0 64 64"><rect class="soft-box" x="4" y="4" width="56" height="56" rx="14"/><path class="z-main" d="M19 19h26L19 45h26"/><circle cx="19" cy="19" r="3.3" fill="currentColor"/><circle cx="45" cy="19" r="3.3" fill="currentColor" opacity=".78"/><circle class="verm-fill" cx="45" cy="45" r="4"/><circle cx="19" cy="45" r="3.3" fill="currentColor" opacity=".78"/></svg></span></div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
