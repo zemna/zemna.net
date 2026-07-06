@@ -65,14 +65,18 @@
   {{- /* Prose body */ -}}
   <div class="zn-container zn-container--prose">
     {{- $tocItems := findRE "<li" .TableOfContents -}}
-    {{- if ge (len $tocItems) 3 }}
-    <aside class="zn-article__toc" aria-labelledby="article-toc-title">
-      <div class="zn-article__toc-label" id="article-toc-title">On this page</div>
-      {{ .TableOfContents }}
-    </aside>
-    {{- end }}
-    <div class="zn-prose" itemprop="articleBody">
-      {{ .Content }}
+    {{- $hasToc := ge (len $tocItems) 3 -}}
+    <div class="zn-article__body-layout{{ if not $hasToc }} zn-article__body-layout--solo{{ end }}">
+      <div class="zn-prose" itemprop="articleBody">
+        {{ .Content }}
+      </div>
+
+      {{- if $hasToc }}
+      <aside class="zn-article__toc" aria-labelledby="article-toc-title">
+        <div class="zn-article__toc-label" id="article-toc-title">On this page</div>
+        {{ .TableOfContents }}
+      </aside>
+      {{- end }}
     </div>
 
     {{- /* Footer: tags + share */ -}}
