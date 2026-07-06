@@ -107,3 +107,85 @@ A model switch is only real when it survives the boring tests: same prompt, same
 ## Refresh note
 
 This piece is now part of the site's operating archive. Read it as a decision pattern, not as a frozen news item: check whether the tool, model, or platform detail has changed, then keep the underlying verification habit if it still reduces operational risk.
+
+## Deep refresh
+## How I would evaluate the model now
+
+The first question is not whether GLM 5.2 is the best model. The first question is which workflow it is allowed to touch.
+
+For me, model adoption has three tiers:
+
+| Tier | Example use | Requirement |
+|---|---|---|
+| Exploration | Summaries, drafts, comparisons. | Good enough output and low cost. |
+| Assisted production | Code edits, content generation, data extraction. | Repeatable prompts, reviewable artifacts, fallback model. |
+| Operational automation | Cron jobs, publishing, customer-visible actions. | Verification, rollback, cost ceiling, alerting. |
+
+An open-weights model can be excellent in the first two tiers and still not belong in the third until the operating wrapper is ready.
+
+## What benchmarks do not answer
+
+Benchmarks can show reasoning strength, coding ability, context handling, or cost-performance. They do not answer all the questions a small team needs.
+
+They usually do not tell you:
+
+1. Whether the model follows your exact tool contract.
+2. Whether it fails loudly or quietly.
+3. Whether the output shape stays stable across retries.
+4. Whether the provider will throttle during your important window.
+5. Whether fallback to another model preserves behavior.
+
+Those are operating questions. You only answer them by running your own tasks through a harness.
+
+## A simple model trial harness
+
+For a practical trial, I would use five prompts from real work:
+
+1. One code review prompt.
+2. One code edit prompt.
+3. One long-form writing prompt.
+4. One data extraction prompt.
+5. One failure recovery prompt.
+
+For each prompt, record latency, cost, output shape, verification result, and human edit distance. The winner is not always the model with the most impressive single answer. The winner is the model that produces the most reliable verified artifact for the price.
+
+## Open weights and bargaining power
+
+The strategic value of open weights is not only self-hosting. It is bargaining power.
+
+If your prompts, schemas, and evaluation harness are portable, you can move work across managed APIs, open-weights providers, and local inference as pricing changes. If they are not portable, even a cheap model can become expensive because the migration cost is hidden in your workflow.
+
+Related notes:
+
+- [Open Weights Just Ate the API Margin](/blog/open-weights-api-margin/)
+- [I Swapped My LLM Backend](/blog/i-swapped-my-llm-backend-the-api-call-worked-on-the-first-try/)
+- [Developer Tools and Model Choices](/developer-tools/)
+
+## A practical promotion rule
+
+I would not promote a model because it wins one impressive prompt. I would promote it after it wins a repeatable workload.
+
+For writing, that means fewer edits while preserving the site voice. For coding, it means smaller diffs and passing tests. For automation, it means stable output shape and predictable cost. For research, it means fewer unsupported claims and cleaner citations.
+
+The promotion rule should be written down before the trial starts. Otherwise the team will choose based on the most memorable answer, not the most reliable operating pattern.
+
+## How to verify this advice
+
+Treat this as a small operating experiment around **open-weights model adoption**.
+
+The failure mode to watch is **benchmark excitement replacing workload proof**. It usually does not look dramatic at first. It looks like one convenient shortcut, one skipped check, or one tool decision that nobody writes down. A month later, the team has more output but less confidence in what actually changed.
+
+A practical verification loop has four parts.
+
+1. **Name the decision.** Write the decision in one sentence. If the team cannot name it, the team cannot improve it.
+2. **Name the evidence.** Decide what would prove the decision helped. That might be a passing test, a smaller diff, a faster rollback, a lower bill, a clearer support path, or a page that earns impressions in Search Console.
+3. **Name the counter-signal.** Decide what would prove the decision is not working. This prevents the team from defending a bad choice just because it was exciting at the start.
+4. **Name the next review date.** A decision without a review date becomes architecture sediment.
+
+For this topic, the metric I would watch is **verified cost, latency, and output stability**.
+
+That metric does not need to be perfect. It only needs to be concrete enough that the next review is not based on memory. If the metric improves, keep the pattern and document it. If the metric stays flat, change the approach. If the metric gets worse, rollback or narrow the scope.
+
+This is the operating habit I want the site to teach. A post should not end with a clever opinion. It should leave the reader with a way to test the opinion in their own repo, workflow, or team.
+
+The same habit connects the rest of the site: [Start Here](/start-here/), [AI Agent Operations](/ai-agent-operations/), [Laravel and Vue SaaS Notes](/laravel-vue-saas/), and [Developer Tools and Model Choices](/developer-tools/). The topics are different, but the standard is the same: choose deliberately, leave proof, and keep the exit path visible.

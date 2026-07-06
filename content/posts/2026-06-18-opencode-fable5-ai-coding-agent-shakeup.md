@@ -117,3 +117,90 @@ The lesson from tool shakeups is not to chase every winner. The lesson is to kee
 ## Refresh note
 
 This piece is now part of the site's operating archive. Read it as a decision pattern, not as a frozen news item: check whether the tool, model, or platform detail has changed, then keep the underlying verification habit if it still reduces operational risk.
+
+## Deep refresh
+## What this kind of shakeup should change
+
+A tool shakeup should not make a team rewrite its workflow every week. It should make the team separate stable operating rules from replaceable agent shells.
+
+The stable rules are things like:
+
+1. How the repo is mapped.
+2. How a task is scoped.
+3. Which files are dangerous.
+4. Which tests prove the change.
+5. What the rollback path is.
+6. How the final answer cites evidence.
+
+The replaceable shell is whether the work happens through Cursor, OpenCode, Claude Code, Codex, Hermes, or another agent interface.
+
+If those two layers are mixed together, every market change becomes a migration project.
+
+## The portability test
+
+Here is the test I use for AI coding tools: can I run the same task through two different agents without rewriting the task from scratch?
+
+That requires a few repo-level artifacts:
+
+| Artifact | Purpose |
+|---|---|
+| `AGENTS.md` or project instructions | Shared operating rules. |
+| Test command list | Prevents agent-specific guessing. |
+| Edit contract | Names scope, files, proof, and rollback. |
+| Review checklist | Keeps human review consistent. |
+| Known-danger notes | Protects migrations, auth, billing, and deployment paths. |
+
+When these exist, the agent UI matters less. You can choose the tool that has the best price, model, or workflow today without trapping the entire engineering process inside it.
+
+## How to react without thrashing
+
+The wrong reaction to a new tool leaderboard is to migrate everything immediately. The better reaction is to run a controlled trial.
+
+Pick one real task that is small but not trivial. Run it through your current agent and the candidate agent. Compare only verified outcomes:
+
+1. Did the app build or tests pass?
+2. Did the diff stay inside scope?
+3. Did the agent explain the risky parts?
+4. Did the final answer include real file paths and command output?
+5. Could you rollback the change cleanly?
+
+If the new tool wins, move one workflow. Not the whole team.
+
+## The bigger lesson
+
+The coding-agent market will keep shifting. That is fine. A healthy workflow should benefit from better tools without depending on one tool's survival.
+
+Related notes:
+
+- [The Agent Edit Contract](/blog/the-agent-edit-contract-i-use-before-a-coding-agent-touches-a-repo/)
+- [Your Coding Agent Needs a Map](/blog/your-coding-agent-needs-a-map-not-a-bigger-context-window/)
+- [Developer Tools and Model Choices](/developer-tools/)
+
+## What belongs in the repo
+
+The more volatile the agent market becomes, the more instructions should live in the repository.
+
+A good repo-level agent guide should include the project shape, commands, forbidden shortcuts, review expectations, and deployment notes. It should not assume one vendor UI. It should be readable by a human, Claude Code, Codex, OpenCode, or the next tool that appears.
+
+This is the boring work that makes tool switching cheap. If the only copy of your workflow is inside a proprietary chat history, you do not have an AI coding workflow. You have a habit that is hard to migrate.
+
+## How to verify this advice
+
+Treat this as a small operating experiment around **coding-agent tool portability**.
+
+The failure mode to watch is **workflow trapped inside one vendor interface**. It usually does not look dramatic at first. It looks like one convenient shortcut, one skipped check, or one tool decision that nobody writes down. A month later, the team has more output but less confidence in what actually changed.
+
+A practical verification loop has four parts.
+
+1. **Name the decision.** Write the decision in one sentence. If the team cannot name it, the team cannot improve it.
+2. **Name the evidence.** Decide what would prove the decision helped. That might be a passing test, a smaller diff, a faster rollback, a lower bill, a clearer support path, or a page that earns impressions in Search Console.
+3. **Name the counter-signal.** Decide what would prove the decision is not working. This prevents the team from defending a bad choice just because it was exciting at the start.
+4. **Name the next review date.** A decision without a review date becomes architecture sediment.
+
+For this topic, the metric I would watch is **repo-level contracts that survive tool changes**.
+
+That metric does not need to be perfect. It only needs to be concrete enough that the next review is not based on memory. If the metric improves, keep the pattern and document it. If the metric stays flat, change the approach. If the metric gets worse, rollback or narrow the scope.
+
+This is the operating habit I want the site to teach. A post should not end with a clever opinion. It should leave the reader with a way to test the opinion in their own repo, workflow, or team.
+
+The same habit connects the rest of the site: [Start Here](/start-here/), [AI Agent Operations](/ai-agent-operations/), [Laravel and Vue SaaS Notes](/laravel-vue-saas/), and [Developer Tools and Model Choices](/developer-tools/). The topics are different, but the standard is the same: choose deliberately, leave proof, and keep the exit path visible.

@@ -126,3 +126,89 @@ A design system only starts paying back when future changes become boring. If a 
 ## Refresh note
 
 This piece is now part of the site's operating archive. Read it as a decision pattern, not as a frozen news item: check whether the tool, model, or platform detail has changed, then keep the underlying verification habit if it still reduces operational risk.
+
+## Deep refresh
+## What I would keep from this experiment
+
+The most useful part of this design-system exercise was not copying a look. It was forcing every visual choice into a named decision.
+
+A personal technical blog can easily become a pile of one-off CSS. One card gets a slightly different radius. One page gets a different container. One article needs a special layout. After a few weeks, the site still works, but nobody can explain the system.
+
+Tokens prevent that drift when they are treated as the source of truth.
+
+For zemna.net, the important tokens are not only colors. They include spacing, container widths, typography, card radius, shadow strength, and motion duration. Those are the choices that make a site feel consistent across home, blog list, article detail, hub pages, and social previews.
+
+## The difference between inspiration and imitation
+
+Using Linear.app as a reference is useful because the product has strong hierarchy and restraint. But a blog should not become a Linear clone. The site still needs its own content rhythm, author voice, and developer notebook feel.
+
+The parts worth borrowing are structural:
+
+1. Sharp contrast between surface and content.
+2. Clear interaction states.
+3. Quiet borders instead of decorative noise.
+4. Small motion that confirms behavior.
+5. Dense but readable metadata.
+
+The parts to avoid copying blindly are brand-specific: product screenshots, startup language, and overly polished marketing patterns that do not fit a personal engineering blog.
+
+## What made the Hugo version work
+
+Hugo is a good fit for this because the theme can stay close to the content. The same repository holds Markdown, layouts, CSS assets, image derivatives, and validation scripts.
+
+That makes the design system operational. A change is not finished when CSS looks right locally. It is finished when:
+
+1. Hugo builds.
+2. Metadata checks pass.
+3. Internal links still resolve.
+4. The generated HTML contains the expected layout hooks.
+5. The live site serves the new fingerprinted CSS.
+
+That final point matters. Without fingerprinted CSS, Cloudflare can keep serving an older layout long enough to make a correct fix look broken.
+
+## How to extend this safely
+
+When adding a new visual component, I now try to answer these before writing CSS:
+
+| Question | Good answer |
+|---|---|
+| Is this a new pattern or a variant? | Prefer variant unless the structure is truly new. |
+| Which token controls spacing? | No one-off pixel values. |
+| Which page proves the mobile behavior? | Check a real route, not an empty mockup. |
+| Does light mode still work? | Avoid dark-only transparent white surfaces. |
+| Can the verification script catch regressions? | Add a built-site check when possible. |
+
+Related notes:
+
+- [Start Here](/start-here/)
+- [Developer Tools and Model Choices](/developer-tools/)
+- [The JavaScript I Deleted With CSS](/blog/the-javascript-i-deleted-with-css-a-2026-survival-guide/)
+
+## The maintenance payoff
+
+The payoff showed up later, when the site needed article TOC changes, wider content, hub pages, WebP images, and CSS cache busting.
+
+Without a design system, each fix would have been a visual argument. With the system in place, the question became smaller: which container, which spacing token, which component family, which verification check?
+
+That is the real reason to build tokens for a personal site. Not because tokens are fashionable. Because future changes become safer, and a solo operator can keep the site coherent without redesigning it every week.
+
+## How to verify this advice
+
+Treat this as a small operating experiment around **token-driven blog design**.
+
+The failure mode to watch is **one-off visual fixes accumulating drift**. It usually does not look dramatic at first. It looks like one convenient shortcut, one skipped check, or one tool decision that nobody writes down. A month later, the team has more output but less confidence in what actually changed.
+
+A practical verification loop has four parts.
+
+1. **Name the decision.** Write the decision in one sentence. If the team cannot name it, the team cannot improve it.
+2. **Name the evidence.** Decide what would prove the decision helped. That might be a passing test, a smaller diff, a faster rollback, a lower bill, a clearer support path, or a page that earns impressions in Search Console.
+3. **Name the counter-signal.** Decide what would prove the decision is not working. This prevents the team from defending a bad choice just because it was exciting at the start.
+4. **Name the next review date.** A decision without a review date becomes architecture sediment.
+
+For this topic, the metric I would watch is **repeatable layout and CSS verification**.
+
+That metric does not need to be perfect. It only needs to be concrete enough that the next review is not based on memory. If the metric improves, keep the pattern and document it. If the metric stays flat, change the approach. If the metric gets worse, rollback or narrow the scope.
+
+This is the operating habit I want the site to teach. A post should not end with a clever opinion. It should leave the reader with a way to test the opinion in their own repo, workflow, or team.
+
+The same habit connects the rest of the site: [Start Here](/start-here/), [AI Agent Operations](/ai-agent-operations/), [Laravel and Vue SaaS Notes](/laravel-vue-saas/), and [Developer Tools and Model Choices](/developer-tools/). The topics are different, but the standard is the same: choose deliberately, leave proof, and keep the exit path visible.

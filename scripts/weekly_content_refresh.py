@@ -41,9 +41,32 @@ def array_values(raw: str) -> list[str]:
     return re.findall(r'"([^"]+)"', raw)
 
 
+def slugify_title(title: str) -> str:
+    slug = title.lower()
+    slug = slug.replace("—", "-").replace("–", "-")
+    slug = re.sub(r"[^a-z0-9.]+", "-", slug)
+    slug = re.sub(r"-+", "-", slug).strip("-")
+    return slug
+
+
 def post_url(frontmatter: str, path: Path) -> str:
-    slug = line_value(frontmatter, "slug") or path.stem
-    return f"https://zemna.net/blog/{slug}/"
+    explicit_url = line_value(frontmatter, "url")
+    if explicit_url:
+        return "https://zemna.net" + explicit_url if explicit_url.startswith("/") else explicit_url
+    title = line_value(frontmatter, "title")
+    # Prefer the built Hugo URL when public/ exists. This avoids mismatches around
+    # punctuation such as don't/doesn't/Here's.
+    public_blog = ROOT / "public" / "blog"
+    if public_blog.exists() and title:
+        for index in public_blog.glob("*/index.html"):
+            html = index.read_text(errors="replace")
+            match = re.search(r"<title>(.*?)</title>", html, re.S)
+            page_title = re.sub(r"<.*?>", "", match.group(1)).replace(" — zemnanet", "").strip() if match else ""
+            if page_title == title:
+                return "https://zemna.net/" + str(index.parent.relative_to(ROOT / "public")) + "/"
+    slug = line_value(frontmatter, "slug")
+    final_slug = slug or slugify_title(title) or path.stem
+    return f"https://zemna.net/blog/{final_slug}/"
 
 
 def collect_posts() -> list[dict[str, object]]:

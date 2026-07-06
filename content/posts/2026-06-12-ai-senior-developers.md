@@ -77,3 +77,84 @@ When I review AI-assisted work, the difference is not whether the model can writ
 ## Refresh note
 
 This piece is now part of the site's operating archive. Read it as a decision pattern, not as a frozen news item: check whether the tool, model, or platform detail has changed, then keep the underlying verification habit if it still reduces operational risk.
+
+## Deep refresh
+## How I use this distinction now
+
+The practical split I use is between output and accountability.
+
+AI can produce output quickly. It can draft a controller, sketch a migration, explain a package, or generate a test file. That is useful. But in a production system, someone still owns the consequences of the change. Someone has to decide whether the migration is safe, whether the rollback path exists, whether the customer-facing behavior matches the promise, and whether the code should be deleted instead of improved.
+
+That accountability layer is where senior developers still matter.
+
+A junior developer may ask, "does this compile?" A useful AI agent may ask, "does this pass the test command?" A senior developer should ask a different set of questions:
+
+1. What product behavior changes if this code ships?
+2. What data can be damaged if the assumption is wrong?
+3. What alert or artifact will prove the change worked tomorrow?
+4. What is the cheapest rollback path?
+5. What code becomes harder to understand after this merge?
+
+Those questions do not disappear when AI gets better. They become more important because the volume of plausible code goes up.
+
+## A better review habit
+
+When I review AI-assisted work, I try not to start with style. Style is cheap to fix. I start with ownership and failure.
+
+For each change, I want a short answer to four things: scope, proof, rollback, and next owner.
+
+| Question | Why it matters |
+|---|---|
+| What is the smallest scope this change should touch? | Prevents broad agent edits that look productive but create hidden coupling. |
+| What proves it worked? | Moves the review from vibes to artifacts. |
+| How do we roll it back? | Forces the author to think past the happy path. |
+| Who owns the next failure? | Keeps the system from becoming orphaned code. |
+
+This is also why I do not treat AI as a replacement for mentoring. If anything, AI makes mentoring more explicit. The senior developer now has to teach the team how to evaluate generated work, not only how to write work by hand.
+
+The best junior developers will use AI to move faster through syntax and examples. The best senior developers will use AI to make their judgment more visible.
+
+## Internal links to keep this pattern connected
+
+If this argument feels too abstract, read it together with three operational pieces:
+
+- [The Agent Edit Contract I Use Before a Coding Agent Touches a Repo](/blog/the-agent-edit-contract-i-use-before-a-coding-agent-touches-a-repo/)
+- [Your Coding Agent Needs a Map, Not a Bigger Context Window](/blog/your-coding-agent-needs-a-map-not-a-bigger-context-window/)
+- [Code That Renders Is Not Code You Can Trust](/blog/code-that-renders-is-not-code-you-can-trust/)
+
+Those posts turn the senior-developer argument into a working review system.
+
+## Reader checklist
+
+Use this post as a hiring and review checklist, not only as an opinion piece.
+
+A senior developer is still carrying value if they can do these things consistently:
+
+1. Turn vague product requests into smaller technical decisions.
+2. Notice when generated code changes behavior outside the requested scope.
+3. Ask for evidence before accepting a confident explanation.
+4. Make rollback cheaper than hero debugging.
+5. Teach the review habit to the rest of the team.
+
+The uncomfortable version is that some senior developers will be replaced, but not by AI alone. They will be replaced by teams that combine AI output with clearer review systems. The safe move is not to reject AI. The safe move is to make your judgment visible, reusable, and hard to ignore.
+
+## How to verify this advice
+
+Treat this as a small operating experiment around **senior developer value**.
+
+The failure mode to watch is **generated code volume**. It usually does not look dramatic at first. It looks like one convenient shortcut, one skipped check, or one tool decision that nobody writes down. A month later, the team has more output but less confidence in what actually changed.
+
+A practical verification loop has four parts.
+
+1. **Name the decision.** Write the decision in one sentence. If the team cannot name it, the team cannot improve it.
+2. **Name the evidence.** Decide what would prove the decision helped. That might be a passing test, a smaller diff, a faster rollback, a lower bill, a clearer support path, or a page that earns impressions in Search Console.
+3. **Name the counter-signal.** Decide what would prove the decision is not working. This prevents the team from defending a bad choice just because it was exciting at the start.
+4. **Name the next review date.** A decision without a review date becomes architecture sediment.
+
+For this topic, the metric I would watch is **review quality and rollback readiness**.
+
+That metric does not need to be perfect. It only needs to be concrete enough that the next review is not based on memory. If the metric improves, keep the pattern and document it. If the metric stays flat, change the approach. If the metric gets worse, rollback or narrow the scope.
+
+This is the operating habit I want the site to teach. A post should not end with a clever opinion. It should leave the reader with a way to test the opinion in their own repo, workflow, or team.
+
+The same habit connects the rest of the site: [Start Here](/start-here/), [AI Agent Operations](/ai-agent-operations/), [Laravel and Vue SaaS Notes](/laravel-vue-saas/), and [Developer Tools and Model Choices](/developer-tools/). The topics are different, but the standard is the same: choose deliberately, leave proof, and keep the exit path visible.
