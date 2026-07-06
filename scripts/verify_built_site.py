@@ -52,7 +52,12 @@ def main() -> int:
     post = (PUBLIC / "blog" / "zero-cost-observability-agent-crons" / "index.html").read_text(errors="replace")
     blog = (PUBLIC / "blog" / "index.html").read_text(errors="replace")
     sitemap = (PUBLIC / "sitemap.xml").read_text(errors="replace")
-    css = (PUBLIC / "css" / "article.min.css").read_text(errors="replace")
+    article_css_match = re.search(r'href=(?:"|)(/css/article[^" >]+\.css)(?:"|)', post)
+    if not article_css_match:
+        fail("post: fingerprinted article CSS link missing", issues)
+        css = ""
+    else:
+        css = (PUBLIC / article_css_match.group(1).lstrip("/")).read_text(errors="replace")
 
     for label, html, required_types in [
         ("home", home, {"WebSite", "Person", "ProfilePage"}),

@@ -95,19 +95,19 @@
 {{- /* Sitemap */ -}}
 <link rel="sitemap" type="application/xml" title="Sitemap" href="{{ "sitemap.xml" | relURL }}">
 
-{{- /* Stylesheets — design system first, then theme */ -}}
-{{- $designSystem := resources.Get "css/tokens.css" | resources.Minify }}
-<link rel="stylesheet" href="{{ $designSystem.RelPermalink }}">
-{{- $theme := resources.Get "css/theme.css" | resources.Minify }}
-<link rel="stylesheet" href="{{ $theme.RelPermalink }}">
-{{- $article := resources.Get "css/article.css" | resources.Minify }}
-<link rel="stylesheet" href="{{ $article.RelPermalink }}">
-{{- $chroma := resources.Get "css/chroma.css" | resources.Minify }}
-<link rel="stylesheet" href="{{ $chroma.RelPermalink }}">
-{{- $interactions := resources.Get "css/interactions.css" | resources.Minify }}
-<link rel="stylesheet" href="{{ $interactions.RelPermalink }}">
-{{- $featured := resources.Get "css/featured.css" | resources.Minify }}
-<link rel="stylesheet" href="{{ $featured.RelPermalink }}">
+{{- /* Stylesheets - fingerprinted for Cloudflare cache busting */ -}}
+{{- $designSystem := resources.Get "css/tokens.css" | resources.Minify | fingerprint }}
+<link rel="stylesheet" href="{{ $designSystem.RelPermalink }}" integrity="{{ $designSystem.Data.Integrity }}" crossorigin="anonymous">
+{{- $theme := resources.Get "css/theme.css" | resources.Minify | fingerprint }}
+<link rel="stylesheet" href="{{ $theme.RelPermalink }}" integrity="{{ $theme.Data.Integrity }}" crossorigin="anonymous">
+{{- $article := resources.Get "css/article.css" | resources.Minify | fingerprint }}
+<link rel="stylesheet" href="{{ $article.RelPermalink }}" integrity="{{ $article.Data.Integrity }}" crossorigin="anonymous">
+{{- $chroma := resources.Get "css/chroma.css" | resources.Minify | fingerprint }}
+<link rel="stylesheet" href="{{ $chroma.RelPermalink }}" integrity="{{ $chroma.Data.Integrity }}" crossorigin="anonymous">
+{{- $interactions := resources.Get "css/interactions.css" | resources.Minify | fingerprint }}
+<link rel="stylesheet" href="{{ $interactions.RelPermalink }}" integrity="{{ $interactions.Data.Integrity }}" crossorigin="anonymous">
+{{- $featured := resources.Get "css/featured.css" | resources.Minify | fingerprint }}
+<link rel="stylesheet" href="{{ $featured.RelPermalink }}" integrity="{{ $featured.Data.Integrity }}" crossorigin="anonymous">
 
 {{- /* OpenSearch */ -}}
 <link rel="search" type="application/opensearchdescription+xml" title="{{ .Site.Title }}" href="{{ "opensearch.xml" | relURL }}">
