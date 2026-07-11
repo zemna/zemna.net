@@ -1,239 +1,247 @@
 ---
-title: "Vue 3.6 Vapor Mode — No Virtual DOM, No Rewrite"
-date: 2026-06-21T07:00:00+07:00
+title: "Vue 3.6 Vapor Mode: Build a Pilot Harness Before You Change a Rendering Path"
+slug: "vue-3-6-vapor-mode-no-virtual-dom-no-rewrite"
+date: 2026-07-11T07:00:00+07:00
 draft: false
-description: "What Vue 3.6 Vapor Mode changes, why skipping the Virtual DOM matters, and how teams can evaluate it without rewriting existing apps."
-topics: ["frontend", "vue", "performance"]
-cover: /covers/vue-3-6-vapor-mode.png
-summary: "Vue 3.6 Vapor Mode compiles SFC templates directly to DOM operations, hitting Solid.js-speed renders without rewriting your codebase. Here's how it works, what it can't do yet, and why teams should start piloting it now."
+description: "A cautious Vue 3.6 Vapor Mode adoption pilot for Laravel and Vue SaaS teams: isolate one route, measure it, and keep a rollback path while Vapor remains unstable."
+topics: ["frontend-engineering", "vue", "saas-maintenance"]
+tags: ["vue-3-6", "vapor-mode", "laravel-vue", "performance-testing", "vitest"]
+cover: /covers/vue-3-6-vapor-mode-no-virtual-dom-no-rewrite.png
 seo:
   primaryQuery: "Vue 3.6 Vapor Mode"
   secondaryQueries:
     - "Vue Vapor Mode"
+    - "Vue 3.6 Vapor Mode release 2026"
     - "Vue no virtual DOM"
-    - "Vue 3.6 performance"
 ---
 
-100,000 components mounted in roughly 100 milliseconds. Render times slashed by up to 97% in extreme cases. A baseline bundle under 10KB. These aren't aspirational roadmap slides — they're the numbers Evan You's team delivered at Vue.js Nation 2025, and they're now running in production-adjacent code with v3.6.0-beta.16, released June 17, 2026.
+Vue 3.6 Vapor Mode is worth watching for a practical reason: it gives a mature Vue application a compiler-oriented rendering path to evaluate without committing the whole product to a rewrite. That is a useful option for teams with a real performance complaint, an established test suite, and enough operational discipline to compare a change against a baseline.
 
-The virtual DOM era is closing. Not gradually. Not hypothetically. Right now, every major JavaScript framework — React, Vue, Svelte — has either abandoned the VDOM or is actively building the off-ramp. Vue 3.6 Vapor Mode is the latest and most significant domino to fall: the largest framework by combined adoption to offer a non-breaking path away from virtual DOM rendering.
+It is not a reason to declare a rendering migration finished. Vue 3.6.0-beta.17 is the current Vue core pre-release (published 2026-06-24); Vue 3.5.39 is the current stable release. The Vue 3.6.0-beta.1 release notes describe Vapor as feature-complete but still unstable. Those facts should shape the work: run a contained pilot, keep the existing route available, and decide from evidence gathered in your application. [Source: https://api.github.com/repos/vuejs/core/releases/tags/v3.6.0-beta.17] [Source: https://github.com/vuejs/core/releases] [Source: https://github.com/vuejs/core/releases/tag/v3.6.0-beta.1]
 
-If you've spent years optimizing `shouldComponentUpdate`, fighting `key` props, or profiling VNode allocation in Chrome DevTools, Vapor Mode is the end of that particular brand of suffering.
+This article is a maintenance playbook, not a benchmark report. It does not promise a percentage improvement, a smaller bundle, or compatibility with a particular integration. Those results depend on the route, data, device, build, and dependencies in front of you. The aim is simpler: create a pilot harness that makes a safe answer possible.
 
-## What Vapor Mode Actually Is
+![Pilot loop for a controlled Vue 3.6 Vapor Mode evaluation](/img/vue-3-6-vapor-mode-no-virtual-dom-no-rewrite-1.png)
 
-Vapor Mode is a new compilation target for Vue Single-File Components. Instead of building a JavaScript tree of VNodes, diffing it against the previous tree, and issuing patch operations to the real DOM — the three-step dance every Vue and React developer has internalized since 2014 — the compiler now emits imperative DOM operations at build time.
+## What Vue documents, and what it does not yet let you assume
 
-Think of it this way: classic Vue 3 takes your `<template>` and produces code that says "here's a tree of objects representing the UI, now let Vue's runtime reconcile it." Vapor Mode takes the same `<template>` and produces code that says "bind this `<span>` to `count.value`, update its `textContent` when `count` changes, and don't allocate anything else."
+Vue's reactivity documentation describes Vapor Mode as an explored, Solid-inspired compilation strategy that does not rely on a Virtual DOM and takes greater advantage of Vue's built-in reactivity system. That description is enough to explain why the feature interests teams with render-heavy screens. It is not enough to predict an outcome for a billing table or a customer portal. [Source: https://vuejs.org/guide/extras/reactivity-in-depth]
 
-You opt in at the file level. One attribute:
+The 3.6.0-beta.1 release notes are more operationally important. They say the intended Vapor feature set is complete and that Vapor has feature parity with stable VDOM features except Suspense, while also saying it remains unstable. "Feature-complete" tells you the team considers the planned surface present for this beta cycle. "Unstable" tells you not to promote assumptions into a broad production default. Read both parts of the statement together. GitHub's API records that beta.1 was published on 2025-12-23, not in 2026. [Source: https://github.com/vuejs/core/releases/tag/v3.6.0-beta.1] [Source: https://api.github.com/repos/vuejs/core/releases/tags/v3.6.0-beta.1]
 
-```vue
-<script setup vapor>
-import { ref } from 'vue'
+That distinction changes the first question. Do not ask, "Can we switch the app?" Ask, "Can one route with a known user problem carry a controlled experiment?" A good candidate has a narrow responsibility, a stable data fixture, an owner, and a visible fallback. A poor candidate is the application shell, an authentication boundary, a route entwined with several vendor widgets, or anything already being redesigned.
 
-const count = ref(0)
-</script>
+Vue 3.5 also matters here. The official Vue 3.5 announcement describes a reactivity-system refactor that improved memory usage by 56% without behavior changes. That work belongs to the stable 3.5 story, not an excuse to assign a Vapor-specific result to every 3.6 beta route. Keep the lines separate in your notes. Stable reactivity improvements and an unstable compiler target are different changes with different risk profiles. [Source: https://blog.vuejs.org/posts/vue-3-5]
 
-<template>
-  <button @click="count++">{{ count }}</button>
-</template>
-```
+A pilot should therefore record facts in plain language:
 
-That's it. `ref()`, `reactive()`, `computed()`, `watch()` — the Composition API surface is unchanged. The rendering layer underneath is what transforms, and it transforms radically.
+- the installed Vue version and lockfile revision;
+- the exact route and component boundary under test;
+- the user action being observed, such as filtering invoices or changing a date range;
+- the browser, device class, and fixture size used for comparison;
+- the test, build, and error-monitoring results before and after the candidate change; and
+- the person who can roll the route back.
 
-The reactivity engine driving Vapor has been rebuilt on top of [alien-signals](https://github.com/stackblitz/alien-signals), a standalone signals library engineered for minimal overhead in dependency tracking and subscriber notification. Even non-Vapor Vue 3.6 components benefit from this rewrite — Vapor components simply have more headroom to exploit it, because there's no VDOM machinery in the way.
+This is intentionally unglamorous. It is also how a beta experiment survives contact with a subscription product that has support tickets, scheduled jobs, and a release calendar.
 
-As of April 2026, Vapor Mode hit feature-complete status: every stable VDOM feature works inside Vapor components except Suspense. That includes SSR hydration, async components, transitions, KeepAlive, Teleport — the load-bearing pieces any non-trivial application depends on. The alpha series (v3.6.0-alpha.1 onward) deliberately excluded most of these. The beta releases closed the gaps one by one. Only Suspense remains outside scope, and that's an architectural decision, not a temporary omission.
+## Select one route that can tell you something useful
 
-![Vapor Mode architecture — Virtual DOM eliminated, direct DOM operations via alien-signals](/images/posts/vue-3-6-vapor-mode/vapor-architecture.png)
+For a Laravel and Vue SaaS, start with a route that has enough activity to observe but does not determine whether the customer can use the service. An account usage screen, audit-log filter, reporting table, inventory browser, or admin list may be suitable. The same kind of route becomes a bad candidate when it contains the only payment action, an irreversible workflow, or a pile of integrations that are difficult to reproduce locally.
 
-## How It Achieves ~97% Faster Renders
+Do not select a route because it has many components. Select it because someone can name the interaction that feels slow or creates unnecessary work for the browser. "The report page is bad" is not a test case. "Typing into the invoice-status filter with a saved fixture of 1,000 rows causes a visible pause on our support laptop" is a starting point. The fixture does not need to imitate every customer record. It needs to be versioned, representative of the troublesome shape, and safe to share inside the repository.
 
-The performance story has three layers. Understanding all three explains why "97% faster" isn't marketing — it's the natural outcome of eliminating waste the VDOM introduced.
+The table below makes the selection decision explicit. It does not grade Vapor Mode. It grades whether the route is a responsible experiment.
 
-### Layer One: Zero VNode Allocation
+| Candidate route | Choose it when | Avoid it when | Evidence to collect |
+|---|---|---|---|
+| Reporting or audit table | A repeated filter, sort, or pagination interaction has a reproducible complaint | Its data is only available from production or contains sensitive records | Fixture-based interaction test, browser trace, error count |
+| Admin list | The component boundary is clear and a staff-only fallback exists | The page is changing at the same time as the pilot | Build result, smoke test, rollback check |
+| Customer dashboard panel | A single panel can be isolated behind a flag | The route is the only view of critical account status | Route-level acceptance test, support signal |
+| Checkout, login, or account recovery | Almost never for a first pilot | Failure blocks revenue or access | Keep on the established path for the initial experiment |
 
-Every re-render in classic Vue 3 allocates a fresh tree of VNode objects. Render a list of 10,000 rows? That's 10,000 object allocations per pass, plus the diffing algorithm walking both old and new trees, plus garbage collection pressure from the discarded old tree. On a mid-tier Android device, this adds up to real main-thread jank.
+The route needs a control. In practice, that means preserving the established implementation or code path long enough to compare it against the candidate. A feature flag is often the right operational tool, but this article does not prescribe a Vue, Laravel, Inertia, or build-tool configuration. Those systems have their own documented interfaces and version constraints. Treat the flag as an application decision and review it in the same way you review any release control.
 
-Vapor skips all of it. The compiler knows — at build time — exactly which DOM nodes correspond to which reactive values. When `items[42].price` changes, the compiler-emitted code updates the text content of one `<td>` and stops. No tree walk. No allocation. No diff.
+![Route-selection matrix for a controlled frontend pilot](/img/vue-3-6-vapor-mode-no-virtual-dom-no-rewrite-2.png)
 
-This is the same architectural insight that made Svelte fast and Solid.js competitive with hand-written vanilla JavaScript: treat the DOM as the source of truth, not a JavaScript object graph you have to reconcile against it.
-
-### Layer Two: alien-signals Reactivity
-
-Vue's original reactivity system was already fast — Proxy-based, lazy by default, with smart dependency tracking. The alien-signals rewrite takes it further by reducing subscriber notification latency and cleaning up stale dependencies with fewer allocations per update cycle.
-
-The practical impact: in a component tree where 500 reactive values are changing but only 50 affect visible DOM, alien-signals ensures those 450 irrelevant changes never trigger DOM work. The old system was good at this. The new system is surgical.
-
-### Layer Three: Bundle Size Reduction
-
-The Vapor runtime discards the diff/patch machinery entirely. Early-adopter reports converge on 20-50% smaller shipped JavaScript for Vapor-only components compared to equivalent VDOM components. The baseline bundle drops under 10KB.
-
-This isn't just a download-speed optimization. On mobile devices, every kilobyte of JavaScript costs parse and compile time on the main thread. A 50% reduction in framework code shipped per component compounds into measurable Time To Interactive improvements — particularly on the mid-tier Android phones your users outside North America and Western Europe are actually holding.
-
-## The Numbers: Vue 3.6 Vapor vs. The Field
-
-The byteiota framework comparison, published alongside the 2026 convergence analysis, provides the most current cross-framework data:
-
-![Framework benchmark comparison — Vue Vapor, React 19, Svelte 5, Solid.js performance](/images/posts/vue-3-6-vapor-mode/benchmark-comparison.png)
-
-| Metric | Vue 3.6 (Standard) | Vue 3.6 (Vapor) | React 19 | Svelte 5 | Solid.js |
-|---|---|---|---|---|---|
-| **Render speed** (ops/sec) | 31.2 | ~39 (estimated parity with Svelte) | 28.4 | 39.5 | ~40 (estimated) |
-| **Baseline bundle** | ~58KB | <10KB | 72KB | 28KB | ~7KB |
-| **Market share** | 17.6% | — | 44.7% | 7.2% | <2% |
-| **Learning curve** | Easiest | Identical to Vue 3 | Moderate | Easy | Steep |
-| **VDOM-free** | No (opt-in) | Yes | No | Yes | Yes |
-| **Migration cost** | Baseline | Per-file opt-in | Compiler adoption | Runes rewrite | Full rewrite |
-
-A few notes on this table. Render speed numbers for React 19, Vue 3.6 Standard, and Svelte 5 are from the js-framework-benchmark as cited by byteiota. Vapor and Solid.js figures are estimated based on documented performance parity claims — independent benchmarks will firm these up once Vapor exits beta. The Migration Cost row reflects the community consensus on upgrade paths and is editorial characterization, not sourced data.
-
-The render speed numbers come from the js-framework-benchmark. Svelte 5 leads at 39.5 ops/sec, React 19 trails at 28.4 — a 39% gap. Vue 3.6 Vapor closes that gap entirely, landing in the same performance tier as Svelte and Solid. As Evan You demonstrated at Vue.js Nation 2025, Vapor mounts 100,000 components in approximately 100ms. That's the kind of throughput that makes virtual scrolling libraries optional for all but the most extreme datasets.
-
-The bundle size story is even sharper. Vapor's <10KB baseline is smaller than Svelte's 28KB — though Svelte's compiler eliminates unused framework code at the component level, so real-world comparisons depend on component composition. React's 72KB baseline, meanwhile, is the price of backward compatibility with a decade of ecosystem assumptions.
-
-Market share data reflects the ecosystem reality: React dominates hiring pools, Vue holds strong in Asian markets and among solo-to-small teams, Svelte and Solid punch above their weight on technical merit but can't match the library ecosystem or talent availability.
-
-## The Framework Convergence Nobody's Talking About
-
-Vue's Vapor Mode didn't happen in a vacuum. It's part of a larger, unmistakable pattern:
-
-- **Solid.js** shipped without a VDOM from day one, proving fine-grained signals-driven rendering works at scale.
-- **Svelte 5** rewrote its reactivity model around Runes (`$state`, `$derived`, `$effect`), also VDOM-free and compile-time-resolved.
-- **React 19** didn't kill the VDOM, but introduced an automated Compiler that memoizes components and cuts unnecessary re-renders by 25-40%. It's a mitigation, not a removal — but the direction is the same.
-- **Vue 3.6 Vapor** now joins the post-VDOM camp with the largest install base of any framework making the leap.
-
-All four arrived at the same conclusion independently: fine-grained reactivity plus compile-time optimization eliminates the need for a virtual DOM. The VDOM solved a real problem in 2014 — declarative UIs over imperative DOM APIs — but at a runtime cost signals-based architectures can now erase.
-
-What makes Vue's entry significant isn't technical novelty. Solid did it first. Svelte popularized it. Vue's contribution is **backward compatibility at scale**. Existing Vue 3 codebases don't need a rewrite. Components mix freely across VDOM and Vapor boundaries (with documented interop limits). The Composition API is the same. The toolchain is the same. The migration is per-file, one attribute, no flag day.
-
-If you've been through the React class-to-hooks transition or the AngularJS-to-Angular rewrite, you understand how rare this is.
-
-## Code: Before and After (It's the Same Code)
-
-Here's a real example. This is a product list component that renders a filtered, sorted table — exactly the kind of hot-path view where Vapor earns its keep.
-
-**Before (standard Vue 3 — VDOM path):**
-
-```vue
-<script setup>
-import { ref, computed } from 'vue'
-
-const products = ref([])
-const sortKey = ref('price')
-const filterText = ref('')
-
-const filtered = computed(() => {
-  return products.value
-    .filter(p => p.name.includes(filterText.value))
-    .sort((a, b) => a[sortKey.value] - b[sortKey.value])
-})
-</script>
-
-<template>
-  <input v-model="filterText" placeholder="Filter..." />
-  <table>
-    <tr v-for="p in filtered" :key="p.id">
-      <td>{{ p.name }}</td>
-      <td>{{ p.price }}</td>
-      <td>{{ p.stock }}</td>
-    </tr>
-  </table>
-</template>
-```
-
-Every keystroke in the filter input triggers a full VNode re-render of the table. For 500 products, that's 500 VNode allocations and a 500-node diff per character typed.
-
-**After (Vapor Mode — same code, one attribute):**
-
-```vue
-<script setup vapor>
-import { ref, computed } from 'vue'
-
-const products = ref([])
-const sortKey = ref('price')
-const filterText = ref('')
-
-const filtered = computed(() => {
-  return products.value
-    .filter(p => p.name.includes(filterText.value))
-    .sort((a, b) => a[sortKey.value] - b[sortKey.value])
-})
-</script>
-
-<template>
-  <input v-model="filterText" placeholder="Filter..." />
-  <table>
-    <tr v-for="p in filtered" :key="p.id">
-      <td>{{ p.name }}</td>
-      <td>{{ p.price }}</td>
-      <td>{{ p.stock }}</td>
-    </tr>
-  </table>
-</template>
-```
-
-The only difference is `vapor` on line one. The compiler now emits code that binds each `<td>` directly to the corresponding reactive value. When `filterText` changes and `filtered` recomputes, only the DOM nodes whose content actually changed get updated — no tree diff, no allocation storm.
-
-This isn't hypothetical. This is how the v3.6.0-beta.16 compiler works today.
-
-<!-- IMAGE: code-example -->
-
-## Gradual Migration: Start Surgical, Not Sweeping
-
-The pragmatic pattern emerging from early adopters is clear: don't migrate your entire app. Pick the views where rendering throughput is the user-visible bottleneck and Vaporize those first.
-
-**Start here:**
-- List views with large datasets (tables, data grids, infinite scroll feeds)
-- Real-time dashboards where multiple reactive streams converge
-- Search-as-you-type interfaces where every keystroke triggers re-renders
-- Any view where you've already written `v-memo` or `shallowRef` workarounds
-
-**Leave on VDOM for now:**
-- Auth flows, settings pages, static landing content — places where render performance isn't the constraint
-- Any component tree wrapped in `<Suspense>` (Vapor excludes it)
-- Components relying on custom directives or third-party libraries that haven't confirmed Vapor compatibility
-
-**The interop model works both ways:**
-- A Vapor component can render a VDOM child
-- A VDOM component can render a Vapor child
-- Props, slots, and events cross the boundary — with some edge cases around reactive prop patterns that the team is still hardening
-
-The operational playbook: ship Vapor components behind a feature flag, instrument them against production traffic, and roll back if the beta label bites. Let the VDOM handle everything else. This isn't an all-or-nothing decision — it's a dial you turn per component, guided by real metrics.
-
-## The Catch: What Vapor Cannot Do (June 2026)
-
-Vapor Mode is beta-quality feature-complete. That's a real milestone, but it's not the same as "shipping to production tomorrow." The honest constraints:
-
-**Suspense is excluded.** If your application relies on `<Suspense>` for async data orchestration, those component trees stay on the VDOM path. This is a deliberate architectural limitation — Suspense coordinates with the virtual DOM's ability to pause and resume rendering subtrees, and Vapor's direct-DOM model doesn't expose the same hooks. The Vue team has not committed to a timeline for Suspense support.
-
-**Ecosystem catch-up is incomplete.** Nuxt, Pinia, and VueUse work with Vapor components. But library authors across the broader ecosystem are still validating their code against the new compilation target. Some custom directives assume VDOM internals. Some third-party component libraries ship code that only works correctly under the VDOM reconciliation model. Laravel + Inertia.js users flagged specific compatibility friction with Vapor page components in community deep-dives as recently as April 2026.
-
-**Interop edge cases exist.** A Vapor parent rendering a VDOM child (or vice versa) works for the common patterns. But reactive prop propagation across the boundary behaves differently in certain scenarios, and slot edge cases are still being documented. The Vue team's own messaging is that the interop story is functional but not seamless — expect to test boundary components thoroughly.
-
-**The label says beta.** Vue's official stance is that beta means production-evaluation ready, not production-default. Estimates for a stable release range from mid-2026 to Q4 2026 — the Vue team hasn't committed to a specific date, and the timeline depends on how the beta feedback cycle plays out.
-
-**Vue 2 codebases face a double-hop.** If you're still on Vue 2 (EOL since late 2023), your path is Vue 2 → Vue 3 Composition API → Vue 3 Vapor. The good news: time spent migrating to the Composition API today is not wasted — that code runs unchanged in Vapor when you're ready to flip the attribute. But there's no shortcut. You can't jump from Vue 2 Options API directly to Vapor Mode.
-
-## What Teams Should Do in Q2/Q3 2026
-
-Vue 3.6 Vapor Mode is a strategic signal, not just a release note. Three practical implications for engineering teams evaluating their stack:
-
-**First, the architectural debate is over.** When Vue, Solid, and Svelte all converge on signals-driven, compile-time-resolved rendering — and when even React ships a compiler to mitigate VDOM cost — the direction is settled. Teams making framework choices in 2026 should weigh signals-native designs as the default, not the experimental fringe. If you're evaluating a new project right now, pick a framework where VDOM-free rendering is either the default or a first-class opt-in. That's Solid, Svelte 5, or Vue 3.6 with Vapor.
-
-**Second, performance budgets are achievable without rewrites.** The 97% headline is the extreme case. But 30-50% improvements in render time and bundle size are realistic for component-heavy applications that Vaporize their hot paths. That's the difference between a dashboard that stutters on a mid-tier Android device and one that feels native — achieved by adding one attribute to a handful of files.
-
-**Third, the migration cost is the lowest in framework history for a transition of this magnitude.** Composition API code is portable. The opt-in is per-file. The interop story, while imperfect, is real. You don't need a rewrite — you need a pilot on two or three high-traffic routes, a feature flag, and instrumentation.
-
-The concrete next step: identify one rendering-bound view in your production application. Add `vapor` to its `<script setup>`. Test it. Deploy it behind a flag. Instrument it. Real benchmarks on real hardware with real users will tell you more than any synthetic 100K-component demo ever could. By the time Vue 3.6 exits beta, you'll already know whether Vapor delivers in your specific context — and which three files to flip next.
-
-{{< field-note title="Field note" >}}
-The right question is not whether Vapor Mode is impressive. It is where a compiler-driven path removes enough runtime cost to matter without making the team relearn the product.
+{{< field-note title="Field note: SaaS maintenance changes the definition of success" >}}
+A Laravel and Vue SaaS rarely fails because a team missed a clever rendering trick. It fails when a small frontend change breaks an old customer workflow, makes an admin screen harder to support, or leaves no clean rollback during a busy billing week. For a first Vapor pilot, success is a reviewable release: the route still behaves correctly, the team can describe the evidence, and the old path remains available. A faster interaction is welcome. It is not permission to skip the rest.
 {{< /field-note >}}
+
+If you maintain both Laravel endpoints and Vue screens, use the pilot to tighten the boundary rather than blur it. Freeze the API response shape used by the fixture. Make fixture generation a normal development command. Keep the server-side authorization and validation checks where they already belong. Rendering-path experiments should not become a reason to alter business rules, request semantics, or database queries in the same pull request. When several variables move together, nobody can explain a regression.
+
+For a broader maintenance baseline, review the patterns in [Laravel + Vue SaaS](/laravel-vue-saas/). For the supporting local workflow, keep the harness near the rest of your [developer tools](/developer-tools/), not in a private notebook that disappears after the pilot.
+
+## Build a local harness before touching the candidate component
+
+The harness below is deliberately project-local. It is not Vue configuration, a documented Vapor switch, or a claim about how Vue tooling must be configured. It is a small set of files that gives the pilot a name, a fixture contract, and a repeatable check. Adapt the paths and commands to the package manager and test setup already used by your repository.
+
+Begin with a JSON manifest. Keep it boring enough that a reviewer can see what is in scope without reading a long issue thread.
+
+```json
+{
+  "pilot": "vapor-report-filter",
+  "route": "/reports/invoices",
+  "owner": "frontend-maintenance",
+  "baselineRef": "main",
+  "candidateRef": "feature/vapor-report-filter",
+  "fixture": "tests/fixtures/invoices-1000.json",
+  "checks": [
+    "npm run test:pilot",
+    "npm run build",
+    "manual route smoke test"
+  ],
+  "rollback": "disable the application release flag and deploy the baseline route"
+}
+```
+
+Put a fixture next to the test code and state what it represents. Do not download a customer export into the repository. A synthetic list with the same field types, empty-state behavior, and long labels is usually enough to expose rendering and filtering behavior. If the route has pagination, make that part of the fixture contract rather than quietly testing an unpaginated list that no user sees.
+
+Next, add a test that protects the user-facing rule you intend to exercise. The example uses Vitest and standard TypeScript. It tests filter behavior in a small, framework-independent function so the same rule can be checked before and after a rendering-path experiment. It does not assert a render time and does not pretend to test Vapor itself.
+
+```ts
+// tests/pilot/report-filter.spec.ts
+import { describe, expect, it } from "vitest"
+
+type Invoice = {
+  id: string
+  customer: string
+  status: "paid" | "open" | "overdue"
+}
+
+function filterInvoices(invoices: Invoice[], query: string) {
+  const needle = query.trim().toLowerCase()
+  if (!needle) return invoices
+
+  return invoices.filter((invoice) =>
+    `${invoice.customer} ${invoice.status}`.toLowerCase().includes(needle),
+  )
+}
+
+describe("report-filter pilot contract", () => {
+  const invoices: Invoice[] = [
+    { id: "inv-101", customer: "Northwind", status: "open" },
+    { id: "inv-102", customer: "Acme", status: "paid" },
+    { id: "inv-103", customer: "Northwind", status: "overdue" },
+  ]
+
+  it("finds customer and status terms without changing the source list", () => {
+    expect(filterInvoices(invoices, "northwind").map((item) => item.id)).toEqual([
+      "inv-101",
+      "inv-103",
+    ])
+    expect(filterInvoices(invoices, "overdue").map((item) => item.id)).toEqual([
+      "inv-103",
+    ])
+    expect(invoices).toHaveLength(3)
+  })
+})
+```
+
+Make the command easy to run on a clean checkout. The following shell script creates a timestamped evidence folder, runs the pilot test and build, and preserves their output. It assumes `npm` is already the project package manager. Replace it if the repository uses a different one. Again, this is a pilot harness, not Vue configuration.
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+pilot="vapor-report-filter"
+stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+out="artifacts/${pilot}/${stamp}"
+
+mkdir -p "$out"
+npm run test:pilot 2>&1 | tee "$out/test.log"
+npm run build 2>&1 | tee "$out/build.log"
+printf '%s\n' "pilot=${pilot}" "created_at=${stamp}" > "$out/manifest.txt"
+printf 'Evidence written to %s\n' "$out"
+```
+
+A harness needs a CI gate only after it is useful locally. Once the test has caught one ordinary mistake and the team can run it without ceremony, put the checks on the pull request. This GitHub Actions example is an ordinary Node job, not a recommendation about Vue or Vapor Mode:
+
+```yaml
+name: pilot-harness
+
+on:
+  pull_request:
+    paths:
+      - "src/reports/**"
+      - "tests/pilot/**"
+      - "package.json"
+      - "package-lock.json"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run test:pilot
+      - run: npm run build
+```
+
+These blocks are intentionally modest. A useful harness proves that the candidate still builds, the selected behavior still holds, and reviewers can locate the resulting logs. It does not create a universal performance score. Browser traces, real-device checks, error monitoring, and support reports belong beside it.
+
+![Pilot harness: fixture, test, build, and artifact](/img/vue-3-6-vapor-mode-no-virtual-dom-no-rewrite-3.png)
+
+## Change one variable and record the comparison
+
+A performance pilot is easy to spoil. A developer updates Vue, rewrites a table, changes a query, introduces virtual scrolling, changes CSS containment, and calls the result a Vapor test. That may produce a better page, but it does not answer whether the rendering-path candidate was responsible for the change.
+
+Start with a baseline commit on the current stable branch. Record the commit hash, lockfile, browser version, fixture revision, and exact interaction. Run the local harness. Capture a browser performance trace for the action you care about, using the same local build and the same fixture each time. If your team already has a browser-test runner, add a route smoke test there. Do not create a second testing stack just to make the experiment look more formal.
+
+Then make only the candidate rendering-path change allowed by the applicable Vue 3.6 beta documentation and release notes. Do not copy an attribute or API form from a social post into a production branch. The official Vue material cited here explains the strategy and release state; it should be your starting point for the current supported syntax and known limitations. Pin the exact beta version in the pilot branch so a later pre-release does not silently become part of the comparison. [Source: https://github.com/vuejs/core/releases/tag/v3.6.0-beta.17] [Source: https://github.com/vuejs/core/blob/minor/CHANGELOG.md]
+
+Run the same checks again. The result can be ordinary. The candidate may render no differently in a trace. It may expose a test failure. It may make the page simpler to reason about, or it may make the component boundary harder to support. A pilot that yields "do not proceed" has done its job if it saved a wider rollout.
+
+Use a simple comparison record in the pull request or issue:
+
+| Item | Baseline | Candidate | Decision note |
+|---|---|---|---|
+| Installed Vue version | Recorded from lockfile | Exact beta recorded from lockfile | Do not compare moving dependency targets |
+| Filter contract | Pilot test result | Same pilot test result | Fail closed on behavior changes |
+| Production build | Build log attached | Build log attached | Keep warnings with the evidence |
+| Browser trace | Attached with interaction steps | Attached with the same steps | Compare the same fixture and browser |
+| Route smoke test | Result recorded | Result recorded | Exercise loading, empty state, and filter reset |
+| Rollback | Existing route or flag confirmed | Rehearsed before release | Assign an owner and deploy path |
+
+{{< note >}}
+Do not turn a beta pilot into a framework referendum. The Vue 3.6.0-beta.1 release notes describe Vapor as feature-complete in the beta cycle but still unstable (and exclude Suspense from the stated feature parity). Keep the experiment narrow until the release status, your dependencies, and your own evidence justify a different decision. [Source: https://github.com/vuejs/core/releases/tag/v3.6.0-beta.1]
+{{< /note >}}
+
+There is a second reason to keep the scope small: failures need an owner. If an admin sees a blank state after an edge-case filter, the owner should be able to identify the route, switch off the application control, and restore a known deployment. That is more useful than a vague promise that the new path is "easy to roll back." Write the command, flag, or release procedure into the manifest before any staged traffic sees the candidate.
+
+## Review the boundary, not only the screenshot
+
+A component can look correct while still breaking the edges that matter in a maintained application. Review the props it receives, the events it emits, the slots it consumes, the directives it depends on, and the third-party components nested beneath it. Those are the places where a new compilation target meets years of ordinary application code.
+
+Do not claim library compatibility because a package is popular or because another team said a similar stack worked. This article does not establish compatibility for Nuxt, Inertia, Pinia, VueUse, a component library, or a Laravel adapter. Verify each dependency against its own documentation, issue tracker, and your test suite before including it in a pilot. If you cannot verify it, keep that boundary on the established path.
+
+For Laravel teams, this review should include server-rendered assumptions even when the test route is client-heavy. Check permission-denied responses, validation messages, pagination links, localized labels, and the empty state returned by a fresh account. A UI benchmark can pass while a route fails for the customer who has no invoices yet. The pilot's fixture should include that case, and the smoke test should make it visible.
+
+Also inspect operational details that performance charts omit: client-side errors, hydration or console warnings if the application uses them, accessibility regressions in focus order, and unexpected duplicate requests. The harness cannot prove all of these by itself. Its purpose is to leave room for them in the release decision. This is consistent with the maintenance approach in [Start Here](/start-here/): establish a small change, make its behavior observable, and preserve a way back.
+
+
 
 ## What you should do Monday morning
 
-1. Pick one isolated Vue component with measurable render cost.
-2. Prototype the new path beside the current implementation.
-3. Measure bundle and interaction cost before talking about migration.
+1. Confirm the branch is on a known Vue version. Vue 3.5.39 is the current stable Vue core release; if you create a 3.6 beta branch, pin the exact pre-release and preserve its lockfile. [Source: https://github.com/vuejs/core/releases]
+2. Ask support, product, or the engineer closest to the screen for one reproducible interaction problem. Choose a non-critical route with a clear fallback.
+3. Create `pilot.json`, a synthetic fixture, and one behavior test before modifying the candidate component. Run the test and build locally; attach the logs to the work item.
+4. Read the current Vue 3.6 release notes and changelog before using any Vapor-specific syntax. The beta status is part of the acceptance criteria, not a footnote. [Source: https://github.com/vuejs/core/releases/tag/v3.6.0-beta.1] [Source: https://github.com/vuejs/core/blob/minor/CHANGELOG.md]
+5. Change one rendering variable, rerun the same checks, and capture the same browser interaction. Do not combine it with API, query, or visual redesign work.
+6. Rehearse rollback before staged traffic. Name the person who can make the call and document the exact release control.
+7. Close the pilot with one of three statements: keep it isolated and continue observing; expand to a second comparable route; or remove it and keep the established path. Each is a valid result when supported by the evidence.
+
+The useful outcome is a repeatable decision process. If Vapor Mode becomes stable and serves this application well, you will have a harness ready for the next route. If it does not, the team will have learned that without gambling a core SaaS workflow on a pre-release.
+
+## Further reading
+
+- [Vue 3.6.0-beta.1 release notes](https://github.com/vuejs/core/releases/tag/v3.6.0-beta.1)
+- [Vue 3.6.0-beta.17 release notes](https://github.com/vuejs/core/releases/tag/v3.6.0-beta.17)
+- [Vue core changelog](https://github.com/vuejs/core/blob/minor/CHANGELOG.md)
+- [Vue reactivity in depth](https://vuejs.org/guide/extras/reactivity-in-depth)
+- [Vue 3.5 announcement](https://blog.vuejs.org/posts/vue-3-5)
+- [Laravel + Vue SaaS maintenance notes](/laravel-vue-saas/)
+- [Developer tools](/developer-tools/)
