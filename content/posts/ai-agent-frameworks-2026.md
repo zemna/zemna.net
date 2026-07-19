@@ -1,326 +1,250 @@
 ---
 title: "AI Agent Frameworks in 2026 — What the Comparison Charts Don't Tell You"
-date: 2026-06-22T07:00:00+07:00
+date: 2026-07-19T07:00:00+07:00
 draft: false
-description: "A pragmatic guide to choosing AI agent frameworks by operating model, integration cost, lock-in risk, and production failure modes."
-topics: ["ai"]
+slug: "ai-agent-frameworks-in-2026-what-the-comparison-charts-dont-tell-you"
+description: "A production evaluation guide for LangGraph, AutoGen, CrewAI, and LangChain: define state, proof, rollback, and maintenance exit criteria before an agent framework reaches a real SaaS workflow."
+topics: ["ai-agents"]
+tags: ["agent-frameworks", "agent-operations", "agent-verification", "durable-execution", "laravel", "vue", "workflow-evaluation"]
 cover: /covers/ai-agent-frameworks-2026.png
 seo:
-  primaryQuery: "AI agent frameworks 2026"
+  primaryQuery: "llm agent framework update 2026"
   secondaryQueries:
-    - "agent framework comparison"
-    - "AI agent framework architecture"
-    - "LangGraph CrewAI AutoGen comparison"
+    - "langgraph durable execution checkpoints"
+    - "autogen agentchat agents teams"
+    - "crewai tracing production architecture"
 ---
 
-Every AI agent framework comparison chart tells the same story: LangGraph gets five stars for state management, CrewAI wins on developer velocity, AutoGen scores high on multi-agent conversations, and Claude Code's SDK gets a special mention for being "Anthropic-native." Clean. Orderly. Rows and columns that make the decision look straightforward.
+The comparison chart is already lying to you the moment it asks which agent framework is “best.” It turns an operational decision into a shopping decision: features in rows, names in columns, and a tidy winner at the bottom.
 
-They're not wrong. They're just answering the wrong question.
+Production does not fail in a table. It fails when a retry repeats a customer-facing action, when a worker resumes with the wrong state, when a handoff loses the reason for a decision, or when nobody can establish whether an agent actually changed anything. Those are contract failures. A framework can help express that contract; it cannot supply one after the fact.
 
-Nobody asks what happens at 3AM when the cron job fires, the agent spawns a subagent, and three hours later nothing has completed but every metric reports green. Nobody asks why the LLM-powered router burned $12 in tokens deciding what to do next — before any actual work started. Nobody asks what happens when an agent with free-roaming access to your codebase starts making connections between files that have nothing to do with each other, drifts off-spec, and confidently ships the wrong thing.
+The question is not whether this demos well; it is whether it survives maintenance, handoff, and local constraints.
 
-I run autonomous agent cron pipelines. Enough of them to know that the frameworks comparison charts are what you read before you deploy. The rest of this post is what you learn after — sometimes the hard way, sometimes from developers like Nathaniel Hamlett, who runs 23 autonomous cron jobs cycling through discovery, research, and output stages without human intervention.
+This is therefore not a scorecard for LangGraph, AutoGen, CrewAI, and LangChain. It is an exit-criteria article: what must be true before you allow one of these tools into a real workflow, and what evidence lets you remove it later without leaving a damaged system behind. The official materials describe different primitives: LangGraph documents persisted graph state through checkpointers and durable cross-thread data through stores; AutoGen AgentChat documents agents and teams; CrewAI documents agents, crews, flows, guardrails, memory, and observability; LangChain presents a framework for building context-aware applications. Those are useful starting points, not operating guarantees. [LangGraph persistence](https://docs.langchain.com/oss/python/langgraph/persistence) [AutoGen AgentChat](https://microsoft.github.io/autogen/stable/user-guide/agentchat-user-guide/tutorial/agents.html) [CrewAI documentation](https://docs.crewai.com/) [LangChain documentation](https://python.langchain.com/docs/introduction/)
 
-![Framework comparison map — SDKs, deterministic orchestrators, and agent-native tools](/img/ai-agent-frameworks-2026-1.png)
+![Workload boundary: read-only, reversible, and externally visible work](/img/ai-agent-frameworks-2026-1.png)
 
-## The Framework Landscape, Organized by What Actually Matters
+## Start with the workload, not the framework name
 
-Most comparisons group frameworks by GitHub stars or release date. Group them by orchestration model instead — it's the one axis that predicts production behavior.
+An agent framework deserves evaluation only after the workload has a boundary. “Answer support questions” is not a boundary. “Classify an inbound request, collect approved account facts, propose a reply, and require a human approval before sending” is one. It names the input, tools, state, output, and irreversible step.
 
-**Graph-based orchestration.** LangGraph is the reference here. You define nodes and edges explicitly. The agent follows a directed graph. Branching, retries, and human-in-the-loop checkpoints are first-class concepts. As JetBrains noted in their 2026 framework guide, this model provides "more deterministic control" and makes debugging easier because you "pinpoint exactly which node failed." The tradeoff: more upfront design. The graph constrains what the agent can do, which is exactly the point — and exactly why it works in production.
+Write that description before selecting an orchestration model. Then separate the work into three categories.
 
-**Role-based orchestration.** CrewAI and AutoGen dominate this category. You assign roles — Researcher, Writer, Reviewer — and let agents collaborate through conversation. CrewAI is the fastest path from idea to prototype. Alice Labs ranked it #3 overall for production deployments, noting its "very low barrier to entry" and "built-in primitives for sequential and hierarchical workflows." AutoGen pioneered the conversational multi-agent paradigm but split into two lineages in 2025: Microsoft's v0.4+ rewrite and the community fork AG2 (ag2.ai). Pick deliberately — they share DNA but not APIs.
+**Read-only work** gathers or summarizes information. It can still leak data or invent a conclusion, but it does not alter a customer record, send an email, or mutate a repository. Its central proof is provenance: which inputs, sources, and tool responses informed the output.
 
-**Handoff-based orchestration.** The OpenAI Agents SDK and Claude Agent SDK represent the managed/hosted approach. OpenAI provides the orchestration infrastructure; you define agent behavior. Claude Agent SDK, as Alice Labs documented, is "the same architecture that powers Claude Code" — hooks, MCP, skills, subagents. It's Anthropic-native, which means it's optimized for Claude models, not model-agnostic. The upside is deep integration. The downside is vendor lock-in, and if Claude goes down overnight (as happened with Fable 5), your pipeline stops.
+**Reversible work** creates an internal artifact: a draft, a ticket, a proposed patch, or a queued action with a cancellation path. Its central proof is ownership and reversal: where the artifact lives, who reviews it, and what removes it.
 
-**YAML/deterministic orchestration.** Microsoft Conductor takes the contrarian position. No LLM in the routing loop. You define workflows in YAML. Jinja2 templates handle conditions and branching. The orchestration layer costs zero tokens. As Microsoft's open-source blog put it in May 2026: "most frameworks use LLM as orchestrator (dynamic planning) — adds cost, latency, unpredictability." Conductor says: skip that. Route deterministically, spend tokens only inside tasks.
+**Irreversible or externally visible work** sends, publishes, charges, deletes, deploys, or changes a system of record. Its central proof is an idempotency key, an approval boundary, and an auditable receipt from the downstream system. Do not let an LLM decide whether those controls are needed. They are needed because the effect matters.
 
-That's the landscape on paper. Here's what breaks.
+This distinction changes the framework conversation. A conversation-oriented team can be appropriate for creating a research brief. A graph with persisted state can be appropriate where a run must stop and resume. A crew or flow can be useful when distinct roles and a defined process are the operating model. A small LangChain-based application can be enough when the job is a bounded call to a model plus a controlled retrieval or tool layer. The official documentation establishes those building blocks; the workload establishes whether any one deserves the added surface area.
 
-## What Actually Breaks in Production
+The narrow comparison below deliberately avoids a feature inventory. It asks which production concern the documented primitive gives you a place to implement.
 
-Traditional software fails loudly. Stack traces. Exceptions. Pagers. Autonomous agents fail quietly. The process stays alive, the heartbeat keeps ticking, but no work gets done.
+| Framework resource | Documented primitive to inspect | Production question to answer before approval |
+|---|---|---|
+| LangGraph | Checkpointer for thread state; store for cross-thread data | What state resumes, how is it retained, and what key identifies the run? |
+| AutoGen AgentChat | Agents and teams | Which agent is allowed to call which tool, and where is team completion recorded? |
+| CrewAI | Agents, crews, flows, guardrails, memory, observability | Which flow owns the handoff, and where does a failed run leave evidence? |
+| LangChain | Framework components for context-aware applications | Is an agent runtime needed, or is a bounded chain with explicit tools enough? |
 
-Bob Renze, running an autonomous task system, described these as "zombie tasks" — "alive by every metric except the one that matters." He identified four stall patterns that recur across production deployments:
+LangGraph’s persistence guide is especially direct about the state question: checkpointers persist snapshots for a thread, while stores persist application-defined data across threads. It also warns that in-memory checkpointing does not survive a process restart and calls out retention for accumulating checkpoints. Treat that as an evaluation prompt. If your design cannot state its thread identifier, retention policy, and recovery behavior, a persistence primitive will preserve confusion rather than solve it. [https://docs.langchain.com/oss/python/langgraph/persistence](https://docs.langchain.com/oss/python/langgraph/persistence)
 
-**The Infinite Wait.** A tool call hangs waiting for a response. No network timeout was configured. The agent keeps waiting because no error occurred to trigger recovery. The process is alive. Nothing is happening.
+![Idempotency chain: key, effect, and receipt](/img/ai-agent-frameworks-2026-2.png)
 
-**The Compaction Loop.** The context window fills. The system tries to compact. Something goes wrong in the compaction logic. The task enters a loop, consuming tokens, neither completing nor failing.
+## Treat durable execution as an idempotency problem
 
-**The Subagent Black Hole.** You spawn a subagent for parallel work. It fails silently in its isolated session. The parent task waits forever for a completion signal that never arrives.
+“Durable” is often heard as “the run comes back after a failure.” That is incomplete. A resumed run must not repeat an external effect just because the process lost its place between the request and the checkpoint.
 
-**The Rate Limit Sleep.** You hit an API rate limit. Backoff logic says "wait 5 minutes." The wait extends indefinitely. The task never wakes up.
+For every side effect, define a stable operation key before calling the external service. Store the result keyed by that value. On a retry, return the previously recorded receipt instead of performing the effect again. This is ordinary application engineering, and it remains necessary inside an agent workflow.
 
-These aren't edge cases. They're the default failure mode of any long-running agent system. The fix isn't a better framework — it's architecture that assumes the framework will fail.
-
-Nathaniel Hamlett runs 23 autonomous cron jobs that discover, research, and submit to opportunities without human intervention. His approach, documented on earezki.com, externalizes all state. Every new cron invocation is a cold process with zero memory — coordination lives in the database, not the process. SQLite with `journal_mode=WAL` and `busy_timeout` serves as the coordination layer. PID lock files in `/tmp` prevent race conditions. Item-level commits prevent total data loss from a single API failure.
-
-Here's the coordination primitive:
+The following Python example is intentionally independent of a specific framework so it can sit behind a LangGraph node, a CrewAI tool, an AutoGen agent tool, or a conventional Laravel-facing service. It runs as written, uses SQLite for a transactional local record in a single-process illustration, and models a charge-like operation without contacting a payment provider. Replace `perform_external_effect` with the actual adapter; keep the idempotency boundary.
 
 ```python
+import hashlib
 import sqlite3
-import os
-import time
+from pathlib import Path
 
-DB_PATH = "/var/agent/pipeline.db"
-LOCK_DIR = "/tmp/agent-locks"
+DB = Path("agent-effects.sqlite3")
 
 
-def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.execute("PRAGMA journal_mode=WAL")
-    conn.execute("PRAGMA busy_timeout=5000")
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS tasks (
-            id INTEGER PRIMARY KEY,
-            stage TEXT NOT NULL,
-            status TEXT DEFAULT 'pending',
-            item_id TEXT UNIQUE,
-            heartbeat_at REAL,
-            created_at REAL DEFAULT (unixepoch()),
-            updated_at REAL DEFAULT (unixepoch())
+def setup() -> None:
+    with sqlite3.connect(DB) as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS effects (
+                operation_key TEXT PRIMARY KEY,
+                receipt TEXT NOT NULL
+            )
+        """)
+
+
+def operation_key(order_id: str, action: str) -> str:
+    raw = f"{order_id}:{action}".encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def perform_external_effect(order_id: str, operation_key: str) -> str:
+    # Replace this with a provider call that also receives operation_key.
+    return f"receipt:order:{order_id}"
+
+
+def run_effect(order_id: str, action: str) -> str:
+    key = operation_key(order_id, action)
+    with sqlite3.connect(DB) as conn:
+        row = conn.execute(
+            "SELECT receipt FROM effects WHERE operation_key = ?", (key,)
+        ).fetchone()
+        if row:
+            return row[0]
+
+        receipt = perform_external_effect(order_id, key)
+        conn.execute(
+            "INSERT INTO effects(operation_key, receipt) VALUES (?, ?)",
+            (key, receipt),
         )
-    """)
-    conn.commit()
-    return conn
+        return receipt
 
 
-def acquire_lock(lock_type: str) -> bool:
-    """File-based PID lock. Returns True if lock acquired."""
-    lock_file = os.path.join(LOCK_DIR, f"{lock_type}.lock")
-    if os.path.exists(lock_file):
-        try:
-            with open(lock_file) as f:
-                pid = int(f.read().strip())
-            os.kill(pid, 0)  # Process exists
-            return False
-        except (ProcessLookupError, ValueError, FileNotFoundError):
-            pass  # Stale lock — we can take it
-    with open(lock_file, "w") as f:
-        f.write(str(os.getpid()))
-    return True
-
-
-def claim_next(conn, stage: str) -> dict | None:
-    """Claim a single item atomically. COMMIT IMMEDIATELY."""
-    conn.execute("BEGIN IMMEDIATE")
-    row = conn.execute(
-        "SELECT id, item_id FROM tasks WHERE stage = ? AND status = 'pending' "
-        "ORDER BY created_at LIMIT 1",
-        (stage,),
-    ).fetchone()
-    if row is None:
-        conn.rollback()
-        return None
-    task_id, item_id = row
-    conn.execute(
-        "UPDATE tasks SET status = 'claimed', heartbeat_at = unixepoch() WHERE id = ?",
-        (task_id,),
-    )
-    conn.commit()
-    return {"id": task_id, "item_id": item_id}
+if __name__ == "__main__":
+    setup()
+    print(run_effect("order-42", "send-confirmation"))
+    print(run_effect("order-42", "send-confirmation"))
 ```
 
-Three things matter here. First, `BEGIN IMMEDIATE` — without it, SQLite defers locking and you get `SQLITE_BUSY` under concurrency. Second, the `heartbeat_at` column: every task writes a timestamp on progress. A watchdog process checks `updated_at`, not PID existence. No heartbeat update in 10 minutes means the task is a zombie, regardless of what the process table says. Third, item-level commits: fail mid-batch, you lose one item, not the whole batch.
+The code has an important limitation: a database transaction cannot make an arbitrary remote call atomic, and concurrent workers can still race between the local lookup, the remote effect, and the insert. That is why the downstream adapter should accept the same idempotency key, and why a production design needs both a reconciliation path for the small window between an external success and a local record and a concurrency-safe claim or outbox strategy. Naming those limitations is stronger than pretending a framework-level retry setting removes them.
 
-This externalized state model is the difference between losing hours of work and losing a single API call.
+LangGraph’s persistence documentation gives a useful vocabulary for the rest of this design: a thread-scoped checkpoint is not the same thing as application data shared across runs. Keep the customer action receipt in the system of record or a purpose-built effect ledger, not only in conversational state. [https://docs.langchain.com/oss/python/langgraph/persistence](https://docs.langchain.com/oss/python/langgraph/persistence)
 
-![Zombie task detection flow — 4 stall patterns with heartbeat-based recovery](/img/ai-agent-frameworks-2026-2.png)
+## Make multi-agent handoffs observable and bounded
 
-Here's the watchdog that makes zombie detection automatic:
+Multi-agent designs fail in a mundane way: the system cannot say who owns the next action. A “researcher,” “reviewer,” and “writer” is a readable diagram, but a role is not an operational boundary until it has an input schema, permitted tools, output schema, timeout, and completion record.
 
-```python
-import os
-import signal
-import time
+AutoGen’s stable AgentChat material distinguishes agents and teams. That is a useful model when the work truly calls for interaction among specialized participants. It is not a reason to split a linear task into a conversation. Before using a team, demonstrate that each member has a distinct decision or tool boundary. Otherwise, one agent with explicit stages is easier to test and easier to replace. [https://microsoft.github.io/autogen/stable/user-guide/agentchat-user-guide/tutorial/agents.html](https://microsoft.github.io/autogen/stable/user-guide/agentchat-user-guide/tutorial/agents.html)
 
-ZOMBIE_THRESHOLD = 600  # 10 minutes
+CrewAI’s documentation describes agents, crews, and flows, and presents flows as orchestration with state and support for long-running work. It also places guardrails, memory, and observability in the product vocabulary. Use that vocabulary to write checks, not slogans. Which guardrail rejects a malformed handoff? Where is the flow state persisted? What trace or log record links a user request to a tool call and final artifact? The framework has a place for the concern; your deployment still needs a defined policy. [https://docs.crewai.com/en/concepts/flows](https://docs.crewai.com/en/concepts/flows) [https://docs.crewai.com/en/concepts/observability](https://docs.crewai.com/en/concepts/observability)
 
+A practical handoff record has a small, boring shape:
 
-def heartbeat(task_id: int, conn):
-    """Called by worker at every checkpoint."""
-    conn.execute(
-        "UPDATE tasks SET heartbeat_at = unixepoch() WHERE id = ?",
-        (task_id,),
-    )
-    conn.commit()
+- `run_id`: the stable correlation identifier across agents and tools.
+- `stage`: a controlled vocabulary, not a free-form status sentence.
+- `input_digest`: a fingerprint of the approved input or source set.
+- `owner`: the agent, service, or human responsible for the next transition.
+- `artifact_uri`: where the draft, report, or patch can be inspected.
+- `decision`: accepted, rejected, paused, or failed.
+- `reason`: a short explanation suitable for the next operator.
 
+Do not pass the whole chat transcript as the handoff. Keep it as supporting evidence when appropriate, but pass a structured contract that a later stage can validate. This is also the moment to draw a hard timeout. If a tool does not return, transition to `paused` or `failed` with an artifact showing what was attempted. A live process without a completed artifact is not a successful run.
 
-def find_zombies(conn) -> list[dict]:
-    """Find claimed tasks with no heartbeat in ZOMBIE_THRESHOLD seconds."""
-    cutoff = time.time() - ZOMBIE_THRESHOLD
-    rows = conn.execute(
-        "SELECT id, item_id, heartbeat_at FROM tasks "
-        "WHERE status = 'claimed' AND heartbeat_at < ?",
-        (cutoff,),
-    ).fetchall()
-    return [{"id": r[0], "item_id": r[1], "last_beat": r[2]} for r in rows]
+{{< field-note title="Field note: Laravel and Vue SaaS maintenance" >}}
+In a Laravel/Vue SaaS, agent verification belongs beside the boundaries that already cause maintenance work: queue jobs, Laravel actions, policy checks, API resources, and Vue forms. An agent that proposes a billing reply or prepares an account change should leave a run ID, the validated payload, the authorization decision, and the downstream receipt. The Vue screen should render a verifiable status from that record, not infer success from a cheerful model response. When the next maintainer opens a support ticket, those artifacts are the handoff.
+{{< /field-note >}}
 
+![Structured agent handoff record](/img/ai-agent-frameworks-2026-3.png)
 
-def kill_zombie(conn, task: dict):
-    """Reset zombie to pending so next cycle picks it up."""
-    conn.execute(
-        "UPDATE tasks SET status = 'pending', heartbeat_at = NULL WHERE id = ?",
-        (task["id"],),
-    )
-    conn.commit()
-    # If you have a PID record, send SIGKILL here.
-    # The kill-and-retry loop relies on idempotency:
-    # running the same task twice must be safe.
-```
+## Evaluate with release gates, rollback, and evidence
 
-The idempotency constraint is what makes kill-and-retry safe. If running a task twice corrupts state, you can't kill zombies — you can only stare at them. Every operation in the pipeline must survive being run more than once. This means output filenames are deterministic, database inserts use `INSERT OR REPLACE`, and side effects are structured to be repeatable.
+An agent evaluation is not a single prompt test. It is a release gate containing normal cases, expected failures, forbidden actions, and evidence requirements. The point is to make a failed evaluation actionable: either repair the workflow, narrow its authority, or stop the rollout.
 
-After implementing these patterns, Renze reported: 12 stalled tasks detected, all within 15 minutes. Silent failures dropped from 2–3 per week to zero. Average task completion fell from 8+ minutes to 4.2 minutes. Three false-positive timeout kills in week one, fixed by tuning thresholds.
-
-## The Orchestration Tax
-
-Here's a number that should bother you: some agent frameworks spend more tokens on orchestration than on the actual work.
-
-When you put an LLM in the routing loop — "analyze the task, determine which agent should handle it, dispatch accordingly" — you're paying for a model to make a decision that code could make deterministically. Every. Single. Invocation. The LLM reads the task description, reads the available agents, decides which to invoke, and fires. That's 200–500 tokens before any real work begins.
-
-Now scale that across 23 cron jobs running daily. That's thousands of routing decisions per month, each one burning tokens and introducing nondeterminism. The LLM might route differently on Tuesday than it did on Monday. The same task, same context, different model response. Reproducible bugs become a fantasy.
-
-Microsoft Conductor, released May 2026 under MIT license, takes the opposite approach. Workflows are YAML files. Routing between agents uses Jinja2 template matching — zero tokens, deterministic results. The LLM lives inside the task, not above it.
-
-Here's a Conductor-style workflow definition:
+Use a manifest that the team can review without executing code. The example below is valid YAML and gives a deployment system, a test harness, or a human operator the same criteria. It contains no invented framework configuration; it is deliberately portable across the documented frameworks.
 
 ```yaml
-name: research-publish-pipeline
-description: Discover, research, and publish content pipeline
-max_iterations: 20
-timeout: 3600
-default_model: claude-sonnet-4-20250514
-
-steps:
-  - id: discover
-    agent: discovery-agent
-    model: claude-sonnet-4-20250514
-    prompt: |
-      Scan the configured sources for new content matching today's topics.
-      Return a JSON array of discovered items with url, title, and relevance_score.
-    context: last_only
-    output: discovery_results
-
-  - id: filter
-    type: script
-    run: |
-      python3 scripts/filter_discovered.py \
-        --input "{{ discovery_results }}" \
-        --min-score 7.0 \
-        --output filtered.json
-    context: explicit
-
-  - id: research
-    depends_on: [filter]
-    agent: research-agent
-    model: gpt-4o
-    prompt: |
-      For each item in filtered.json, gather additional context.
-      Return an enriched JSON array with source_url, key_claims, and fact_check_notes.
-    context: explicit
-    inputs:
-      - filtered.json
-    output: research_results
-
-  - id: write
-    depends_on: [research]
-    agent: writer-agent
-    model: claude-sonnet-4-20250514
-    prompt: |
-      Write a blog post based on the research in {{ research_results }}.
-      Follow the style guide in prompts/style-guide.md.
-    context: accumulate
-    output: draft_post
-
-  - id: human_review
-    type: human_gate
-    depends_on: [write]
-    prompt: "Review the draft post. Approve or request changes."
-    routes:
-      approve: publish
-      reject: write
-
-  - id: publish
-    depends_on: [human_review]
-    type: script
-    run: |
-      bash scripts/publish.sh "{{ draft_post }}"
-    context: explicit
+workflow: account-change-assistant
+release:
+  mode: staged
+  approval_required: true
+inputs:
+  required:
+    - account_id
+    - requested_change
+    - actor_id
+controls:
+  idempotency_key: "account_id:requested_change:request_id"
+  allowed_tools:
+    - account_lookup
+    - draft_change
+  prohibited_actions:
+    - direct_database_write
+    - send_external_email
+verification:
+  smoke_cases:
+    - name: authorized-draft
+      fixture: fixtures/authorized-draft.json
+      expect:
+        decision: draft_created
+        artifact_required: true
+    - name: denied-request
+      fixture: fixtures/denied-request.json
+      expect:
+        decision: rejected
+        tool_calls: 0
+  evidence:
+    - run_id
+    - input_digest
+    - authorization_result
+    - artifact_uri
+    - trace_uri
+rollback:
+  trigger: "missing evidence, forbidden tool call, or failed smoke case"
+  action: disable_workflow_and_preserve_run_artifacts
+  owner: on-call-engineer
 ```
 
-Three things stand out in this workflow. First, the `filter` step is a shell script — no tokens consumed. Second, context mode is explicit per step: `last_only` for discovery (only the current prompt), `explicit` for research (only named input files), `accumulate` for writing (everything prior). Third, `human_review` is a built-in gate, not a bolted-on webhook — the workflow pauses and waits.
+Notice the separation between evaluation and rollback. A test can say “reject this request.” A rollback can say “disable the workflow, preserve evidence, and give an owner a clear response.” The first is a correctness expectation; the second is an operating instruction.
 
-The economics are straightforward. A framework that routes via LLM might spend 300 tokens per routing decision. At $3 per million input tokens (GPT-4o pricing), that's $0.0009 per decision. Tiny. Until you run 1,000 decisions a day, at which point it's $0.90/day in routing overhead — roughly $27/month spent on nothing but deciding what to do next. That's before the actual work.
+LangChain is relevant here as a framework resource, not a default answer. Its documentation centers the composition of models, tools, and application logic. That is often sufficient when a workflow has one controlled decision path. Do not import a full multi-agent design merely because a framework makes it available. The smallest design that produces a testable artifact and a rollback path is the one to operate first. [https://python.langchain.com/docs/introduction/](https://python.langchain.com/docs/introduction/)
 
-Conductor's orchestration layer costs $0. The difference isn't the money. It's the determinism. A YAML workflow produces the same routing decisions every time. An LLM router produces decisions that drift.
+{{< note >}}
+A trace is evidence of execution, not evidence of correctness. Keep traces for investigation, but make the release gate assert the outcome that matters: the right artifact, the right authorization result, no forbidden tool call, and a usable rollback action.
+{{< /note >}}
 
-## Context Engineering: The 5-Minute vs 3-Day Gap
+## Define the exit criteria before the pilot starts
 
-A 5-minute task can hold everything in context. The system prompt, the instructions, the tool outputs, the intermediate results — it all fits. The agent stays coherent from start to finish.
+Most framework evaluations have entry criteria: install the library, connect a model, make a demo task complete. Mature evaluations also have exit criteria. Exit does not mean failure. It means the organization can remove or replace the framework without losing its workflow contract.
 
-A 3-day task cannot. The context window is a fixed-size resource, and as MindStudio's analysis of agent failure patterns documented, LLM attention mechanisms treat recent tokens as more relevant than older ones. The system prompt and early instructions lose influence even while technically still present. The agent doesn't "forget" — it just weights recency higher, and over hours of execution, that weighting becomes indistinguishable from memory loss.
+Set these criteria in writing before a pilot receives real inputs:
 
-This is context degradation. It's one of six failure modes MindStudio identified in production agents, alongside specification drift (reinterpreting instructions over time), sycophantic confirmation (RLHF bias toward agreeableness), tool call failures, cascading failure, and silent failure. The operational patterns from the previous section — heartbeats, timeouts, externalized state — don't fix these. They contain them. They turn undetected reasoning failures into bounded, observable events.
+1. **State exit.** Export or reconstruct the data required to resume or close a run: identifiers, stage, approved inputs, artifacts, and downstream receipts. If a checkpointer or memory layer is removed, the business record still explains the effect.
+2. **Tool exit.** Keep tool adapters behind application interfaces. A workflow can call `account_lookup` or `create_draft`; it should not spread provider-specific invocation code through Laravel jobs and Vue-facing endpoints.
+3. **Prompt and policy exit.** Store prompts, schemas, allowed-tool lists, and approval rules in reviewed project files. Treat them like application configuration, not invisible dashboard state.
+4. **Evidence exit.** Preserve a readable execution record independent of the framework UI. Use the run identifier to connect logs, artifacts, and the final decision.
+5. **Rollback exit.** Demonstrate a disable path that stops new externally visible actions while preserving incomplete runs for review.
+6. **Maintenance exit.** Give a new engineer a short runbook: where the workflow starts, where state lives, how to run verification, and who owns an exception.
 
-What fixes context degradation is context engineering. The emerging discipline, named by ByteByteGo as a 2026 trend, means controlling what information reaches an agent at each step. The agent doesn't browse. It doesn't explore. It gets exactly what it needs.
+These criteria are compatible with every resource in the narrow table. They also make their trade-offs visible. LangGraph persistence focuses attention on what state is retained. AgentChat teams focus attention on the handoff boundary. CrewAI flows and observability focus attention on process ownership and inspection. LangChain’s composition model focuses attention on whether a smaller application structure is enough. None of that substitutes for a release contract.
 
-![Context engineering comparison — accumulate vs last_only vs explicit, with token savings](/img/ai-agent-frameworks-2026-3.png)
+The related work on [/ai-agent-operations/](/ai-agent-operations/) makes the same operational point from the cron side: an agent must leave proof, not just remain alive. [/developer-tools/](/developer-tools/) is the companion reading for the toolchain around that proof. For repository-changing workflows, add the preflight discipline in [the agent edit contract](/blog/the-agent-edit-contract-i-use-before-a-coding-agent-touches-a-repo/) before you give an agent write authority.
 
-Microsoft Conductor formalizes this with three context modes:
-
-- **Accumulate** — the agent sees all prior step outputs. Use this for planning, analysis, and synthesis tasks where full history matters. It's the most expensive mode but correct for jobs that need global context.
-
-- **Last only** — the agent sees only the output of the immediately preceding step. Use this for implementation, transformation, and formatting tasks. The agent has no business knowing what happened four steps ago. It just needs the current input.
-
-- **Explicit** — the agent sees only named dependencies listed in the workflow definition. Use this for review, testing, and validation. The agent gets exactly the files and outputs you specify, nothing else.
-
-This isn't a minor optimization. Running `last_only` instead of `accumulate` on a 10-step pipeline cuts the effective context window per step by roughly 90%. For a task that normally pushes against a 200K token context window, that's the difference between fitting and truncating. And truncation is where context degradation begins.
-
-The context manifest is the implementation. Each agent step receives a structured list: specific files, specific documentation sections, specific prior outputs. The agent doesn't get to "look around" the codebase. Free-roaming access causes agents to make connections between unrelated files, draw false inferences, and drift from the original specification. Anthropic's engineering team confirmed this pattern in their November 2025 post on long-running agent harnesses: agents working across multiple context windows with no memory between sessions need structured handoffs — an initializer agent that sets up the environment, structured feature lists, git commits as checkpoints.
-
-Context manifests are the handoff mechanism. When agent A finishes and hands to agent B, B doesn't inherit A's entire conversation. It inherits a manifest: "here are the three files you need, here's the output from step 4, here are the constraints." Everything else is excluded.
-
-## What I Actually Run
-
-After absorbing production failures, framework documentation, and the patterns that work for people running agents 24/7, the stack isn't a single framework. It's a composition.
-
-**Deterministic routing.** YAML-defined workflows with Jinja2 routing. No LLM in the orchestration path. The router is code, not a model. Every invocation produces the same routing decisions. This alone eliminated a class of nondeterministic stalls that took weeks to debug under LLM-based routing.
-
-**Per-task LLM selection.** Different tasks need different models. Classification and filtering run on smaller, cheaper models (Claude Haiku, GPT-4o-mini). Research and writing use frontier models (Claude Sonnet 4, GPT-4o). The workflow definition specifies which model each step uses. Mixing providers within a single pipeline is not a luxury — it's cost control.
-
-**SQLite WAL for external coordination.** Every task is a cold start. No in-memory state survives between invocations. SQLite with WAL mode is the coordination layer — task queues, heartbeats, lock files, item-level commits. It's boring technology, which is the point. It doesn't break in interesting ways at 3AM.
-
-**Heartbeat-based monitoring.** A separate watchdog process checks `heartbeat_at` timestamps. Not PID existence. Not process status. An agent that's alive by every OS metric but hasn't written a heartbeat in 10 minutes is dead. The watchdog kills it, resets the task to pending, and the next cron cycle picks it up.
-
-**Idempotent kill-and-retry.** Every operation must survive running twice. Deterministic output filenames, `INSERT OR REPLACE`, structured side effects. If the watchdog kills a task mid-execution, the retry doesn't corrupt state. This constraint forces clean design — and clean design is what keeps pipelines running unattended for weeks.
-
-Is this more work than installing LangGraph and wiring up a graph? Yes. Does it eliminate the 3AM debugging sessions where your agents have been running in circles for four hours while every dashboard shows green? Also yes.
-
-## Actionable Takeaways
-
-1. **Pick your orchestration model before you pick a framework.** Graph-based (LangGraph), role-based (CrewAI), handoff-based (OpenAI/Claude SDK), or deterministic (Conductor). The model determines your failure modes more than the framework name does.
-
-2. **Externalize state.** If your agent's memory lives in process memory, a crash is total amnesia. SQLite with WAL mode, PID locks, and item-level commits — boring, reliable, survivable.
-
-3. **No LLM in the routing loop.** The orchestrator should be code. The LLM goes inside tasks. This saves tokens and eliminates nondeterministic routing bugs.
-
-4. **Wall-clock timeouts on everything.** Every task. Every subagent call. Every API request. Default to 60 seconds. Longer tasks opt in explicitly. Bob Renze's checklist is right: if you can't guarantee task completion or failure within a bounded time, you can't participate in any time-sensitive coordination.
-
-5. **Heartbeat, not process check.** A running process means nothing. A recent heartbeat means everything. The watchdog checks timestamps, not PIDs.
-
-6. **Context engineering is not optional.** Free-roaming codebase access breaks long-running agents. Context manifests — explicit per-step file lists — keep agents focused. Accumulate mode for synthesis, last_only for implementation, explicit for validation.
-
-7. **Idempotency is the price of kill-and-retry.** If you can't safely kill a task mid-execution, you can't recover from stalls. Make every operation safe to run twice.
-
-The framework comparison charts aren't wrong. LangGraph gives you state machines. CrewAI gives you role-based collaboration. Claude Code's SDK gives you Anthropic-native tool use. But the chart doesn't tell you that the real work isn't picking the framework — it's building the infrastructure that catches the framework when it stalls at 3AM and nobody's awake to notice. That infrastructure is external state, deterministic routing, wall-clock timeouts, heartbeat monitoring, and context manifests. Everything else is demo-grade.
-
-{{< field-note title="Field note" >}}
-Framework choice matters less than boundary choice. If the framework cannot make state, retries, tool calls, and handoff artifacts visible, it will feel fast in demos and expensive in maintenance.
-{{< /field-note >}}
+![Agent framework exit criteria: state, tools, evidence, rollback](/img/ai-agent-frameworks-2026-4.png)
 
 ## What you should do Monday morning
 
-1. Pick one framework candidate and model your real failure path.
-2. Check how it stores state, retries, and tool output.
-3. Choose the framework that makes debugging boring, not the one with the prettiest demo.
+1. Pick one workflow that already has a real owner and a clear consequence. Avoid a broad “assistant” project. Write its input, tool list, artifact, and irreversible boundary on one page.
+2. Decide whether the workflow needs persisted execution, a team handoff, a flow, or only a bounded chain. Use the documented primitive as a reasoned fit, not a brand preference.
+3. Add a stable `run_id` and an idempotency key before the first external effect. Record a receipt that survives a worker restart.
+4. Write two smoke fixtures: one authorized happy path and one denied or malformed request. Assert that the denied path makes no prohibited tool call.
+5. Create the YAML release and rollback manifest in the repository. Assign an owner for the disable action and an owner for reviewing incomplete runs.
+6. Run the smallest verification command in CI and locally. A shell smoke test can be this plain:
+
+```sh
+set -eu
+rm -f agent-effects.sqlite3
+python3 durable_effect.py > /tmp/agent-effects.out
+lines=$(wc -l < /tmp/agent-effects.out)
+[ "$lines" -eq 2 ]
+first=$(sed -n '1p' /tmp/agent-effects.out)
+second=$(sed -n '2p' /tmp/agent-effects.out)
+[ "$first" = "$second" ]
+printf 'idempotency smoke test passed\n'
+```
+
+Put the Python example in `durable_effect.py`, run this command, and keep the fixture output with the review record. The test proves the narrow contract shown here: repeat invocation returns the stored receipt. It does not prove an external provider honors your key, so add an adapter-level test for that boundary as well.
+
+7. Schedule a handoff review after the first maintained change, not after a polished demo. Ask a different engineer to find the run record, explain the last decision, and execute the rollback instruction. Any hesitation is a failed operating test.
+
+The framework choice becomes easier after this work because the question is finally concrete. You are not choosing the framework with the most labels. You are selecting the smallest documented set of primitives that can carry your state, tool boundaries, evidence, and exit plan.
+
+## Further reading
+
+- {{< source href="https://docs.langchain.com/oss/python/langgraph/persistence" label="LangGraph documentation — persistence, checkpointers, and stores" >}}
+- {{< source href="https://microsoft.github.io/autogen/stable/user-guide/agentchat-user-guide/tutorial/agents.html" label="AutoGen stable documentation — AgentChat agents and teams" >}}
+- {{< source href="https://docs.crewai.com/en/concepts/flows" label="CrewAI documentation — flows, state, persistence, and long-running work" >}}
