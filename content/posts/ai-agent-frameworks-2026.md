@@ -1,6 +1,7 @@
 ---
 title: "AI Agent Frameworks in 2026 — What the Comparison Charts Don't Tell You"
 date: 2026-07-19T07:00:00+07:00
+lastmod: 2026-07-26T08:00:00+07:00
 draft: false
 slug: "ai-agent-frameworks-in-2026-what-the-comparison-charts-dont-tell-you"
 description: "A production evaluation guide for LangGraph, AutoGen, CrewAI, and LangChain: define state, proof, rollback, and maintenance exit criteria before an agent framework reaches a real SaaS workflow."
@@ -215,6 +216,34 @@ These criteria are compatible with every resource in the narrow table. They also
 The related work on [/ai-agent-operations/](/ai-agent-operations/) makes the same operational point from the cron side: an agent must leave proof, not just remain alive. [/developer-tools/](/developer-tools/) is the companion reading for the toolchain around that proof. For repository-changing workflows, add the preflight discipline in [the agent edit contract](/blog/the-agent-edit-contract-i-use-before-a-coding-agent-touches-a-repo/) before you give an agent write authority.
 
 ![Agent framework exit criteria: state, tools, evidence, rollback](/img/ai-agent-frameworks-2026-4.png)
+
+## A current framework signal: keep the agent outside the release authority
+
+The clearest recent framework signal is not a new orchestration primitive. It is a boundary. GitHub describes Agentic Workflows as a way to augment existing CI/CD for reasoning-heavy work such as issue triage, CI-failure analysis, and documentation updates; it explicitly does not position the agentic layer as a replacement for deterministic build, test, or release pipelines. [Source: https://github.blog/ai-and-ml/automate-repository-tasks-with-github-agentic-workflows/]
+
+That distinction gives a framework evaluation a useful first deployment shape. Let an agent read the repository, assemble an evidence packet, propose a patch, or explain a failing test. Keep the release authority in the existing path: protected review, deterministic tests, deployment approval, and a single concurrency group for the resource being changed. GitHub Actions documents concurrency as the mechanism that ensures only one job or workflow in a concurrency group runs at a time. [Source: https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/control-deployments]
+
+For a Laravel/Vue application, the practical separation looks like this:
+
+| Concern | Agent framework may own | Existing delivery system must own |
+|---|---|---|
+| Investigation | Repo map, failing-test summary, proposed next command | Access policy for source and secrets |
+| Change proposal | Patch, test plan, evidence manifest | Pull-request review and branch protection |
+| Verification | Run a narrowly scoped test and retain its output | Required status checks and acceptance decision |
+| Release | Explain readiness or identify a missing artifact | Deployment approval, concurrency, and rollback execution |
+
+The framework is then evaluated by the artifacts it produces, not by whether it has permission to bypass the delivery system. A team can replace an agent runtime without replacing its protected deployment controls. That is the exit path in concrete form.
+
+One lightweight way to make the handoff visible is a commit footer that points to the review and proof. Git's `interpret-trailers` command provides structured trailer parsing and manipulation; it is useful for compact locators, not as a substitute for the test log or the deployment record. [Source: https://git-scm.com/docs/git-interpret-trailers]
+
+```text
+Review: https://github.com/acme/app/pull/482
+Verify: php artisan test --testsuite=Feature
+Evidence: artifacts/agent-run-2026-07-26.json
+Rollback: docs/runbooks/invoice-delivery-v1.md
+```
+
+The four lines make an agent-generated change inspectable after the chat has disappeared. They also force the right question during review: does each locator exist, and does it prove what the line claims? If not, the framework has produced a narrative rather than a handoff.
 
 ## What you should do Monday morning
 
