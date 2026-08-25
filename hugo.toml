@@ -13,11 +13,11 @@ summaryLength = 35
 # Site metadata (used by templates & social cards)
 [params]
   author = "Shinjae Kang"
-  authorLocation = "Jakarta, Indonesia"
+  authorLocation = "Cileungsi, Bogor, Indonesia"
   authorRole = "Programmer & Software Architect"
   authorAvatar = "/img/shinjae-kang-avatar.jpg"
-  authorBio = "Programmer and software architect in Indonesia. Laravel/Vue SaaS projects, PHP, DevOps, .NET, C#, WPF, VB, HTML, CSS, WordPress, Flutter, and AI-assisted engineering workflows."
-  description = "Practical software notes from a Korean programmer and software architect in Indonesia — Laravel/Vue SaaS projects, DevOps, AI agents, and the Korea to Southeast Asia tech bridge."
+  authorBio = "Programmer and software architect in Indonesia. AI Business Director at PT Fast Beauty Indonesia (since May 2026). Laravel/Vue/PHP, DevOps, .NET, and AI-assisted engineering workflows. Modoo is a set of Laravel SaaS projects I built — not an employer."
+  description = "Practical software notes from a Korean programmer and software architect in Indonesia — Laravel/Vue SaaS projects, AI operations, DevOps, and the Korea to Southeast Asia tech bridge."
   tagline = "Practical software systems from Indonesia"
   email = "zemna@zemna.net"
   twitter = "@zemnanet"
