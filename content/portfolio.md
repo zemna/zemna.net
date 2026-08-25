@@ -9,7 +9,7 @@ aliases:
 
 ## Now
 
-**AI Business Director, PT Fast Beauty Indonesia** (May 2026 – present). Public branding remains programmer and software architect. This page lists **systems I built**, not employers.
+**General Manager, AI Business, PT Fast Beauty Indonesia** (May 2026 – present). Public branding remains programmer and software architect. This page lists **systems I built**, not employers.
 
 ## Laravel SaaS projects
 

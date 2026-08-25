@@ -1,13 +1,13 @@
 ---
 title: "About"
-description: "Shinjae Kang — programmer and software architect in Indonesia; AI Business Director at PT Fast Beauty Indonesia."
+description: "Shinjae Kang — programmer and software architect in Indonesia; General Manager, AI Business at PT Fast Beauty Indonesia."
 draft: false
 layout: "page"
 ---
 
 ## Hi, I'm **Shinjae Kang**
 
-I'm a **programmer and software architect** based in **Cileungsi, Bogor, Indonesia**. Since **May 2026** I have been **AI Business Director** at **PT Fast Beauty Indonesia**. Public writing and personal projects stay on [zemna.net](https://zemna.net) and GitHub.
+I'm a **programmer and software architect** based in **Cileungsi, Bogor, Indonesia**. Since **May 2026** I have been **General Manager, AI Business** at **PT Fast Beauty Indonesia**. Public writing and personal projects stay on [zemna.net](https://zemna.net) and GitHub.
 
 The `modoo-id` GitHub organization holds **Modoo Laravel/Vue SaaS projects I built**. Modoo is a project name, not an employer.
 
@@ -17,7 +17,7 @@ I've lived and worked in Indonesia for more than 15 years: a Korean engineer ope
 
 | Period | Role |
 |---|---|
-| **2026.05 – present** | **PT Fast Beauty Indonesia** — AI Business Director |
+| **2026.05 – present** | **PT Fast Beauty Indonesia** — General Manager, AI Business |
 | 2021.09 – 2026.04 | PT STC Natural Indo — Marketing Manager |
 | 2012.04 – 2021.08 | PT HIT Global Indonesia — Purchasing / IT |
 | 2008.04 – 2012.03 | Websolus — software (water-resources SI, including Citarum DSS) |
