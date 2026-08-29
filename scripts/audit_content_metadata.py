@@ -80,7 +80,7 @@ def audit() -> list[str]:
             issues.append(f"{path.name}: missing seo block")
         if "primaryQuery:" not in frontmatter or "secondaryQueries:" not in frontmatter:
             issues.append(f"{path.name}: incomplete seo query metadata")
-        if "{{< field-note" not in body:
+        if "{{< field-note" not in body and "{{% field-note" not in body:
             issues.append(f"{path.name}: missing field-note shortcode")
         if not re.search(r"^## What you should do Monday morning\b", body, flags=re.M | re.I):
             issues.append(f"{path.name}: missing Monday morning action section")

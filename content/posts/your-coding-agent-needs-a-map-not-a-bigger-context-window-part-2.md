@@ -6,6 +6,13 @@ topics: ["ai-agents"]
 tags: ["context-engineering", "code-graphs", "artifact-contracts", "observability", "alerting-as-code"]
 cover: /covers/context-window-critique-2.png
 description: "Bigger context windows just let a coding agent read the wrong files longer. The production alternative is structural: compiler-backed code graphs, artifact contracts, and alert rules managed as code."
+seo:
+  primaryQuery: "coding agent context window vs code graph"
+  secondaryQueries:
+    - "context engineering for AI coding agents"
+    - "artifact contracts agent reliability"
+    - "code graph tools for LLM agents"
+
 ---
 
 Last year, I wrote that your coding agent needs a map, not a bigger context window. Since then, model vendors shipped 1M+ token windows (GPT-5.5 at 1M tokens in API, April 2026 [Source: https://openai.com/index/introducing-gpt-5-5/]) — and teams are still finding that bigger windows don't fix production reliability. The question is not whether this demos well; it is whether it survives maintenance, handoff, and local constraints when your Jakarta prod cluster shrinks from six engineers to three and the Modoo Laravel SaaS projects still need to ship on Friday.

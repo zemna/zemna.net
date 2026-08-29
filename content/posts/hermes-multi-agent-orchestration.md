@@ -11,7 +11,7 @@ seo:
     - "AI agent cron pipeline verification gates"
     - "parallel subagent isolation terminal context"
     - "autonomous agent recovery artifact proof"
-description: "Inside the Hermes Agent orchestration layer: how delegate_task spawns isolated subagents with their own terminals, how verification gates catch silent failures, and why artifact-based proof beats process-exit codes for production cron pipelines."
+description: "Multi-agent Hermes setups fail when specialists work unsupervised. Gates, checkpoints, and a coordinator that verifies artifacts before publishing."
 ---
 
 You schedule the cron. The agent runs. Exit code 0. Green dashboard. Nothing actually shipped.
