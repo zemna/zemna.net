@@ -1,13 +1,16 @@
 ---
 title: "Long-Running AI Agents — From Demos to Production"
 date: 2026-06-19
+lastmod: 2026-08-29
 draft: false
-description: "How to move AI agents from demos to production by adding checkpoints, logs, artifact proof, budget limits, and human-readable recovery paths."
+slug: "long-running-ai-agents-from-demos-to-production"
+description: "Long-running AI agents fail in production when they declare victory without an artifact. Checkpoints, logs, budget limits, and a human recovery path."
 cover: /covers/long-running-agents.png
 topics: ["ai-agents", "software-engineering", "devops", "llm"]
 seo:
-  primaryQuery: "long running AI agents production"
+  primaryQuery: "long-running ai agents"
   secondaryQueries:
+    - "long running AI agents production"
     - "AI agents from demos to production"
     - "long running agent failure modes"
     - "production AI agent orchestration"
@@ -257,3 +260,10 @@ Long-running agents do not fail like short prompts. They drift, forget partial d
 1. Break one long agent task into checkpoints.
 2. Require a real artifact at each checkpoint.
 3. Stop the run when an artifact is missing instead of letting the agent explain it away.
+4. Pin the model on the ticket before the agent writes. Auto is not an owner.
+
+## Further reading
+
+- [I do not let a coding agent pick its own model](/blog/coding-agent-model-owner/)
+- [A green cron exit is not a finished job](/blog/a-green-cron-exit-is-not-a-finished-job/)
+- [Your AI agent pipeline has no zombie detection](/blog/your-ai-agent-pipeline-has-no-zombie-detection-heres-how-to-add-it/)
