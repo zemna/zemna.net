@@ -22,16 +22,23 @@ def command_exists(name: str) -> bool:
 
 
 def image_size(path: Path) -> tuple[int, int] | None:
-    proc = subprocess.run(
-        ["identify", "-format", "%w %h", str(path)],
-        cwd=ROOT,
-        text=True,
-        capture_output=True,
-    )
-    if proc.returncode != 0:
-        return None
-    w, h = proc.stdout.strip().split()
-    return int(w), int(h)
+    if command_exists("identify"):
+        proc = subprocess.run(
+            ["identify", "-format", "%w %h", str(path)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+        )
+        if proc.returncode == 0:
+            w, h = proc.stdout.strip().split()
+            return int(w), int(h)
+    data = path.read_bytes()
+    if data[:8] == b"\x89PNG\r\n\x1a\n":
+        import struct
+
+        w, h = struct.unpack(">II", data[16:24])
+        return int(w), int(h)
+    return None
 
 
 def iter_images() -> list[Path]:
@@ -51,11 +58,17 @@ def convert_image(src: Path, force: bool = False) -> bool:
         return False
 
     size = image_size(src)
-    resize: list[str] = []
-    if size and size[0] > 1600:
-        resize = ["-resize", "1600x1600>"]
+    if command_exists("convert"):
+        resize: list[str] = []
+        if size and size[0] > 1600:
+            resize = ["-resize", "1600x1600>"]
+        cmd = ["convert", str(src), "-auto-orient", *resize, "-strip", "-quality", "82", str(dst)]
+        subprocess.run(cmd, cwd=ROOT, check=True)
+        return True
 
-    cmd = ["convert", str(src), "-auto-orient", *resize, "-strip", "-quality", "82", str(dst)]
+    if not command_exists("ffmpeg"):
+        raise RuntimeError("Need ImageMagick convert or ffmpeg to write WebP")
+    cmd = ["ffmpeg", "-y", "-i", str(src), "-quality", "82", str(dst)]
     subprocess.run(cmd, cwd=ROOT, check=True)
     return True
 
@@ -66,10 +79,9 @@ def main() -> int:
     parser.add_argument("--force", action="store_true", help="Regenerate all WebP siblings")
     args = parser.parse_args()
 
-    for required in ["identify", "convert"]:
-        if not command_exists(required):
-            print(f"Missing required command: {required}", file=sys.stderr)
-            return 2
+    if not (command_exists("convert") or command_exists("ffmpeg")):
+        print("Missing required command: convert or ffmpeg", file=sys.stderr)
+        return 2
 
     images = iter_images()
     missing = []

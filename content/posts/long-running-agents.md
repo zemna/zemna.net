@@ -1,218 +1,292 @@
 ---
 title: "Long-Running AI Agents — From Demos to Production"
-date: 2026-06-19
-lastmod: 2026-08-29
+date: 2026-06-19T07:00:00+07:00
+lastmod: 2026-08-31T07:00:00+07:00
 draft: false
 slug: "long-running-ai-agents-from-demos-to-production"
-description: "Long-running AI agents fail in production when they declare victory without an artifact. Checkpoints, logs, budget limits, and a human recovery path."
-cover: /covers/long-running-agents.png
+description: "A long-running coding agent can stay green after it changes directory. Production still needs a sandbox that survives /cd, a budget that counts nested work, and a human who owns both."
 topics: ["ai-agents", "software-engineering", "devops", "llm"]
+tags: ["coding-agents", "sandbox", "long-running-agents", "token-budget", "mcp", "code-review"]
+cover: /covers/long-running-agents.png
 seo:
   primaryQuery: "long-running ai agents"
   secondaryQueries:
-    - "long running AI agents production"
-    - "AI agents from demos to production"
-    - "long running agent failure modes"
-    - "production AI agent orchestration"
+    - "sandbox after cd coding agent"
+    - "nested subagent token budget"
+    - "coding agent sandbox must survive directory change"
 ---
 
-Anthropic found that even frontier models fail 4 specific ways when you let them work longer than 5 minutes. I hit all of them before I figured out the fix.
+The session was still green. The agent had typed `cd backend`, kept editing files, and wrote "done" in the log. Nobody on the ticket could say whether the sandbox moved with the working directory.
 
-Not in theory. In practice. I had an agent that was supposed to build a working authentication module over a weekend. By Monday morning it had committed 23 times, declared the feature done three separate times, and left the app in a state where `npm start` didn't even work. The commits looked great in the log. The code did not work.
+That is the failure I now refuse. A long-running agent is not production because it stayed up overnight. It is production when the boundary still holds after a directory change, after a nested helper spends tokens, and after a tool result is rewritten before the model sees it.
 
-That weekend cost me two days of debugging. But it taught me more about agent orchestration than any paper or demo. This post is what I wish someone had written before I started.
+The question is not whether this demos well. The question is whether it survives maintenance, handoff, and the next person who has to roll the branch back.
 
-## The 4 Failure Modes (And Why They Happen)
+<!--more-->
 
-Anthropic's research on long-running agents identified four specific failure modes that show up consistently when you push past the 5-minute mark. Understanding them is the first step to fixing them.
+![Three facts on the ticket: cwd, sandbox root, named owner](/img/long-running-agents-1.png)
 
-**1. Declaring victory too early.** The agent finishes a visible part of the task, reports success, and stops. The auth routes exist but tokens never expire. The API returns 200 but the response body is wrong. The agent sees a green checkmark in its own output and calls it done.
+## The four failure modes still show up
 
-**2. Leaving buggy state.** The agent makes a change, hits an error, works around it, and moves on. But the workaround introduced a silent bug — a missing migration, a hardcoded URL, a race condition that only shows up under load. The agent doesn't circle back.
+Anthropic's write-up on long-running agent harnesses named four failure modes that keep repeating once a job outlives a single context window. The agent tries to one-shot too much. It leaves buggy or undocumented state. It marks features done before the app actually works. It burns a session figuring out how to run the project. [Source: https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents]
 
-**3. Marking features done prematurely.** This is the most dangerous one. The agent maintains some kind of task list and marks items complete based on whether code was written, not whether the code works. A feature marked "done" in the task tracker can be completely broken in production.
+Those are still true on this desk. I had an agent that was supposed to finish an authentication module over a weekend. By Monday it had committed often, declared the feature done more than once, and left `npm start` broken. The git log looked busy. The app did not run.
 
-**4. Spending time figuring out how to run the app.** The agent burns 30 minutes trying to figure out the project's build system, another 20 on environment variables, and another 15 on why Docker won't start. Zero minutes on actual engineering.
+The newer failure is quieter. The session does not crash. The checklist is green. The agent changed directory, spawned a helper, or accepted a tool payload that an extension already rewrote. The human reading the PR thinks the original sandbox and the original budget still apply. They do not.
 
-These aren't model problems. They're orchestration problems. The model is capable. The system around it is not.
+{{< note type="warning" title="Green is not the boundary" >}}
+A green long-running session can still be unsafe. Treat cwd, sandbox root, nested token spend, and the tool payload the model actually saw as four separate facts. If any one is missing, the run is not done.
+{{< /note >}}
 
-![Four failure modes of long-running AI agents — premature victory declaration, buggy state, premature feature marking, and environment setup cycles](/images/long-running-agents-inline-1.png)
+## A green session is not a surviving sandbox
 
-## The Initializer Agent Pattern
+I used to treat the sandbox as a start-of-session setting. Workspace root, network off unless named, writes only under the repo. Then the agent ran `cd` into a nested app folder because the Laravel package lived there. The next shell command ran with a new cwd. The ticket still said "sandboxed."
 
-The first pattern that actually worked for me came from Anthropic's playbook: the **initializer agent**. Instead of telling one agent to build an entire feature, you split the work into two phases.
+That sentence is how juniors get hurt. `cd` is a normal move in a real repo. A Vue admin and a PHP API often sit in sibling folders. If the harness silently loosens the sandbox when cwd changes, the agent can read files the ticket never listed: env samples one directory up, a sibling package's secrets, a deploy script outside the app.
 
-The initializer agent does one thing: it reads the codebase, understands the structure, and sets up the project scaffolding. A feature list file with a structured JSON list of end-to-end feature descriptions. A git repository. An `init.sh` script that can run the development server. A progress notes file that the next agent will read. Not code. The scaffolding for code.
+The owner question is simple enough to put on a card:
+
+| Fact the ticket needs | What "green" usually means | What I actually require |
+| --- | --- | --- |
+| Where is cwd? | Last command succeeded | Printed after every `cd` |
+| Where is the sandbox root? | Session started in the repo | Same root as the ticket, or a named change |
+| Who approved a weaker sandbox? | Nobody; it just happened | A named human, or the run stops |
+| What did the model see from the tool? | The MCP server returned JSON | The payload after any rewrite, hashed |
+
+I do not let `/cd` weaken the sandbox. If the working directory moves, the restriction stays at least as tight as the ticket. If the harness cannot prove that, I stop the run. Abort is not stop: abort still needs a retry owner, a next time, and an artifact. I already ranked that refusal in [Five Things I Refused This Week](/blog/five-refusals-this-week/). This page is the long-running version of the same desk rule.
+
+One product note, as evidence, not as the title. On 29 August 2026 the Codex CLI stable line recorded a fix that **preserved restored permission profiles and prevented `/cd` from weakening sandbox restrictions**. The same notes said nested subagent tokens count toward root goal budgets, and that extensions can inspect or replace MCP tool results before they reach the model. [Source: https://github.com/openai/codex/releases/tag/rust-v0.151.0]
+
+I do not pin a vendor tag on the ticket because a changelog shipped. I pin the behavior: cwd change must not open the house.
+
+![After cd: keep the same sandbox or stop](/img/long-running-agents-2.png)
+
+## Who owns the sandbox after `/cd`
+
+Put a name on the ticket before the agent starts. The name is not "the agent." The name is not "Auto." The name is the person who will revert the branch.
+
+I keep a small fixture in the repo so a one-year developer can run it without learning a vendor's internals. It records cwd and a declared sandbox root after a directory change. If cwd leaves the root, the fixture fails. If someone later loosens the root, git blame has a file to point at.
+
+```bash {linenos=inline,hl_lines=[12,"18-21"]}
+#!/usr/bin/env bash
+# scripts/assert-sandbox-after-cd.sh
+set -euo pipefail
+
+SANDBOX_ROOT="$(git rev-parse --show-toplevel)"
+TARGET="${1:-.}"
+
+cd "$TARGET"
+CWD="$(pwd -P)"
+ROOT="$(cd "$SANDBOX_ROOT" && pwd -P)"
+
+case "$CWD/" in
+  "$ROOT"/*) ;;
+  *)
+    echo "SANDBOX_FAIL cwd=$CWD root=$ROOT" >&2
+    exit 2
+    ;;
+esac
+
+echo "SANDBOX_OK cwd=$CWD root=$ROOT"
+```
+
+Run it the way a junior actually runs it: from the repo root, then after the agent moves into the app folder.
+
+```bash
+chmod +x scripts/assert-sandbox-after-cd.sh
+./scripts/assert-sandbox-after-cd.sh
+./scripts/assert-sandbox-after-cd.sh apps/api
+# This must fail if apps/api is outside the git root:
+# ./scripts/assert-sandbox-after-cd.sh ../other-repo
+```
+
+That script does not replace a real OS sandbox. It is the ticket artifact. If the agent `cd`s and the next command is a file read, the CI job still has to prove the path sits under `SANDBOX_ROOT`. I wire the same check into the agent instructions so the model cannot mark the step done without printing `SANDBOX_OK`.
+
+{{< field-note title="Field note" >}}
+On a Laravel + Vue desk the agent will `cd` into `apps/web` or `packages/admin` because that is where `package.json` lives. I still own the sandbox at the git root. Nested folders do not earn extra file reads. If the harness cannot keep the original restriction after `cd`, I stop the session and put a human on the retry. The artifact is `SANDBOX_OK` plus the cwd line, not a chat message that says the sandbox is fine.
+{{< /field-note >}}
+
+## Nested tokens still count on the root budget
+
+Long-running work loves helpers. Search in one agent. Shell in another. Browser in a third. The parent looks cheap because its own meter barely moved. The bill and the context both moved in the children.
+
+I treat nested spend as the parent's spend. If the ticket says the job has a 2 million token ceiling, helpers count. If the parent hits the ceiling by hiding work in a subagent, that is a budget bug, not a win.
+
+```python
+from dataclasses import dataclass, field
+
+
+@dataclass
+class Budget:
+    label: str
+    limit_tokens: int
+    used_tokens: int = 0
+    children: list["Budget"] = field(default_factory=list)
+
+    def charge(self, tokens: int) -> None:
+        if tokens < 0:
+            raise ValueError("tokens must be >= 0")
+        self.used_tokens += tokens
+        if self.total_used() > self.limit_tokens:
+            raise RuntimeError(
+                f"{self.label} over budget: {self.total_used()} > {self.limit_tokens}"
+            )
+
+    def total_used(self) -> int:
+        return self.used_tokens + sum(child.total_used() for child in self.children)
+
+
+def test_nested_helper_counts_on_root() -> None:
+    root = Budget("ticket-4721", limit_tokens=1000)
+    search = Budget("search-helper", limit_tokens=1000)
+    root.children.append(search)
+    root.charge(100)
+    search.charge(950)
+    try:
+        root.charge(1)
+        raise AssertionError("root should be over budget")
+    except RuntimeError as exc:
+        assert "over budget" in str(exc)
+        assert root.total_used() == 1051
+```
+
+The test is the contract I want on Monday. A dashboard that only charts the parent will lie. Same shape as [A Green Cron Exit Is Not a Finished Job](/blog/a-green-cron-exit-is-not-a-finished-job/): the process can look healthy while the work is not.
+
+I already refuse letting the agent pick its own model. Nested helpers make that worse, because the helper often inherits Auto or a "faster" default. The ticket still names the author model and the review model. Details live in [I Do Not Let a Coding Agent Pick Its Own Model](/blog/coding-agent-model-owner/).
+
+## If an extension rewrote the MCP result, the model did not see the tool
+
+Tool output is now a place people plug formatters, redactors, and "helpful" rewrites. That can be good: strip a secret, shrink a huge JSON blob. It can also be a silent lie. The MCP server returned one payload. The model answered a different one.
+
+I keep the raw bytes. Then I keep the bytes after the rewrite. Then I hash both. If the model is going to act, the ticket stores the hash it acted on.
+
+```python
+import hashlib
+import json
+from pathlib import Path
+
+
+def sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def record_tool_payload(
+    artifact_dir: Path,
+    tool_name: str,
+    raw: bytes,
+    after_rewrite: bytes,
+) -> dict[str, str]:
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+    raw_path = artifact_dir / f"{tool_name}.raw.json"
+    seen_path = artifact_dir / f"{tool_name}.seen.json"
+    raw_path.write_bytes(raw)
+    seen_path.write_bytes(after_rewrite)
+    record = {
+        "tool": tool_name,
+        "raw_sha256": sha256_bytes(raw),
+        "seen_sha256": sha256_bytes(after_rewrite),
+        "rewritten": str(raw != after_rewrite).lower(),
+    }
+    (artifact_dir / f"{tool_name}.meta.json").write_text(
+        json.dumps(record, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return record
+
+
+def test_rewrite_is_visible() -> None:
+    raw = b'{"rows":[1,2,3]}'
+    seen = b'{"rows":[1,2]}'
+    record = record_tool_payload(Path("/tmp/tool-artifacts"), "db.query", raw, seen)
+    assert record["rewritten"] == "true"
+    assert record["raw_sha256"] != record["seen_sha256"]
+```
+
+If `rewritten` is true, a human has to say that was the point (secret redaction) or a bug (rows dropped). The model does not get to shrug. This is the same family as empty tool output: missing bytes are not success. They are an interrupt, or they are a named filter.
+
+Stale permission is the sibling bug. Someone approved a broader grant two hours ago. Then the ticket tightened the sandbox. The session kept the old grant in memory and used it after the policy change. From the chat it still looks like the same run. From the filesystem it is a different contract.
+
+I treat a permission change as a new session. The agent does not inherit yesterday's yes. The artifact is a fresh grant line with a timestamp after the policy edit. If that line is missing, the run stops. This is cheaper than explaining a leaked `.env` in Slack.
+
+On the Laravel SaaS repos I actually ship, the dangerous path is almost never "the model invented a new framework." It is `cd` into `packages/admin`, a helper that reads `../.env.example` because the sandbox followed cwd, and a nested search agent that burned the parent budget while the parent still looked cheap. The fix is names and files, not a pep talk.
+
+![Nested helper tokens still count on the parent budget](/img/long-running-agents-3.png)
+
+## Initializer, then worker, then git
+
+The harness pattern that still works is the one Anthropic described: an initializer that does not write product code, then a worker that takes one feature at a time. The initializer leaves a feature list, an `init.sh` that can start the app, and a progress file the next session is forced to read. [Source: https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents]
 
 ```yaml
 # initializer-agent.yaml
 role: |
-  You are an initializer agent. Your job is to read the codebase
-  and produce an implementation plan. Do NOT write any code.
-
-  Output format:
-  1. Files to create (with paths)
-  2. Files to modify (with specific changes described)
+  You are an initializer agent. Read the repo. Do not write product code.
+  Write only:
+  1. Files to create (paths)
+  2. Files to modify (what changes)
   3. Test strategy
   4. Dependencies to install
   5. Risk areas
+  6. Sandbox root and the cwd the worker is allowed to use
 
 context:
   - Full project structure
   - Existing test patterns
-  - Current tech stack documentation
+  - Current stack docs
 ```
 
-Then a second agent — the worker — executes that plan one step at a time. One feature. One commit. One test run. Then the next.
-
-This separation matters because it prevents the agent from simultaneously planning and doing, which is where most of the failure modes originate. When an agent is trying to figure out what to build and how to build it at the same time, it cuts corners on both.
-
-## Git Commits as a Recovery Mechanism
-
-Here's a pattern that saved me more than once: **every meaningful agent action produces a git commit**. Not as an afterthought. As the primary unit of progress.
+Every meaningful worker step still ends in a git commit. Not as decoration. As the recovery unit. When the agent goes off the rails, I bisect the diff. I do not debug the chat.
 
 ```bash
-# Agent workflow after each completed step
 git add -A
 git commit -m "feat(auth): add JWT token generation
 
-- Implements RS256 signing with rotating keys
-- Token expiry set to 24h with refresh token support
+- RS256 signing with rotating keys
+- Expiry 24h plus refresh
 - Tests: 12 passing, 0 failing
-- Covers: token generation, expiry, refresh flow"
+- SANDBOX_OK cwd=... root=...
+- BUDGET_USED=..."
 ```
 
-Why this works:
+I keep the agent on a branch. Main stays mergeable. If step 7 of 12 is bad, I revert step 7. I do not throw the weekend away.
 
-- **Recovery.** When the agent goes off the rails — and it will — you `git bisect` to find where things broke. You don't debug the agent's reasoning. You debug the diff.
-- **Audit trail.** Every commit tells you what the agent did and why. The commit message is the agent's explanation of its own work.
-- **Rollback granularity.** If step 7 of a 12-step plan introduces a bug, you revert step 7. You don't throw away the entire weekend's work.
+The Faros 2026 engineering report, built from telemetry on 22,000 developers across 4,000 teams, named the pattern **acceleration whiplash**: volume is up, quality is down, and the gap widens as adoption deepens. In that dataset, 80% of teams were already past a 50% weekly-active-user line for AI tools. PR size was up 51%. Median review time was up 5x. Incidents per PR were up 3x. [Source: https://www.faros.ai/blog/ai-acceleration-whiplash-takeaways] [Source: https://www.faros.ai/research]
 
-I run this with a branch-per-agent pattern. The agent works on `feature/auth-module`. When it's done and tests pass, I merge to main. If it fails, the main branch stays clean and I can inspect the mess in isolation.
+That is why one-feature-then-verify still wins. Generating the next file is cheap. Reviewing it is not. Cheap code still needs a human review. I do not let the same model grade its own diff.
 
-## Incremental Progress: One Feature at a Time
+## Context is a ration, not a warehouse
 
-The Faros 2026 survey found that **85% of developers now use AI tools** in their workflow. Engineering throughput is up. But quality is down. They call this "acceleration whiplash" — the gap between how fast you can generate code and how fast you can verify it works.
+A five-minute prompt can hold the whole problem. A three-day agent cannot. I pass a manifest: files, docs, previous artifacts. The agent does not get to wander the monorepo "just in case."
 
-The fix is boring and effective: **one feature at a time, verified before moving on.**
+Three modes I actually use:
 
-Here's what that looks like in practice with a LangGraph workflow:
+1. **Accumulate** for planning. History is the point.
+2. **Last plan only** for implementation. Old analysis is noise.
+3. **Explicit files** for review. Extra files invent extra couplings.
 
-```python
-from langgraph.graph import StateGraph, END
-from typing import TypedDict, Literal
-
-class AgentState(TypedDict):
-    features: list[str]
-    completed: list[str]
-    current_feature: str | None
-    test_results: dict[str, bool]
-    git_sha: str | None
-
-def plan_next_feature(state: AgentState) -> AgentState:
-    remaining = [f for f in state["features"] if f not in state["completed"]]
-    if not remaining:
-        return {"current_feature": None, **state}
-    return {"current_feature": remaining[0], **state}
-
-def implement_feature(state: AgentState) -> AgentState:
-    # Agent implements ONE feature
-    # Commits to git
-    # Runs tests
-    return state
-
-def verify_and_gate(state: AgentState) -> AgentState:
-    # Human gate: did this feature actually work?
-    # If yes, mark complete and move to next
-    # If no, fix and re-verify
-    return state
-
-def should_continue(state: AgentState) -> Literal["continue", "done"]:
-    remaining = [f for f in state["features"] if f not in state["completed"]]
-    return "done" if not remaining else "continue"
-
-workflow = StateGraph(AgentState)
-workflow.add_node("plan", plan_next_feature)
-workflow.add_node("implement", implement_feature)
-workflow.add_node("verify", verify_and_gate)
-
-workflow.set_entry_point("plan")
-workflow.add_edge("plan", "implement")
-workflow.add_edge("implement", "verify")
-workflow.add_conditional_edges("verify", should_continue, {
-    "continue": "plan",
-    "done": END
-})
-```
-
-The key insight: the `verify` step uses **LangGraph's `interrupt()`** for a human checkpoint. The agent doesn't get to decide if its own work is done. That decision belongs to a person, or at minimum to an automated end-to-end test suite that the agent didn't write.
-
-## Context Engineering: The Discipline Nobody Talks About
-
-**Context engineering** — the practice of carefully controlling what information an agent has access to at any given point in time — has emerged as a discipline in its own right in 2026. ByteByteGo's trends report identified persistent always-on agents as a key trend, and the industry is waking up to the fact that context management is what separates agents that drift from agents that deliver.
-
-This matters enormously for long-running agents. A 5-minute task can hold everything in context. A 3-day task cannot. And the quality of your context management directly determines whether the agent stays coherent or drifts into hallucination.
-
-Microsoft Conductor approaches this with explicit **context control modes**:
-
-```yaml
-# conductor-workflow.yaml
-steps:
-  - name: analyze_requirements
-    context_mode: accumulate    # Full history available
-    model: claude-sonnet-4-20250514
-
-  - name: implement_feature
-    context_mode: last_only     # Only the plan, not the analysis
-    model: claude-sonnet-4-20250514
-
-  - name: code_review
-    context_mode: explicit      # Only specific files passed in
-    model: claude-sonnet-4-20250514
-    context:
-      - src/auth/jwt.ts
-      - src/auth/middleware.ts
-      - tests/auth.test.ts
-```
-
-Three modes, each solving a different problem:
-
-- **`accumulate`** — the agent needs full history. Use this for planning and analysis.
-- **`last_only`** — the agent only needs the current plan. Use this for implementation, where old context is noise.
-- **`explicit`** — you hand-pick what the agent sees. Use this for review and testing, where irrelevant context causes the agent to make connections that don't exist.
-
-I use a similar pattern in my own setup. Each agent step gets a context manifest — a specific list of files, documentation sections, and previous outputs. The agent doesn't get to "look around" the codebase. It gets exactly what it needs and nothing more.
-
-![Context window visualization showing how different modes allocate tokens across a multi-day agent run](/images/long-running-agents-inline-2.png)
-
-## End-to-End Testing as the Source of Truth
-
-Anthropic's recommendation for Puppeteer MCP — using a real browser to test your agent's work — changed how I validate agent output. Unit tests can pass while the app is broken. A browser doesn't lie.
+End-to-end checks stay outside the agent. Unit tests can pass while the login page is blank. A browser, or a Playwright script a human wrote, is the judge. The agent does not write the contract it is graded on.
 
 ```typescript
-// e2e-test.ts — runs after each agent step
-import { chromium } from 'playwright';
+import { chromium } from "playwright";
 
 async function verifyAuthFlow() {
   const browser = await chromium.launch();
   const page = await browser.newPage();
 
-  // Test 1: Registration
-  await page.goto('http://localhost:3000/register');
-  await page.fill('#email', 'test@example.com');
-  await page.fill('#password', 'securePassword123');
-  await page.click('#submit');
-  await page.waitForURL('/dashboard');
+  await page.goto("http://localhost:3000/register");
+  await page.fill("#email", "test@example.com");
+  await page.fill("#password", "securePassword123");
+  await page.click("#submit");
+  await page.waitForURL("/dashboard");
 
-  // Test 2: Token refresh
   const cookies = await page.context().cookies();
-  const token = cookies.find(c => c.name === 'auth_token');
-  if (!token) throw new Error('No auth token after registration');
+  const token = cookies.find((c) => c.name === "auth_token");
+  if (!token) {
+    throw new Error("No auth token after registration");
+  }
 
-  // Test 3: Protected route access
-  const response = await page.goto('http://localhost:3000/api/protected');
+  const response = await page.goto("http://localhost:3000/api/protected");
   if (response?.status() !== 200) {
-    throw new Error('Protected route inaccessible after auth');
+    throw new Error("Protected route inaccessible after auth");
   }
 
   await browser.close();
@@ -220,50 +294,31 @@ async function verifyAuthFlow() {
 }
 ```
 
-This test runs after every agent commit. If it fails, the agent's "done" status is revoked and it goes back to fix the issue. No human needed for verification. The browser is the judge.
+If this fails, "done" is revoked. No speech from the agent undoes a failed browser check. That is also how I treat a missing `SANDBOX_OK` line.
 
-## The Real Gap: Spend vs. Outcomes
+## What I would still build first
 
-The Faros 2026 Engineering Report tells a story most teams are living right now: volume is up, quality is down, and the gap between the two is widening. The "AI Acceleration Whiplash" — their term for this pattern — shows that throwing more AI at the problem without investing in the surrounding infrastructure just makes the gap bigger.
+If I were starting the same long-running setup again, I would not begin with a bigger model. I would begin with four boring files:
 
-This isn't because AI tools are bad. It's because we're using them the way we use hammers — swinging at everything and hoping something gets nailed down. The teams that are closing this gap are the ones investing in the unglamorous infrastructure around the agents:
+1. Initializer vs worker. Planning and doing stay split.
+2. Git as the timeline. Every step is a commit with sandbox and budget lines in the message.
+3. Human gates at feature boundaries. The agent proposes. A named person merges. See the merge refusal in [Five Things I Refused This Week](/blog/five-refusals-this-week/).
+4. A sandbox fixture that survives `cd`, plus a budget that includes helpers.
 
-- **State management.** LangGraph, Conductor, or a custom state machine. The agent needs a brain that persists across sessions.
-- **Recovery mechanisms.** Git commits, checkpoints, rollback procedures. The agent will fail. The question is how fast you recover.
-- **Verification pipelines.** E2E tests, human gates, automated quality checks. The agent doesn't grade its own homework.
-- **Context discipline.** Controlled inputs, explicit context modes, no free-roaming access to the codebase.
-
-![Full agent infrastructure — initializer, worker, git, tests, human gate](/images/long-running-agents-inline-2.png)
-
-## What I'd Do Differently
-
-If I were starting over today, here's the stack I'd build on:
-
-1. **Initializer + worker split.** Always. No exceptions. Planning and doing are different cognitive tasks and they need different agent configurations.
-
-2. **Git as the source of truth.** Every agent action is a commit. Every commit is verified. The git log is the project timeline.
-
-3. **Human gates at every feature boundary.** The agent proposes. The human disposes. At least until the verification pipeline is mature enough to replace that gate — and that takes months, not days.
-
-4. **Context control from day one.** Don't wait until the agent starts hallucinating. Build the context manifest system before you need it.
-
-5. **E2E tests written by humans, run by agents.** The test suite is the contract. The agent's job is to fulfill it. The human's job is to define what "fulfill" means.
-
-The agents that work across days aren't smarter than the ones that work across minutes. They're wrapped in better engineering. The model is the easy part. The system around it is where the real work lives.
-
-{{< field-note title="Field note" >}}
-Long-running agents do not fail like short prompts. They drift, forget partial decisions, and declare victory against their own checklist. Production needs external checkpoints the agent cannot simply talk past.
-{{< /field-note >}}
+The agents that last across days are not smarter than the ones that last across minutes. They are wrapped in checks the agent cannot talk past. Hub notes for this desk live under [AI agent operations](/ai-agent-operations/). New readers can start at [Start here](/start-here/).
 
 ## What you should do Monday morning
 
-1. Break one long agent task into checkpoints.
-2. Require a real artifact at each checkpoint.
-3. Stop the run when an artifact is missing instead of letting the agent explain it away.
-4. Pin the model on the ticket before the agent writes. Auto is not an owner.
+1. Write the sandbox root on the ticket. One path. One named human.
+2. Add `scripts/assert-sandbox-after-cd.sh` and run it after every agent `cd`. Fail the job if cwd leaves the root.
+3. Count nested helper tokens on the parent budget. If you cannot see helper spend, you do not have a budget.
+4. Store raw tool payloads and the bytes the model saw. If they differ, a human says why.
+5. Stop the run when any of those artifacts is missing. Chat text is not an artifact.
 
 ## Further reading
 
-- [I do not let a coding agent pick its own model](/blog/coding-agent-model-owner/)
+- {{< source href="https://github.com/openai/codex/releases/tag/rust-v0.151.0" label="Codex CLI notes: sandbox after /cd, nested tokens, MCP rewrite" >}}
+- {{< source href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents" label="Anthropic — Effective harnesses for long-running agents" >}}
+- {{< source href="https://www.faros.ai/blog/ai-acceleration-whiplash-takeaways" label="Faros — AI acceleration whiplash takeaways" >}}
 - [A green cron exit is not a finished job](/blog/a-green-cron-exit-is-not-a-finished-job/)
-- [Your AI agent pipeline has no zombie detection](/blog/your-ai-agent-pipeline-has-no-zombie-detection-heres-how-to-add-it/)
+- [Five things I refused this week](/blog/five-refusals-this-week/)
