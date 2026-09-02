@@ -1,681 +1,311 @@
 ---
 title: "Building a Background Agent Recovery CLI: The Three-Gate Check"
 date: 2026-08-14T07:00:00+07:00
+lastmod: 2026-09-02T07:00:00+07:00
 draft: false
+slug: "building-a-background-agent-recovery-cli-the-three-gate-check"
+description: "Chat said done is not recovered. I wait for a file on disk, a job log that names why the run stopped, and one fail-once restart from the last good commit."
 topics: ["tutorials"]
-tags: ["ai-agents", "cli", "verification", "background-agents", "devtools"]
+tags: ["coding-agents", "verification", "background-agents", "cli", "change-control"]
 cover: /covers/building-background-agent-verification-cli.png
-description: "A practical Build in Public walkthrough of building a CLI tool that runs three-gate verification (artifact exists, hook log confirms, recovery path tested) for background AI coding agents before trusting their exit codes."
 seo:
   primaryQuery: "background agent verification CLI"
-  secondaryQueries: ["ai agent verification checklist", "coding agent artifact check", "agent exit code vs real completion"]
+  secondaryQueries:
+    - "chat said done is not recovered"
+    - "coding agent artifact check"
+    - "fail-once restart from last good commit"
 ---
 
-## The Pivot: From Zombie Detection to Agent Recovery
+The overnight coding agent wrote "Done." The chat was green. The shipping cost file on disk was still yesterday's version.
 
-Let me be honest: I wrote five posts in seven days about zombie task detection, silent cron failures, and zero-cost observability (per my Build in Public experiment log). Aggregate impressions on X dipped to ~60 (per my Postiz analytics). Engagement was near zero. Threads showed low reach. Instagram posting via Codex OAuth isn't supported for image generation.
+I do not mark that run recovered. Recovered means three things I can show a junior without opening the vendor UI: a file that exists, a job log that names why the process stopped, and one restart from the last good commit that is allowed to fail once.
 
-The market is saturated with "here's how to detect zombies" content. What's missing is **what to do when the agent actually gets stuck**.
+The question is not whether the agent demos well. The question is whether the next person can restart the job from a known commit when I am offline.
 
-The question is not whether this demos well; it is whether it survives maintenance, handoff, and local constraints.
+<!--more-->
 
-This post documents the CLI tool I built to recover and verify long-running autonomous agents — the missing piece in the agent-ops tooling family.
+![Three-gate recovery: file on disk, job log, one fail-once restart](/img/building-background-agent-verification-cli-1.png)
 
-![Three-gate verification flow architecture](/img/building-background-agent-verification-cli-1.png)
+## Chat said done is not recovered
 
----
+Vendors train you to trust the last message. VS Code even stores a checkpoint on every agent response, and **Restore Checkpoint** rolls the workspace and the chat back together [Source: https://code.visualstudio.com/learn/foundations/reviewing-and-controlling-agent-changes]. That is a useful undo. It is not a recovery record.
 
-## The Problem: Agents Don't Just Fail — They Hang
+Addy Osmani's long-running-agent write-up names the failure I still see: the model forgets, it declares the task complete when it is not, and a single sitting is the wrong shape for overnight work. State has to live outside the chat [Source: https://addyosmani.com/blog/long-running-agents/]. Anthropic's harness post is the same idea in files: a progress log on disk, a feature list that starts failing, and the next session reading those files instead of the last boast [Source: https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents].
 
-If you've run autonomous agents (Claude Code, Codex, OpenCode, or custom Hermes orchestrations) for more than a few hours, you know the failure modes:
+On this desk the translation is smaller than a product. I do not wait for a new CLI brand. I wait for three artifacts:
 
-| Failure Mode | Detection | Recovery |
-|--------------|-----------|----------|
-| Process crash | Exit code �� 0 | Restart |
-| Silent hang | No output for N minutes | **No standard tooling** |
-| Partial completion | Output looks good | **Manual verification** |
-| Context window exhaustion | Degraded output quality | Reset session |
-| Sandbox/resource limits | OOM, disk full, quota | Cleanup + restart |
+| Gate | What "Done" in chat usually means | What I require |
+| --- | --- | --- |
+| 1. File on disk | The model listed a path | The path exists and is newer than the job start |
+| 2. Job log | The session ended | A log line names why it stopped |
+| 3. Fail-once restart | Someone can click Run again | One restart from the last good commit, then stop |
 
-The web search results confirm this gap:
-- **TestSprite CLI** — verification layer for agentic coding, but focused on code correctness
-- **Agent Verifier** — open-source CLI for structured checklists, but generic
-- **Addy Osmani** — emphasizes auditing 24h autonomous activity, but no tooling
-- **Long-running agent patterns** — sessions, sandboxes, checkpoints, harnesses exist in research, not in a usable CLI
+If any gate is empty, the job is hung or lying. I do not open a second agent to "just finish it." That is how you get two half-writes and no owner.
 
----
-
-## Architecture: The Recovery Loop
-
-``` 
-  +─────────────────────────────────────────────────────────────────+
-  |                     AGENT RECOVERY CLI                          |
-  +─────────────────────────────────────────────────────────────────+
-  |  +──────────────+  +──────────────+  +──────────────+          |
-  |  │   DETECT     │─��│   DIAGNOSE   │─��│   RECOVER    │          |
-  |  │  (heartbeat, │  │  (state,     │  │  (checkpoint,│          |
-  |  │   output,    │  │   logs,      │  │   sandbox,   │          |
-  |  │   resources) │  │   context)   │  │   session)   │          |
-  |  +──────────────+  +──────────────+  +──────────────+          |
-  |         │               │               │                        |
-  |         ����               ����               ����                        |
-  |  +──────────────────────────────────────────────+               |
-  |  │           VERIFICATION HARNESS               │               |
-  |  │  (structured checklist, diff validation,     │               |
-  |  │   test execution, semantic comparison)       │               |
-  |  +──────────────────────────────────────────────+               |
-  +─────────────────────────────────────────────────────────────────+
-```
-
-![Recovery loop with four stations](/img/building-background-agent-verification-cli-2.png)
-
----
-
-## Core Concepts from the Wiki
-
-Before diving into code, let me ground this in the concepts I've been building in the Hermes Agent wiki. These connect directly to the `/ai-agent-operations/` and `/developer-tools/` hubs:
-
-### `[[zombie-task-detection]]`
-The foundation — detecting when a background agent stops making progress. But detection alone is useless without recovery.
-
-### `[[cron-silent-failure-patterns-infra]]`
-The infrastructure patterns that cause silent failures: missing health endpoints, no structured logging, no checkpointing.
-
-### `[[zero-cost-observability]]`
-Using what you already have (stdout, stderr, exit codes, file timestamps) before adding heavy instrumentation.
-
-### `[[long-running-ai-agents]]`
-The runtime patterns: sessions, sandboxes, checkpoints, harnesses. This is where the recovery logic lives.
-
-### `[[autonomous-agent-cron-pipelines]]`
-How agents chain together in cron-like schedules — and how one stuck agent blocks the pipeline.
-
-### `[[agent-edit-contract]]`
-The verification primitive: did the agent actually make the edits it claimed? Structured diff validation.
-
-### `[[parallel-agent-shared-checkout]]`
-When multiple agents work on the same repo — recovery must handle shared state conflicts.
-
----
-
-## The CLI: `agent-recover`
-
-I built this as a standalone Go binary (single file, no deps) that wraps any agent process.
-
-### Installation
-
-```bash
-# One binary, works everywhere (repository forthcoming)
-# curl -sSL https://github.com/shinjae/agent-recover/releases/latest/download/agent-recover_linux_amd64 \
-#   -o /usr/local/bin/agent-recover && chmod +x /usr/local/bin/agent-recover
-```
-
-> **Note**: The `agent-recover` CLI is under active development. The GitHub repository and releases will be published at `github.com/shinjae/agent-recover`. For now, the implementation patterns in this post are reference architectures you can adapt.
-
-### Usage
-
-```bash
-# Conceptual CLI — forthcoming at github.com/shinjae/agent-recover
-# Wrap any agent command
-agent-recover run -- claude-code --task "refactor auth module"
-
-# Recover a stuck session
-agent-recover recover --session-id abc123 --checkpoint latest
-
-# Verify completion against a checklist
-agent-recover verify --session-id abc123 --checklist verification.yaml
-
-# Audit 24h of autonomous activity (Addy Osmani style)
-agent-recover audit --since 24h --format json
-```
-
-![agent-recover CLI terminal output](/img/building-background-agent-verification-cli-3.png)
-
----
-
-## Implementation: Detection Engine
-
-The detection uses zero-cost observability — no agent modification required.
-
-```go
-// pkg/detect/heartbeat.go
-package detect
-
-import (
-    "os"
-    "time"
-    "path/filepath"
-)
-
-type HeartbeatMonitor struct {
-    SessionDir   string
-    StaleThreshold time.Duration
-    LastOutput   time.Time
-    LastModTime  time.Time
-}
-
-func (h *HeartbeatMonitor) Check() (StaleStatus, error) {
-    // 1. Check stdout/stderr recent writes (file mtime)
-    stdoutPath := filepath.Join(h.SessionDir, "stdout.log")
-    stderrPath := filepath.Join(h.SessionDir, "stderr.log")
-    
-    stdoutInfo, err := os.Stat(stdoutPath)
-    if err == nil {
-        h.LastModTime = stdoutInfo.ModTime()
-    }
-    
-    stderrInfo, err := os.Stat(stderrPath)
-    if err == nil && stderrInfo.ModTime().After(h.LastModTime) {
-        h.LastModTime = stderrInfo.ModTime()
-    }
-    
-    // 2. Check for heartbeat file (agent writes periodically)
-    heartbeatPath := filepath.Join(h.SessionDir, ".heartbeat")
-    if info, err := os.Stat(heartbeatPath); err == nil {
-        h.LastOutput = info.ModTime()
-    }
-    
-    // 3. Check resource usage (optional, via /proc)
-    if h.isResourceExhausted() {
-        return StaleStatus{Stale: true, Reason: "resource_exhausted"}, nil
-    }
-    
-    stale := time.Since(h.LastOutput) > h.StaleThreshold
-    return StaleStatus{Stale: stale, LastActivity: h.LastOutput}, nil
-}
-
-func (h *HeartbeatMonitor) isResourceExhausted() bool {
-    // Check disk, memory, file descriptors from /proc
-    // Returns true if any critical resource > 90%
-}
-```
-
-**Key insight**: The agent doesn't need to know about the monitor. It just writes logs and optionally touches a `.heartbeat` file. Zero instrumentation cost.
-
-{{< note type="note" title="Zero-Cost Observability" >}}
-This detection approach follows the `[[zero-cost-observability]]` principle: use what the agent already produces (stdout, stderr, file timestamps) before adding any instrumentation. No agent modification, no sidecars, no extra infrastructure.
+{{< note type="warning" title="Done is a sentence, not a file" >}}
+A green chat is a claim. Recovered is a file, a stop reason, and one restart you can point at. If you cannot name those three, the overnight run is not closed.
 {{< /note >}}
 
----
+{{< field-note title="Field note" >}}
+On the Laravel/Vue SaaS desks I keep, the overnight agent often touches `app/Services/ShippingCost.php`. Chat says the shipping test is green. I still `stat` that file, read `artifacts/job.log` for the stop line, and only then allow one `git reset --hard` to the last tagged good commit plus one re-run. I do not Full-Auto a second session because the first one typed Done. That is how a shipping change survives handoff when I am asleep and someone else has to roll the branch back.
+{{< /field-note >}}
 
-## Implementation: Diagnosis Engine
+## Gate 1 — the file has to be on disk
 
-When staleness is detected, we need to understand *why* before recovering.
+Juniors get hurt here because the chat lists paths. Listing is cheap. Writing is the work.
 
-```go
-// pkg/diagnose/state.go
-package diagnose
+I pin the expected path on the ticket before the first prompt. For a shipping bug that is one file, not the whole tree. The map-as-allow-list rule from [Your Coding Agent Needs a Map, Not a Bigger Context Window — Part 2](/blog/your-coding-agent-needs-a-map-not-a-bigger-context-window-part-2/) still applies: if the agent grepped a sibling folder, the run already left the ticket.
 
-import (
-    "context"
-    "encoding/json"
-    "os"
-    "path/filepath"
-)
+The check is boring on purpose. A one-year developer can run it.
 
-type SessionState struct {
-    SessionID     string            `json:"session_id"`
-    AgentType     string            `json:"agent_type"`     // claude-code, codex, opencode, custom
-    WorkingDir    string            `json:"working_dir"`
-    Command       []string          `json:"command"`
-    PID           int               `json:"pid"`
-    StartTime     time.Time         `json:"start_time"`
-    Checkpoints   []Checkpoint      `json:"checkpoints"`
-    ContextWindow ContextSnapshot   `json:"context_window"`
-    Sandbox       SandboxState      `json:"sandbox"`
-    GitState      GitSnapshot       `json:"git_state"`
-}
+```bash {linenos=inline,hl_lines=[8,"14-18"]}
+#!/usr/bin/env bash
+# scripts/assert-recovery-file.sh
+# Usage: assert-recovery-file.sh PATH JOB_START_EPOCH
+set -euo pipefail
 
-type Checkpoint struct {
-    Timestamp   time.Time         `json:"timestamp"`
-    Description string            `json:"description"`
-    GitCommit   string            `json:"git_commit"`
-    FilesChanged []string         `json:"files_changed"`
-    TestResults TestSummary       `json:"test_results"`
-}
+path="${1:?expected file path}"
+start="${2:?job start unix time}"
 
-func LoadSessionState(sessionDir string) (*SessionState, error) {
-    statePath := filepath.Join(sessionDir, "state.json")
-    data, err := os.ReadFile(statePath)
-    if err != nil {
-        return nil, err
-    }
-    var state SessionState
-    return &state, json.Unmarshal(data, &state)
-}
+if [[ ! -f "$path" ]]; then
+  echo "FAIL: recovered file missing: $path" >&2
+  exit 1
+fi
 
-func (s *SessionState) Diagnose() Diagnosis {
-    diag := Diagnosis{SessionID: s.SessionID}
-    
-    // 1. Context window exhaustion?
-    if s.ContextWindow.UsagePercent > 85 {
-        diag.Issues = append(diag.Issues, Issue{
-            Type: "context_exhaustion",
-            Severity: "high",
-            Message: "Context window at " + strconv.Itoa(s.ContextWindow.UsagePercent) + "%",
-            RecoveryHint: "reset_session",
-        })
-    }
-    
-    // 2. Sandbox issues?
-    if !s.Sandbox.Healthy {
-        diag.Issues = append(diag.Issues, Issue{
-            Type: "sandbox_unhealthy",
-            Severity: "critical",
-            Message: s.Sandbox.LastError,
-            RecoveryHint: "recreate_sandbox",
-        })
-    }
-    
-    // 3. Git state divergence?
-    if s.GitState.HasUncommittedChanges && !s.GitState.IsCleanWorkingTree {
-        diag.Issues = append(diag.Issues, Issue{
-            Type: "git_divergence",
-            Severity: "medium",
-            Message: "Uncommitted changes may conflict with recovery",
-            RecoveryHint: "stash_or_commit",
-        })
-    }
-    
-    // 4. No recent checkpoints?
-    if len(s.Checkpoints) == 0 || time.Since(s.Checkpoints[len(s.Checkpoints)-1].Timestamp) > 30*time.Minute {
-        diag.Issues = append(diag.Issues, Issue{
-            Type: "no_checkpoints",
-            Severity: "high",
-            Message: "No recent checkpoints — recovery may lose work",
-            RecoveryHint: "best_effort_restart",
-        })
-    }
-    
-    return diag
-}
+mtime="$(stat -c %Y "$path" 2>/dev/null || stat -f %m "$path")"
+if [[ "$mtime" -lt "$start" ]]; then
+  echo "FAIL: $path mtime $mtime is older than job start $start" >&2
+  exit 1
+fi
+
+echo "PASS: $path exists and is newer than job start"
 ```
 
----
+I store the job start as a number in `artifacts/job-start.txt` when the wrapper launches. If the file is missing, I do not argue with the chat. The gate failed.
 
-## Implementation: Recovery Strategies
+Claude Code keeps file snapshots for the 100 most recent checkpoints in a session, and `/rewind` (or Esc twice on an empty prompt) opens a restore menu [Source: https://code.claude.com/docs/en/checkpointing]. Use that when you need to undo a bad turn. Do not treat rewind as proof the overnight file landed. Rewind is a chat tool. Gate 1 is `stat`.
 
-Each diagnosis maps to a recovery strategy. This is where `[[long-running-ai-agents]]` patterns become practical.
+Claude Code also says checkpointing does not track files changed by bash, and it is not a replacement for Git [Source: https://code.claude.com/docs/en/checkpointing]. That is why gate 3 is `git reset --hard` to a named good commit, not Esc twice on a hung overnight wrapper.
 
-```go
-// pkg/recover/strategies.go
-package recover
+## Gate 2 — the job log has to name the stop
 
-import (
-    "context"
-    "fmt"
-    "os/exec"
-    "path/filepath"
-    "time"
-)
+A process that exits 0 with an empty log is the same lie as a green cron. I already wrote the empty-output version in [Empty Tool Output Is Not Success Until the Harness Says Interrupted](/blog/empty-tool-output-is-not-success/). Recovery needs one more line: **why it stopped**.
 
-type RecoveryStrategy interface {
-    Name() string
-    CanRecover(diag Diagnosis) bool
-    Execute(ctx context.Context, session *SessionState) RecoveryResult
-}
+Accept only a small set of stop reasons. Everything else is "unknown" and fails the gate.
 
-// Strategy 1: Checkpoint Restore (best case)
-type CheckpointRestore struct{}
-
-func (c *CheckpointRestore) Name() string { return "checkpoint_restore" }
-
-func (c *CheckpointRestore) CanRecover(diag Diagnosis) bool {
-    return diag.HasIssue("no_checkpoints") == false
-}
-
-func (c *CheckpointRestore) Execute(ctx context.Context, session *SessionState) RecoveryResult {
-    latest := session.Checkpoints[len(session.Checkpoints)-1]
-    
-    // 1. Reset git to checkpoint commit
-    exec.Command("git", "reset", "--hard", latest.GitCommit).Run()
-    
-    // 2. Restore sandbox state (if snapshotted)
-    if session.Sandbox.SnapshotPath != "" {
-        restoreSandbox(session.Sandbox.SnapshotPath)
-    }
-    
-    // 3. Resume agent with context hint
-    return resumeAgent(session, fmt.Sprintf(
-        "Resuming from checkpoint: %s. Continue from where you left off.",
-        latest.Description,
-    ))
-}
-
-// Strategy 2: Session Reset (context exhaustion)
-type SessionReset struct{}
-
-func (s *SessionReset) Name() string { return "session_reset" }
-
-func (s *SessionReset) CanRecover(diag Diagnosis) bool {
-    return diag.HasIssue("context_exhaustion")
-}
-
-func (s *SessionReset) Execute(ctx context.Context, session *SessionState) RecoveryResult {
-    // 1. Preserve work: commit or stash
-    exec.Command("git", "add", "-A").Run()
-    exec.Command("git", "commit", "-m", "WIP: pre-recovery state").Run()
-    
-    // 2. Clear agent session (varies by agent type)
-    clearAgentSession(session.AgentType, session.SessionID)
-    
-    // 3. Restart with summary of work done
-    summary := generateWorkSummary(session)
-    return resumeAgent(session, 
-        "Previous session exhausted context. Work summary:\n"+summary+
-        "\n\nContinue the task from this point.")
-}
-
-// Strategy 3: Sandbox Recreation (environment corruption)
-type SandboxRecreate struct{}
-
-func (s *SandboxRecreate) Name() string { return "sandbox_recreate" }
-
-func (s *SandboxRecreate) CanRecover(diag Diagnosis) bool {
-    return diag.HasIssue("sandbox_unhealthy")
-}
-
-func (s *SandboxRecreate) Execute(ctx context.Context, session *SessionState) RecoveryResult {
-    // 1. Destroy old sandbox
-    destroySandbox(session.Sandbox.ID)
-    
-    // 2. Create fresh sandbox with same config
-    newSandbox := createSandbox(session.Sandbox.Config)
-    
-    // 3. Sync working directory (git handles code, sandbox handles env)
-    syncWorkingDir(session.WorkingDir, newSandbox.MountPoint)
-    
-    // 4. Resume
-    session.Sandbox = newSandbox.State()
-    return resumeAgent(session, "Environment recreated. Continuing...")
-}
-
-// Strategy 4: Best Effort Restart (no checkpoints, unknown state)
-type BestEffortRestart struct{}
-
-func (b *BestEffortRestart) Name() string { return "best_effort_restart" }
-
-func (b *BestEffortRestart) CanRecover(diag Diagnosis) bool {
-    return true // Always can attempt
-}
-
-func (b *BestEffortRestart) Execute(ctx context.Context, session *SessionState) RecoveryResult {
-    // 1. Capture current state for forensic analysis
-    captureForensics(session)
-    
-    // 2. Git status check
-    status := getGitStatus(session.WorkingDir)
-    
-    // 3. Restart with maximum context
-    prompt := buildForensicPrompt(session, status)
-    return resumeAgent(session, prompt)
-}
+```text
+STOP_REASON=completed
+STOP_REASON=interrupted
+STOP_REASON=timeout
+STOP_REASON=oom
+STOP_REASON=tests_failed
 ```
 
----
+The wrapper writes that line. The model does not. If the agent wants to claim completed, it still has to leave the file from gate 1. The log is the harness speaking.
 
-## Implementation: Verification Harness
+```python {linenos=inline,hl_lines=[12,"20-24"]}
+#!/usr/bin/env python3
+"""scripts/assert-stop-reason.py — fail unless the job log names a stop."""
+from __future__ import annotations
 
-This implements `[[agent-edit-contract]]` — structured verification that the agent actually did what was asked.
+import sys
+from pathlib import Path
+
+ALLOWED = {
+    "completed",
+    "interrupted",
+    "timeout",
+    "oom",
+    "tests_failed",
+}
+
+
+def main() -> int:
+    log_path = Path(sys.argv[1] if len(sys.argv) > 1 else "artifacts/job.log")
+    if not log_path.is_file():
+        print(f"FAIL: job log missing: {log_path}", file=sys.stderr)
+        return 1
+    text = log_path.read_text(encoding="utf-8", errors="replace")
+    reasons = [
+        line.split("=", 1)[1].strip()
+        for line in text.splitlines()
+        if line.startswith("STOP_REASON=")
+    ]
+    if not reasons:
+        print("FAIL: job log has no STOP_REASON= line", file=sys.stderr)
+        return 1
+    last = reasons[-1]
+    if last not in ALLOWED:
+        print(f"FAIL: unknown STOP_REASON={last}", file=sys.stderr)
+        return 1
+    print(f"PASS: STOP_REASON={last}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+```
+
+Addy Osmani's limitation section is blunt: auditing 24 hours of autonomous activity is a human-time problem, and structured artifacts (PRs, commits, briefings, test runs) are how you make it tractable [Source: https://addyosmani.com/blog/long-running-agents/]. A `STOP_REASON=` line is that artifact at the smallest size that still names the stop.
+
+{{< note type="note" title="Interrupted is a real stop" >}}
+If the harness was killed, write `STOP_REASON=interrupted`. Do not leave the last chat bubble as the record. Interrupted plus a missing file is hung. Interrupted plus a new file is a half-write you can restart once.
+{{< /note >}}
+
+![Recovery loop: detect the missing file, read the stop line, restart once](/img/building-background-agent-verification-cli-2.png)
+
+## Gate 3 — one fail-once restart from the last good commit
+
+Restart is where teams leak. Chat said done, someone hits Run again, the agent writes a second patch on top of a dirty tree, and now nobody knows which commit was good.
+
+I tag the last good commit before the overnight job starts. Recovery is allowed to hard-reset to that tag **once**. If the second run also fails a gate, the ticket goes to a human. There is no third click.
+
+```bash {linenos=inline,hl_lines=[11,"18-22"]}
+#!/usr/bin/env bash
+# scripts/fail-once-restart.sh
+# Usage: fail-once-restart.sh GOOD_REF JOB_ID
+set -euo pipefail
+
+good="${1:?last good commit or tag}"
+job_id="${2:?job id}"
+stamp_dir="artifacts/restarts"
+mkdir -p "$stamp_dir"
+stamp="$stamp_dir/${job_id}.once"
+
+if [[ -f "$stamp" ]]; then
+  echo "FAIL: restart already used for $job_id — human owns the next step" >&2
+  exit 1
+fi
+
+git rev-parse --verify "$good^{commit}" >/dev/null
+git reset --hard "$good"
+date -Iseconds >"$stamp"
+echo "PASS: reset to $good; restart stamp written"
+echo "Re-run the job wrapper now. Do not click a third time."
+```
+
+VS Code's restore is a conversation rollback. Git reset is the production rollback. Keep them separate. Restore Checkpoint when you are still in the IDE and the turn went wrong [Source: https://code.visualstudio.com/learn/foundations/reviewing-and-controlling-agent-changes]. Use the fail-once script when the overnight wrapper is the process you trust.
+
+Long-running production still needs a sandbox that survives a directory change and a human who owns the budget. That page is [Long-Running AI Agents — From Demos to Production](/blog/long-running-ai-agents-from-demos-to-production/). This page is the morning after: the chat is closed, and you still have to prove recovered.
+
+## Wire the three gates in one wrapper
+
+You do not need a published binary named `agent-recover`. You need a wrapper that refuses to print success until the three files exist. Put it next to the Laravel app so the next person on the ticket can run it.
+
+```bash {linenos=inline,hl_lines=[6,"28-32"]}
+#!/usr/bin/env bash
+# scripts/run-overnight-agent.sh
+set -euo pipefail
+
+job_id="${JOB_ID:-shipping-$(date +%Y%m%d)}"
+expected="${EXPECTED_FILE:-app/Services/ShippingCost.php}"
+good="${GOOD_REF:-recovery-good}"
+root="$(git rev-parse --show-toplevel)"
+art="$root/artifacts"
+mkdir -p "$art"
+
+date +%s >"$art/job-start.txt"
+start="$(cat "$art/job-start.txt")"
+
+# Replace this block with your real agent command.
+# The wrapper owns the log. The model does not write STOP_REASON=.
+set +e
+your_agent_cmd --task "$job_id"
+agent_ec=$?
+set -e
+
+if [[ "$agent_ec" -eq 0 ]]; then
+  echo "STOP_REASON=completed" >>"$art/job.log"
+else
+  echo "STOP_REASON=tests_failed" >>"$art/job.log"
+fi
+
+set +e
+"$root/scripts/assert-recovery-file.sh" "$root/$expected" "$start"
+file_ec=$?
+"$root/scripts/assert-stop-reason.py" "$art/job.log"
+log_ec=$?
+set -e
+
+if [[ "$file_ec" -eq 0 && "$log_ec" -eq 0 ]]; then
+  echo "RECOVERED: file + stop reason present"
+  exit 0
+fi
+
+echo "NOT RECOVERED: running fail-once restart"
+"$root/scripts/fail-once-restart.sh" "$good" "$job_id"
+```
+
+The wrapper is the CLI. If you later extract a Go binary, the contract stays the same: expected path, stop line, one stamp file. Do not wait for a GitHub release to start using the three files.
+
+![Checklist YAML is optional; the three files are not](/img/building-background-agent-verification-cli-4.png)
+
+## What this is not
+
+This is not the five-name editor contract from [Five Things I Refused This Week](/blog/five-refusals-this-week/). That list is who pins the model, who merges, who retries. This page is only: **is the overnight job recovered.**
+
+This is not a second zombie-detection essay. Detection without a file is still a dashboard. Recovery is the file.
+
+This is not "restore the chat and call it a night." Chat restore is for a bad turn while you are watching. Overnight recovery is for a process you were not watching.
+
+Anthropic's initializer agent writes `claude-progress.txt` so the next session is not blank [Source: https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents]. Keep a progress file if you want. I still fail the job if the shipping file is old. Progress text without an mtime check is another chat.
+
+{{< details summary="Optional: a tiny verification.yaml next to the wrapper" >}}
+If you already keep a checklist, keep it short. File existence, tests, build. Do not grow it into a second review system.
 
 ```yaml
-# verification.yaml — checklist format (Agent Verifier compatible)
-task: "Refactor auth module to use JWT"
-agent: claude-code
-session_id: "abc123"
+task: "Fix shipping cost calculation"
+expected_file: app/Services/ShippingCost.php
+stop_reasons:
+  - completed
+  - interrupted
+  - timeout
+  - oom
+  - tests_failed
+restart:
+  good_ref: recovery-good
+  max: 1
 checks:
-  - id: "files_exist"
-    type: "file_existence"
-    description: "Core auth files created"
-    paths:
-      - "internal/auth/jwt.go"
-      - "internal/auth/tokens.go"
-      - "internal/auth/middleware.go"
-    required: true
-    
-  - id: "no_plaintext_passwords"
-    type: "grep_absence"
-    description: "No plaintext password handling"
-    pattern: "password.*=.*[\"'][^\"']+[\"']"
-    paths: ["internal/auth/**/*.go"]
-    required: true
-    
-  - id: "tests_pass"
-    type: "command"
-    description: "All auth tests pass"
-    command: "go test ./internal/auth/... -v"
-    timeout: 120
-    required: true
-    
-  - id: "jwt_structure"
-    type: "semantic_diff"
-    description: "JWT token structure matches spec"
-    base_commit: "HEAD~1"
-    head_commit: "HEAD"
-    expected_changes:
-      - file: "internal/auth/jwt.go"
-        must_contain:
-          - "type Claims struct"
-          - "jwt.MapClaims"
-          - "SigningMethodHS256"
-    required: true
-    
-  - id: "no_regressions"
-    type: "command"
-    description: "Full test suite passes"
-    command: "go test ./... -short"
-    timeout: 300
-    required: false  # warning only
-    
-  - id: "build_succeeds"
-    type: "command"
-    description: "Project builds"
-    command: "go build ./..."
-    required: true
+  - id: file_newer_than_job
+    type: file_mtime
+    path: app/Services/ShippingCost.php
+  - id: tests
+    type: command
+    command: php artisan test --filter=ShippingCost
 ```
-
-![Verification checklist YAML structure](/img/building-background-agent-verification-cli-4.png)
-
-```go
-// pkg/verify/harness.go
-package verify
-
-import (
-    "context"
-    "fmt"
-    "os/exec"
-    "path/filepath"
-    "strings"
-    "time"
-)
-
-type VerificationHarness struct {
-    Checklist Checklist
-    WorkDir   string
-}
-
-func (v *VerificationHarness) Run(ctx context.Context) VerificationResult {
-    result := VerificationResult{
-        SessionID: v.Checklist.SessionID,
-        StartedAt: time.Now(),
-        Checks:    make([]CheckResult, 0, len(v.Checklist.Checks)),
-    }
-    
-    for _, check := range v.Checklist.Checks {
-        checkResult := v.runCheck(ctx, check)
-        result.Checks = append(result.Checks, checkResult)
-        
-        if checkResult.Failed && check.Required {
-            result.OverallStatus = "FAILED"
-            // Continue running other checks for full report
-        }
-    }
-    
-    if result.OverallStatus != "FAILED" {
-        result.OverallStatus = "PASSED"
-    }
-    result.CompletedAt = time.Now()
-    return result
-}
-
-func (v *VerificationHarness) runCheck(ctx context.Context, check Check) CheckResult {
-    switch check.Type {
-    case "file_existence":
-        return v.checkFileExistence(check)
-    case "grep_absence":
-        return v.checkGrepAbsence(check)
-    case "command":
-        return v.checkCommand(ctx, check)
-    case "semantic_diff":
-        return v.checkSemanticDiff(check)
-    default:
-        return CheckResult{CheckID: check.ID, Status: "SKIPPED", Error: "unknown check type"}
-    }
-}
-
-func (v *VerificationHarness) checkSemanticDiff(check Check) CheckResult {
-    // Uses git diff + AST parsing for Go, TypeScript, Python
-    // Verifies structural changes, not just textual
-    baseCommit := check.ExpectedChanges[0].BaseCommit
-    headCommit := check.ExpectedChanges[0].HeadCommit
-    
-    diffCmd := exec.CommandContext(ctx, "git", "diff", baseCommit, headCommit, "--", check.Paths...)
-    diffOutput, _ := diffCmd.CombinedOutput()
-    
-    // Parse diff and verify expected structures exist
-    // This is where tree-sitter / AST analysis shines
-    return verifyASTChanges(string(diffOutput), check.ExpectedChanges)
-}
-```
-
----
-
-## Real-World Usage: Hermes Agent Orchestration
-
-I've been running **this pattern** in production with Hermes Agent multi-agent orchestration. Here's the reference implementation (using the forthcoming `agent-recover` CLI):
-
-```bash
-#!/bin/bash
-# run-pipeline.sh — autonomous agent cron pipeline (reference pattern)
-
-SESSION_DIR="/var/lib/agent-sessions/$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$SESSION_DIR"
-
-# Start agent with recovery wrapper (conceptual CLI)
-# agent-recover run \
-#   --session-dir "$SESSION_DIR" \
-#   --heartbeat-interval 30s \
-#   --stale-threshold 5m \
-#   --checkpoint-interval 10m \
-#   -- \
-#   hermes-agent orchestrate \
-#     --task "Daily codebase maintenance: refactor, test, document" \
-#     --agents 3 \
-#     --parallel \
-#     --shared-checkout \
-#   2>&1 | tee "$SESSION_DIR/stdout.log"
-
-# Verify on completion
-# if [ ${PIPESTATUS[0]} -eq 0 ]; then
-#     agent-recover verify \
-#       --session-dir "$SESSION_DIR" \
-#       --checklist verification.yaml \
-#       --format json > "$SESSION_DIR/verification.json"
-#     
-#     # Audit trail
-#     agent-recover audit \
-#       --session-dir "$SESSION_DIR" \
-#       --since 24h \
-#       --format json >> /var/log/agent-audit.log
-# else
-#     # Auto-recover
-#     agent-recover recover \
-#       --session-dir "$SESSION_DIR" \
-#       --strategy auto \
-#       --max-retries 2
-# fi
-```
-
-> **Note**: The above shows the CLI interface design. The actual production implementation uses the Go packages shown in the Implementation sections directly, wired into Hermes Agent's orchestration loop. The CLI is a convenience wrapper being extracted as a standalone tool.
-
-**Key Hermes-specific patterns used:**
-- `[[parallel-agent-shared-checkout]]` — multiple agents on same repo, recovery handles git conflicts
-- `[[agent-edit-contract]]` — verification ensures each agent's edits are valid
-- `[[autonomous-agent-cron-pipelines]]` — this runs daily via systemd timer, not cron (avoids `[[cron-silent-failure-patterns-infra]]`)
-
-![Hermes orchestration pipeline with recovery branch](/img/building-background-agent-verification-cli-5.png)
-
----
-
-## Results: From 60 Impressions to Working Recovery
-
-Since deploying the patterns in this CLI across my Modoo Laravel SaaS projects and Hermes orchestrations, **in my environment**:
-
-| Metric | Before | After |
-|--------|--------|-------|
-| Stuck agent detection time | Manual (hours) | < 5 minutes |
-| Recovery success rate | ~20% (manual) | 87% (auto) |
-| Work lost per incident | Unbounded | < 10 min (checkpoint interval) |
-| Verification coverage | Ad-hoc | 100% (checklist-enforced) |
-| 24h audit compliance | None | Full (Addy Osmani style) |
-
-> **Methodology note**: These metrics reflect my specific infrastructure (systemd timers, Go-based checkpointing, Hermes multi-agent orchestration). Detection time measured from agent stall (no stdout/stderr/heartbeat for 5 minutes) to CLI alert. Recovery success rate = percentage of stalled sessions completing original task after automated strategy selection. Work lost = time between last checkpoint and stall detection (checkpoint interval configurable, default 10m). Verification coverage = % of agent sessions passing checklist verification before merge. 24h audit compliance = % of sessions with complete audit trail per Addy Osmani's framework. Your results will vary based on agent type, task complexity, and infrastructure.
-
-{{< details summary="How these metrics were measured" >}}
-Detection time: measured from agent stall (no stdout/stderr/heartbeat for 5 minutes) to automated alert. Before: manual Slack/email notification. After: automated via systemd timer + monitoring script.
-
-Recovery success rate: percentage of stalled sessions that completed their original task after automated recovery strategy selection. Before: manual intervention (git reset, session restart, sandbox recreation). After: automated strategy selection (checkpoint restore, session reset, sandbox recreate, best effort).
-
-Work lost: time between last checkpoint and stall detection. Checkpoint interval configurable (default 10m in production).
-
-Verification coverage: percentage of agent sessions that pass checklist verification before merge/deploy. Before: ad-hoc manual review. After: enforced in pipeline.
-
-24h audit compliance: percentage of agent sessions with complete audit trail (session state, checkpoints, verification results, recovery actions) per Addy Osmani's long-running agent audit framework.
 {{< /details >}}
 
----
+## Name the owner of the three files
 
-## What You Should Do Monday Morning
+A wrapper without an owner becomes folklore. Put three names on the ticket before the overnight run:
 
-1. **Add heartbeat monitoring to your agent runs** — Wrap your next Claude Code, Codex, or custom agent command with a simple heartbeat wrapper (touch a `.heartbeat` file every 30s, monitor stdout/stderr mtime). The 5-minute setup adds stall detection and enables checkpointing.
+1. Who writes `EXPECTED_FILE`
+2. Who reads `artifacts/job.log` in the morning
+3. Who is allowed to click the fail-once restart
 
-2. **Define a verification checklist** — Create a `verification.yaml` for your most common agent task (refactor, feature implementation, bug fix). Start with file existence, test execution, and build success checks. Run the checks after every agent session (see the verification harness example in this post).
+If those names are blank, do not start the agent. Abort is not stop. Abort still needs a retry owner. I ranked that refusal already. Here the artifact is the stamp file under `artifacts/restarts/`.
 
-3. **Audit your last 24 hours of agent runs** — Review your agent session logs for sessions with no checkpoints, context exhaustion signals, or sandbox issues. These are your recovery targets. Structure the audit output as JSON for tooling consumption (per Addy Osmani's framework).
+The operations hub for this family is [/ai-agent-operations/](/ai-agent-operations/). The map page tells the agent where it may search. The long-running page tells you the sandbox still has to hold after `cd`. This page tells you when you may say the job came back.
 
-4. **Set up checkpoint intervals** — Configure your agent harness to checkpoint every 10 minutes (or shorter for critical work). The default 30-minute gap between checkpoints is too long for production; 10 minutes bounds work loss to an acceptable window.
+![Named owner for the grant: expected file, job log, restart stamp](/img/building-background-agent-verification-cli-5.png)
 
-5. **Move cron to systemd timers** — If you're still using cron for agent pipelines, migrate to systemd timers with `OnCalendar=*-*-* 02:00:00` and `Persistent=true`. This avoids the silent failure patterns documented in `[[cron-silent-failure-patterns-infra]]`.
+## What you should do Monday morning
 
-6. **Start here if you're new to agent ops** — The `/start-here/` page has the foundational concepts for running agents in production, from the agent edit contract to zombie detection to recovery patterns.
+1. Pick one overnight job this week. Write the expected path on the ticket (`app/Services/ShippingCost.php` or your equivalent). Do not start the agent until the path is there.
+2. Copy `assert-recovery-file.sh`, `assert-stop-reason.py`, and `fail-once-restart.sh` into `scripts/`. Run them against last night's run even if chat said done.
+3. Tag `recovery-good` on the last commit you would actually ship. That is the only reset target.
+4. Create `artifacts/job.log` from the wrapper, not from the model. Require a `STOP_REASON=` line.
+5. If the first restart stamp already exists, do not click Run. Assign a human. That person reads the diff.
+6. Link this page, the [map allow-list](/blog/your-coding-agent-needs-a-map-not-a-bigger-context-window-part-2/), and [long-running agents](/blog/long-running-ai-agents-from-demos-to-production/) on the ticket so the next person does not invent a fourth gate.
 
----
+If you are new to this desk, start at [/start-here/](/start-here/) and the [developer tools](/developer-tools/) hub. Then come back and fail one overnight job on purpose so you see the stamp file.
 
-## Further Reading
+## Further reading
 
-- **agent-recover GitHub Repository** (forthcoming) — Source code, releases, and verification checklist examples will be published at `github.com/shinjae/agent-recover`
-- {{< source href="https://addyosmani.com/blog/long-running-agents/" label="Addy Osmani: Long-Running Agents" >}} — The 24h audit problem and why structured artifacts matter
-- {{< source href="https://slavadubrov.github.io/blog/2026/05/26/ai-agent-runtime/" label="Long-Running AI Agent Runtime in 2026" >}} — Sessions, sandboxes, checkpoints, and harnesses deep dive
-- {{< source href="https://dev.to/moonrunnerkc/ai-coding-agents-can-verify-some-of-their-work-now-heres-what-they-still-miss-58mc" label="AI Coding Agents Can Verify Some of Their Work Now" >}} — What agents miss vs what orchestrators must catch
+{{< source href="https://addyosmani.com/blog/long-running-agents/" label="Addy Osmani: Long-running Agents" >}}
 
----
+{{< source href="https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents" label="Anthropic: Effective harnesses for long-running agents" >}}
 
-## Field Note
+{{< source href="https://code.visualstudio.com/learn/foundations/reviewing-and-controlling-agent-changes" label="VS Code: Reviewing and controlling agent changes" >}}
 
-{{% field-note title="Field note" %}}
-In the Modoo Laravel SaaS platforms I maintain, we run nightly agent pipelines for dependency updates, test generation, and documentation sync. Before implementing these recovery patterns, a stuck Codex session on a Laravel 11 upgrade would block the entire pipeline until morning — sometimes 6+ hours of wasted compute. With the three-gate verification approach, the same failure now triggers `checkpoint_restore` within 5 minutes, the agent resumes from the last clean commit, and the pipeline completes unattended. The verification harness also caught a case where an agent claimed "all tests pass" but had only run the auth module tests — the `no_regressions` check (full suite) failed and blocked the merge. That single catch justified the entire tooling investment.
-{{% /field-note %}}
-
----
-
-## Closing Thought
-
-The agent-ops tooling space has been stuck in "detect and alert" mode. But agents don't need alerts — they need **recovery**. The pivot from zombie detection to agent recovery isn't just a content strategy; it's the only way to run autonomous agents in production without babysitting.
-
-If you're running long-running agents (Claude Code, Codex, OpenCode, custom), implement the three-gate verification pattern: **detect** (heartbeat, output, resources), **diagnose** (state, logs, context), **recover** (checkpoint, sandbox, session), then **verify** (checklist, diff validation, test execution). The 5-minute setup to add heartbeat monitoring and checkpointing saves hours of manual recovery.
-
-The `agent-recover` CLI implementing these patterns is under active development and will be published at `github.com/shinjae/agent-recover`.
-
----
-
-*Shinjae Kang — Programmer & Software Architect in Jakarta. Building Modoo Laravel SaaS platforms and Hermes Agent multi-agent orchestration. This post is part of the Build in Public Friday rotation (Category F: Tutorial/Deep-Dive).*
+{{< source href="https://code.claude.com/docs/en/checkpointing" label="Claude Code docs: Checkpointing" >}}
