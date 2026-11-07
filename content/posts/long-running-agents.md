@@ -1,7 +1,7 @@
 ---
 title: "Long-Running AI Agents — From Demos to Production"
 date: 2026-06-19T07:00:00+07:00
-lastmod: 2026-08-31T07:00:00+07:00
+lastmod: 2026-11-07T06:30:00+07:00
 draft: false
 slug: "long-running-ai-agents-from-demos-to-production"
 description: "A long-running coding agent can stay green after it changes directory. Production still needs a sandbox that survives /cd, a budget that counts nested work, and a human who owns both."
@@ -306,6 +306,14 @@ If I were starting the same long-running setup again, I would not begin with a b
 4. A sandbox fixture that survives `cd`, plus a budget that includes helpers.
 
 The agents that last across days are not smarter than the ones that last across minutes. They are wrapped in checks the agent cannot talk past. Hub notes for this desk live under [AI agent operations](/ai-agent-operations/). New readers can start at [Start here](/start-here/).
+
+## Two silent stops that are not the sandbox
+
+A long-running job can also stop for reasons that have nothing to do with a directory change. Two came up in the first week of November. A stored sign-in has an end date, and Claude Code's `claude auth status` now reports it as `loginExpiresAt`. And a `claude -p` run used to exit 0 in several cases where it had not saved or done the work, such as a full disk that lost the transcript. Both fixes are small, and both are the same lesson as the sandbox: a job that looks alive is not a job that is still allowed to work, or still finishing it.
+
+{{< field-note title="Field note" >}}
+On the Laravel SaaS projects I maintain, the check that survives staff changes is a file, not a dashboard: the job names the artifact it must leave behind, and the wrapper fails when that file is missing or older than the start of the run. I wrote the login-date version of that check, with a preflight script and a three-proof wrapper, in [Your Overnight Agent Job Has a Login With an End Date](/blog/agent-job-login-has-an-end-date/).
+{{< /field-note >}}
 
 ## What you should do Monday morning
 
