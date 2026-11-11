@@ -147,7 +147,7 @@ This usually makes the remaining store smaller and more meaningful.
 Related notes:
 
 - [Code That Renders Is Not Code You Can Trust](/blog/code-that-renders-is-not-code-you-can-trust/)
-- [Vue 3.6 Vapor Mode: No Virtual DOM, No Rewrite](/blog/vue-3.6-vapor-mode-no-virtual-dom-no-rewrite/)
+- [Vue 3.6 Vapor Mode: No Virtual DOM, No Rewrite](/blog/vue-3-6-vapor-mode-no-virtual-dom-no-rewrite/)
 - [Laravel and Vue SaaS Notes](/laravel-vue-saas/)
 
 ## The review smell

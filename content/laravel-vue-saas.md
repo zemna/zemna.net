@@ -14,7 +14,7 @@ The public posts are not framework tutorials in isolation. They are notes about 
 1. [Stop reaching for a state library](/blog/stop-reaching-for-a-state-library/)
 2. [Code That Renders Is Not Code You Can Trust](/blog/code-that-renders-is-not-code-you-can-trust/)
 3. [The JavaScript I Deleted With CSS: A 2026 Survival Guide](/blog/the-javascript-i-deleted-with-css-a-2026-survival-guide/)
-4. [Vue 3.6 Vapor Mode: No Virtual DOM, No Rewrite](/blog/vue-3.6-vapor-mode-no-virtual-dom-no-rewrite/)
+4. [Vue 3.6 Vapor Mode: No Virtual DOM, No Rewrite](/blog/vue-3-6-vapor-mode-no-virtual-dom-no-rewrite/)
 
 The pattern: start with ownership, prove states, then remove complexity only when the browser or framework can carry it safely.
 

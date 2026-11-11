@@ -23,7 +23,7 @@ The key test is not whether the demo looks autonomous. The key test is whether t
 1. [GLM 5.2 Just Became the Best Open-Weights Model](/blog/glm-5-2-open-weights/)
 2. [Open Weights Just Ate the API Margin](/blog/open-weights-api-margin/)
 3. [I Swapped My LLM Backend: The API Call Worked on the First Try](/blog/i-swapped-my-llm-backend-the-api-call-worked-on-the-first-try/)
-4. [The AI Coding Agent Arms Race](/blog/the-ai-coding-agent-arms-race-why-model-portability-matters-more-than-benchmarks/)
+4. [The AI Coding Agent Arms Race](/blog/ai-agent-frameworks-in-2026-what-the-comparison-charts-dont-tell-you/)
 
 Benchmarks are useful for narrowing options. Operating cost, fallback behavior, and migration friction decide what survives in a real workflow.
 

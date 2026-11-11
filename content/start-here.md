@@ -44,7 +44,7 @@ Generated UI still needs engineering discipline.
 
 - [Code That Renders Is Not Code You Can Trust](/blog/code-that-renders-is-not-code-you-can-trust/)
 - [The JavaScript I Deleted With CSS: A 2026 Survival Guide](/blog/the-javascript-i-deleted-with-css-a-2026-survival-guide/)
-- [Vue 3.6 Vapor Mode: No Virtual DOM, No Rewrite](/blog/vue-3.6-vapor-mode-no-virtual-dom-no-rewrite/)
+- [Vue 3.6 Vapor Mode: No Virtual DOM, No Rewrite](/blog/vue-3-6-vapor-mode-no-virtual-dom-no-rewrite/)
 
 The core idea: correctness includes behavior, accessibility, performance, and future edits.
 

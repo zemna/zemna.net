@@ -18,7 +18,7 @@ The system is **token-first** — every visual decision is a named token. No har
 
 ## Tokens
 
-The token set lives in the theme source at `themes/zemnanet-theme/assets/css/tokens.css`. The production build publishes the minified CSS custom properties at [`/css/tokens.min.css`](/css/tokens.min.css).
+The token set lives in the theme source at `themes/zemnanet-theme/assets/css/tokens.css`. The production build publishes the minified CSS custom properties as a fingerprinted file named `tokens.min.<hash>.css` under `/css/`.
 
 ### Color — Brand palette
 

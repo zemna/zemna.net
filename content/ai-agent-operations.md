@@ -33,7 +33,7 @@ For a small team, the practical question is not "which agent is smartest?" The p
 ## Keep tools portable
 
 1. [AI Agent Frameworks in 2026: What the Comparison Charts Don't Tell You](/blog/ai-agent-frameworks-in-2026-what-the-comparison-charts-dont-tell-you/)
-2. [The AI Coding Agent Arms Race: Why Model Portability Matters More Than Benchmarks](/blog/the-ai-coding-agent-arms-race-why-model-portability-matters-more-than-benchmarks/)
+2. [The AI Coding Agent Arms Race: Why Model Portability Matters More Than Benchmarks](/blog/ai-agent-frameworks-in-2026-what-the-comparison-charts-dont-tell-you/)
 3. [I Swapped My LLM Backend: The API Call Worked on the First Try](/blog/i-swapped-my-llm-backend-the-api-call-worked-on-the-first-try/)
 4. [Open Weights Just Ate the API Margin](/blog/open-weights-api-margin/)
 
