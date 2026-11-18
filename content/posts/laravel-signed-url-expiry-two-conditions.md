@@ -1,9 +1,10 @@
 ---
 title: "A Laravel Signed Link Can Outlive Its Expiry Under Two Conditions: One Version Check, One Grep"
 date: 2026-11-14T06:00:00+07:00
+lastmod: 2026-11-18T08:00:00+07:00
 draft: false
 slug: "laravel-signed-url-expiry-two-conditions"
-description: "Two Laravel advisories from Nov 11 say a temporary signed URL can be accepted after it expired, but only under two specific conditions. How to check your version, find the calls, and fix them."
+description: "Two Laravel advisories from Nov 11 say a temporary signed URL can be accepted after it expired, but only under two specific conditions. Updated Nov 18: what Laravel 12.73.0 adds past the advisory floor, plus the version check and the grep."
 topics: ["laravel"]
 tags: ["laravel", "signed-urls", "security-advisory", "composer", "php", "patch-management", "code-review"]
 cover: /covers/laravel-signed-url-expiry-two-conditions.png
@@ -11,7 +12,7 @@ seo:
   primaryQuery: "laravel signed url expiry bypass"
   secondaryQueries:
     - "laravel temporarySignedRoute expired link still works"
-    - "laravel 12.72.0 signed url fix"
+    - "laravel 12.73.0 signed url array expires"
     - "check laravel framework version composer.lock"
 ---
 
@@ -24,6 +25,33 @@ The word "specific" matters more than the word "Moderate". So the useful questio
 <!--more-->
 
 The question is not whether the advisory sounds technical. It is whether you can list every place your app builds a link that is supposed to expire, and say who reads it.
+
+{{< note type="note" title="Updated on 2026-11-18" >}}
+Written on Nov 14. New today: the next section, and a rewritten section near the end about the 12.x query-string regression, which now has a release. The floor script and its output are also updated. Everything else is the original check, and it still holds. The two advisories did not change.
+{{< /note >}}
+
+## Update, Nov 18: 12.73.0 goes one step past the advisory floor
+
+On Tuesday, Nov 17, Laravel released 12.73.0 and 13.43.0 (Packagist lists them at 14:54 and 14:58 UTC). I re-read the two advisory pages this morning, Nov 18, at about 08:00 Jakarta time. Nothing moved: both still say Moderate, still say "No known CVE", and still name 12.72.0 and 13.41.0 as the patched versions. The newest entry on the repository's advisory list is still the one from Nov 11.
+
+So the floor in the rest of this post is still correct. What changed is that there is now something newer than the floor, and it touches the same part of the code.
+
+**What 12.73.0 adds for signed links.** Its release notes list pull request #62411, "Prevent array `expires` parameters from bypassing signed URL expiration". The pull request text says that when the `expires` value of a signed URL is an array, the expiry check treats the URL as never expiring: a non-empty array counts as true, and comparing the current time with an array is always false. It also says the signature still has to match. Then it gives the reason the guard exists: #62401, the fix that is already in 12.72.0, "showed that a signed URL can be made to carry an unexpected `expires` value, so the expiry check should not rely on that never happening."
+
+That is a second lock on the same door. It is not a new hole announced by the Laravel team. I found no advisory and no CVE for it, and I am not going to call it more than the pull request calls it.
+
+**What this means for 13.x.** The same pull request says it "backports the `expires` guard" from #59860 on 13.x. #59860, "Prevent array query params from bypassing signed URL validation", was merged into 13.x on Apr 27, 2026. I did not check which 13.x release first shipped it, so I make no claim for 13.x beyond the advisory floor, 13.41.0. The 13.43.0 notes list #62411 too. I did not test any of this.
+
+| Release | Date (UTC) | What it adds for signed links |
+|---|---|---|
+| 12.72.0 | Nov 10 | The advisory fixes: raw query string fallback for `expires`, and the numeric-key fix |
+| 12.73.0 | Nov 17 | Array `expires` guard (#62411), and the `EncodedParameter` fix (#62417, covered below) |
+| 13.41.0 | Nov 10 | The advisory floor for 13.x |
+| 13.43.0 | Nov 17 | Newest 13.x on Nov 18; its notes list the same two pull requests |
+
+**What else is in 12.73.0.** The same release lists other changes whose titles sound security-related: "Fix XSS in debug page's 'copy request URL'" (#62418), "Fix XSS in component attributes" (#62503), "Fix Eloquent mass-assignment guard bypass via mutator attribute-name normalization mismatch" (#62499), "Prevent DoS in `Illuminate\JsonSchema\Deserializer` by bounding `$ref` chain depth" (#62498), and "Fix file validation bypass with empty input field collisions" (#62504). I read titles only. A title is not an impact statement, and I did not find an advisory for any of them. It also lists validation changes with titles like "Compare fluent database rule `where()` values literally" and "Keep every where on the same column in exists and unique rules". Those can change what your validation accepts.
+
+So my advice is small: move to 12.73.0 or 13.43.0 or newer, but do it on a branch and run the tests that cover validation, redirects and signed links before you ship. If you want the old floor-only answer, it is in the script below: a lock at 12.72.0 or 13.41.0 is "ok", with a note that a newer release exists.
 
 ## Two advisories, one fix floor
 
@@ -109,7 +137,7 @@ I did not run this PHP on this machine; it has no PHP. It is the pattern the adv
 
 ## Check 1: which Laravel does each app run
 
-A version in `composer.json` is a range. The version you actually run is in `composer.lock`. This script reads each lock file and compares `laravel/framework` with the two floors on the advisory pages. It only judges exact `x.y.z` versions, and it reports lines the advisory gives no fix for instead of guessing.
+A version in `composer.json` is a range. The version you actually run is in `composer.lock`. This script reads each lock file and compares `laravel/framework` with the two floors on the advisory pages. It only judges exact `x.y.z` versions, and it reports lines the advisory gives no fix for instead of guessing. Since Nov 18 it also prints a note when a lock sits at the floor but a newer release exists. That note does not change the exit code.
 
 ```python
 #!/usr/bin/env python3
@@ -122,6 +150,8 @@ Exit 2 = no composer.lock found.
 
 Floors come from the advisory pages (GHSA-v5ch-g375-82r6 and GHSA-6rv8-qj5v-p8ch):
 12.x -> 12.72.0, 13.x -> 13.41.0. Other lines are reported, not guessed.
+Updated Nov 18: a lock at the floor but below the newest release gets a note,
+not a failure. The advisories did not change; the newer releases add hardening.
 """
 import json
 import re
@@ -129,6 +159,11 @@ import sys
 from pathlib import Path
 
 FLOORS = {12: (12, 72, 0), 13: (13, 41, 0)}
+# Newest releases seen on Nov 18, 2026, with what the release notes list for them.
+NEWER = {
+    12: ((12, 73, 0), "adds an array-expires guard and the EncodedParameter fix"),
+    13: ((13, 43, 0), "newest 13.x on Nov 18"),
+}
 
 
 def find_locks(args):
@@ -159,7 +194,11 @@ def judge(text):
     want = ".".join(map(str, floor))
     if v < floor:
         return "BEHIND", f"move to {want} or newer"
-    return "ok", f"at or past {want}"
+    why = f"at or past {want}"
+    newer, what = NEWER[v[0]]
+    if v < newer:
+        why += f"; {'.'.join(map(str, newer))} {what}"
+    return "ok", why
 
 
 def main(argv):
@@ -183,13 +222,15 @@ if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))
 ```
 
-I ran it on a fixture folder with six lock files, one per case:
+I ran it on a fixture folder with eight lock files, one per case (the two newest releases are new today):
 
 ```bash
 $ python3 signed_floor.py fixture/locks; echo "exit=$?"
-ok     v13.41.0   fixture/locks/admin-13/composer.lock  at or past 13.41.0
-ok     v12.72.0   fixture/locks/api-12/composer.lock  at or past 12.72.0
+ok     v13.41.0   fixture/locks/admin-13/composer.lock  at or past 13.41.0; 13.43.0 newest 13.x on Nov 18
+ok     v12.72.0   fixture/locks/api-12/composer.lock  at or past 12.72.0; 12.73.0 adds an array-expires guard and the EncodedParameter fix
 CHECK  dev-master fixture/locks/dev-13/composer.lock  not an exact x.y.z (dev branch?): read the lock by hand
+ok     v12.73.0   fixture/locks/fresh-12/composer.lock  at or past 12.72.0
+ok     v13.43.0   fixture/locks/fresh-13/composer.lock  at or past 13.41.0
 SKIP   fixture/locks/no-fw/composer.lock: no laravel/framework package
 CHECK  v11.57.1   fixture/locks/old-11/composer.lock  line 11.x has no patched release on the advisory pages
 BEHIND v12.71.0   fixture/locks/shop-12/composer.lock  move to 12.72.0 or newer
@@ -326,17 +367,17 @@ Then decide by row:
 1. **`LOOK`:** change it first. Pick the values you mean to put in the link, by name, as in the second PHP block above. This does not depend on any upgrade.
 2. **`TRACE`:** find where the variable is built. If it comes from a request, treat it as `LOOK`.
 3. **`LITERAL` and `NOARGS`:** these usually do not match the second advisory's condition as it is written, unless a variable hides request input inside the array. They still need the upgrade for the first one.
-4. **Every app:** move to the fixed version. The advisories name 12.72.0 and 13.41.0. Anything newer on the same line also counts.
+4. **Every app:** move to the fixed version. The advisories name 12.72.0 and 13.41.0, and as of Nov 18 12.73.0 and 13.43.0 are newer. Anything newer on the same line also counts.
 
 ## One thing to read before you upgrade 12.x
 
 The 12.72.0 release includes the fix for condition 2, which makes Laravel URL-encode numeric-keyed query values. The next day, someone opened issue #62416 titled "v12.72.0 breaks query strings, again". The report is narrow: code that returns `redirect()->route('search', new EncodedParameter('q=000001'))` started producing `/search?q%3D000001` instead of `/search?q=000001`.
 
-A pull request, #62417, was merged into the 12.x branch on Nov 11. Its description says `EncodedParameter` values are meant to be used as they are, plain strings are still encoded, and callers who build an `EncodedParameter` are expected to be trusted code, not user input.
+A pull request, #62417, "Fix EncodedParameter being encoded again in numeric query parameters", was merged into the 12.x branch on Nov 11, and the issue was closed as completed the same day. Its description says `EncodedParameter` values are meant to be used as they are, plain strings are still encoded, and callers who build an `EncodedParameter` are expected to be trusted code, not user input.
 
-When I read the GitHub tags page this morning, the newest 12.x tag was still v12.72.0, so I could not see a release that carries that second fix. I read only the 12.x thread. I do not know what 13.x does here.
+**Update, Nov 18:** this now has a release. The 12.73.0 notes list #62417, so on 12.x the answer to "which version avoids both problems" is 12.73.0 or newer, not 12.72.0. The 13.43.0 notes list the same pull request. I did not run either release against the `EncodedParameter` case, so I am not saying what 13.x did before.
 
-What this means in practice: if you never construct an `EncodedParameter`, this is not about you. If you do, upgrade on a branch and run the tests that check redirect and link output before you ship.
+What this means in practice: if you never construct an `EncodedParameter`, this is not about you. If you do, upgrade to 12.73.0 or newer on a branch and run the tests that check redirect and link output before you ship.
 
 ## A test that stays
 
@@ -370,13 +411,17 @@ On the Laravel and Vue projects I look after, and the Modoo SaaS projects are th
 - It does not give a CVE. Both pages say "No known CVE". If one appears later, quote the page, not this post.
 - It does not say that default nginx or Apache settings make you safe. That is the advisory's sentence, I did not test it, and your stack may not use the defaults.
 - It does not say anything about 11.x or older beyond "the pages list no fix there".
-- It does not say what 13.x does about the `EncodedParameter` side effect.
+- It does not say what 13.x did about the `EncodedParameter` side effect before 13.43.0. The 13.43.0 notes list the fix; I did not run it.
+- It does not say the Nov 17 array-`expires` guard fixes a vulnerability. The pull request calls it a guard that "should not rely on that never happening", and I found no advisory or CVE for it.
+- It does not say anything about the other security-sounding titles in 12.73.0. I read titles only.
 
 ## What I did and did not verify
 
 On Nov 14 at about 08:00 Jakarta time I read both advisory pages in full, the 12.72.0 release notes, the GitHub tags and releases pages for `laravel/framework`, pull requests #62349, #62401 and #62417, issue #62416, the Laravel 13.x docs on URL generation and on mocking time, `UrlGenerator.php` on the 13.x branch (for the argument order the scanner relies on), the PHP manual page for runtime configuration, and the nginx and Apache directive docs named above.
 
-I ran both Python scripts on the inputs shown: the fixture folders, an empty folder, a missing path and this site's repository. I did not run PHP, any exploit, or the fix. The Releases page lists v13.42.0 and v12.72.0 but no entry for v13.41.0, while the tags page shows a v13.41.0 tag; I did not check why. Re-read the advisories before you act: a later edit can add a CVE or move a floor.
+On Nov 18 at about 08:00 Jakarta time I re-read both advisory pages, the repository's advisory list, the 12.73.0 and 13.43.0 release notes in full, pull requests #62411 and #59860, issue #62416, and the Packagist version list for release times. I updated `signed_floor.py` and ran it again on eight fixture lock files, plus a missing path and an empty folder. I did not read the pull requests behind the other titles in 12.73.0, and I did not check which 13.x tag first carried #59860.
+
+I ran both Python scripts on the inputs shown: the fixture folders, an empty folder, a missing path and this site's repository (that last run is from Nov 14; the scanner did not change). I did not run PHP, any exploit, or the fix. The Releases page lists v13.42.0 and v12.72.0 but no entry for v13.41.0, while the tags page shows a v13.41.0 tag; I did not check why. Re-read the advisories before you act: a later edit can add a CVE or move a floor.
 
 ## What you should do Monday morning
 
@@ -385,14 +430,14 @@ These fit in one sitting, whatever day you read this.
 1. **Run `signed_floor.py` on every app's `composer.lock`.** Fix `BEHIND` rows first, then read the `CHECK` rows by hand.
 2. **Run `signed_scan.py` on every app.** Read every `LOOK` and `TRACE` row. Put a name next to each link.
 3. **Change `LOOK` rows today.** Pass named values only. This needs no upgrade.
-4. **Upgrade to 12.72.0 or 13.41.0 or newer** on a branch, and run the redirect and link tests before you ship.
+4. **Upgrade to 12.73.0 or 13.43.0 or newer** on a branch, and run the validation, redirect and link tests before you ship. The advisory floors are 12.72.0 and 13.41.0; 12.73.0 also carries the `EncodedParameter` fix.
 5. **Ask infrastructure for the real request-line limit** in front of PHP: nginx, Apache, CDN, load balancer. Write the number in the runbook.
 6. **Add the expired-link test** for the one or two links that matter most.
 7. **On 11.x or older, open a ticket** that says "advisory lists no fix for this line", with an owner and a date.
 
 ## What this connects to
 
-Same habit as [a Vite dev server advisory](/blog/vite-dev-server-bug-check-host-flag/) and [a Node patch day](/blog/node-patch-day-where-your-version-lives/): a list of places, a check against the fix, one name per row. [Two Agents, One Database](/blog/herd-workspaces-share-the-parent-database/) is another Laravel default that nobody wrote down. More notes are on [Laravel and Vue SaaS](/laravel-vue-saas/), [Developer Tools](/developer-tools/) and [AI Agent Operations](/ai-agent-operations/), and [Start Here](/start-here/) lists the reading order.
+Same habit as [a Vite dev server advisory](/blog/vite-dev-server-bug-check-host-flag/), [a Node patch day](/blog/node-patch-day-where-your-version-lives/) and [a model string with a deadline](/blog/claude-api-two-calls-stop-nov-30/): a list of places, a check against the fix, one name per row. [Two Agents, One Database](/blog/herd-workspaces-share-the-parent-database/) is another Laravel default that nobody wrote down. More notes are on [Laravel and Vue SaaS](/laravel-vue-saas/), [Developer Tools](/developer-tools/) and [AI Agent Operations](/ai-agent-operations/), and [Start Here](/start-here/) lists the reading order.
 
 ## Further reading
 
@@ -401,3 +446,5 @@ Same habit as [a Vite dev server advisory](/blog/vite-dev-server-bug-check-host-
 - {{< source href="https://laravel.com/docs/13.x/urls" label="Laravel docs: URL generation and signed URLs" >}}
 - {{< source href="https://www.php.net/manual/en/info.configuration.php" label="PHP manual: runtime configuration, max_input_vars" >}}
 - {{< source href="https://github.com/laravel/framework/issues/62416" label="Laravel issue #62416: v12.72.0 breaks query strings, again" >}}
+- {{< source href="https://github.com/laravel/framework/releases/tag/v12.73.0" label="Laravel release v12.73.0 (Nov 17)" >}}
+- {{< source href="https://github.com/laravel/framework/pull/62411" label="Laravel pull request #62411: array expires guard" >}}
