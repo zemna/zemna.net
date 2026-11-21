@@ -1,12 +1,12 @@
 ---
 title: "Building a Background Agent Recovery CLI: The Three-Gate Check"
 date: 2026-08-14T07:00:00+07:00
-lastmod: 2026-09-02T07:00:00+07:00
+lastmod: 2026-11-21T07:30:00+07:00
 draft: false
 slug: "building-a-background-agent-recovery-cli-the-three-gate-check"
 description: "Chat said done is not recovered. I wait for a file on disk, a job log that names why the run stopped, and one fail-once restart from the last good commit."
 topics: ["tutorials"]
-tags: ["coding-agents", "verification", "background-agents", "cli", "change-control"]
+tags: ["coding-agents", "verification", "background-agents", "cli", "change-control", "git-worktree"]
 cover: /covers/building-background-agent-verification-cli.png
 seo:
   primaryQuery: "background agent verification CLI"
@@ -23,6 +23,10 @@ I do not mark that run recovered. Recovered means three things I can show a juni
 The question is not whether the agent demos well. The question is whether the next person can restart the job from a known commit when I am offline.
 
 <!--more-->
+
+{{< note type="note" title="Refreshed on 2026-11-21" >}}
+I wrote this in August. Re-reading it this week, I found two mistakes in my own scripts. The fail-once restart ran `git reset --hard` and threw away whatever the agent had half-written. And the wrapper exited 0 right after the restart, so a cron would show green for a job I had just called not recovered. Both are fixed below, in Gate 3 and in the wrapper. I ran the new restart script in a throwaway repo on Nov 21 before pasting it here. I also re-read the four older sources linked at the bottom the same day, and the quotes still match.
+{{< /note >}}
 
 ![Three-gate recovery: file on disk, job log, one fail-once restart](/img/building-background-agent-verification-cli-1.png)
 
@@ -160,7 +164,7 @@ Restart is where teams leak. Chat said done, someone hits Run again, the agent w
 
 I tag the last good commit before the overnight job starts. Recovery is allowed to hard-reset to that tag **once**. If the second run also fails a gate, the ticket goes to a human. There is no third click.
 
-```bash {linenos=inline,hl_lines=[11,"18-22"]}
+```bash {linenos=inline,hl_lines=["17-18","20-28"]}
 #!/usr/bin/env bash
 # scripts/fail-once-restart.sh
 # Usage: fail-once-restart.sh GOOD_REF JOB_ID
@@ -178,15 +182,41 @@ if [[ -f "$stamp" ]]; then
 fi
 
 git rev-parse --verify "$good^{commit}" >/dev/null
+
+# Whose checkout is this? Print every worktree so a human can see it.
+git worktree list
+
+# Keep the half-write before the reset throws it away.
+# artifacts/ stays untracked so the log and stamp survive the reset.
+branch="$(git rev-parse --abbrev-ref HEAD)"
+rescue="rescue/${job_id}"
+git add -A -- . ':!artifacts'
+if ! git diff --cached --quiet; then
+  git switch -c "$rescue"
+  git commit -q -m "rescue: half-write from $job_id"
+  git switch -q "$branch"
+  echo "SAVED: half-write kept on branch $rescue"
+fi
+
 git reset --hard "$good"
 date -Iseconds >"$stamp"
 echo "PASS: reset to $good; restart stamp written"
 echo "Re-run the job wrapper now. Do not click a third time."
 ```
 
+The August version of this script went straight from the stamp check to `git reset --hard`. That is a bad habit for a recovery tool: the half-written file is the only evidence of what the agent tried. The version above first commits it to a `rescue/<job id>` branch, then resets. I ran it on Nov 21 in a throwaway repo with a tagged good commit and a half-written `ShippingCost.php`. The first run saved the half-write on `rescue/job1` and left `main` at the tag. A second run for the same job id printed `FAIL: restart already used` and exited 1. A run on a clean tree skipped the rescue branch and reset normally. The `artifacts/` folder, with the log and the stamp, survived all three.
+
 VS Code's restore is a conversation rollback. Git reset is the production rollback. Keep them separate. Restore Checkpoint when you are still in the IDE and the turn went wrong [Source: https://code.visualstudio.com/learn/foundations/reviewing-and-controlling-agent-changes]. Use the fail-once script when the overnight wrapper is the process you trust.
 
 Long-running production still needs a sandbox that survives a directory change and a human who owns the budget. That page is [Long-Running AI Agents — From Demos to Production](/blog/long-running-ai-agents-from-demos-to-production/). This page is the morning after: the chat is closed, and you still have to prove recovered.
+
+### Before the reset: whose checkout is it?
+
+A hard reset rewrites the folder you are standing in. If a second agent session works in that same folder, you just pulled the floor out from under it. That is why the script prints `git worktree list` first. It is plain git, not a feature of any agent, and it lists every checkout attached to this repository so a human can see the shared ones before the reset happens.
+
+There is a fresh example from a vendor. The Claude Code release notes for v2.1.330, published on 20 Nov 2026, include this line: "Fixed `ExitWorktree` and the worktree exit dialog deleting a worktree that another running Claude Code session was working in" [Source: https://github.com/anthropics/claude-code/releases/tag/v2.1.330]. The notes do not say anyone lost work, and I did not reproduce the bug. I read it as a reminder that two sessions on one repository can share more than they appear to. It is not a reason to panic.
+
+If your overnight job and your daytime editor share one folder, start the job in its own worktree so a reset only ever touches that folder: `git worktree add ../job-$JOB_ID -b job/$JOB_ID recovery-good`. That is standard git and my own habit; the release notes do not recommend it, and I have not tested it against any particular agent.
 
 ## Wire the three gates in one wrapper
 
@@ -234,7 +264,13 @@ fi
 
 echo "NOT RECOVERED: running fail-once restart"
 "$root/scripts/fail-once-restart.sh" "$good" "$job_id"
+
+# The restart is a repair step, not a pass. Never exit 0 from here.
+echo "NOT RECOVERED: restart done, re-run the wrapper" >&2
+exit 2
 ```
+
+The last two lines are new. In the August version the wrapper ended on the restart script itself, and the restart script exits 0 when the reset works. So a cron or a CI step would have shown green for a run the wrapper had just called `NOT RECOVERED`. Exit 2 keeps the job red until the second run passes all three gates.
 
 The wrapper is the CLI. If you later extract a Go binary, the contract stays the same: expected path, stop line, one stamp file. Do not wait for a GitHub release to start using the three files.
 
@@ -292,8 +328,8 @@ The operations hub for this family is [/ai-agent-operations/](/ai-agent-operatio
 ## What you should do Monday morning
 
 1. Pick one overnight job this week. Write the expected path on the ticket (`app/Services/ShippingCost.php` or your equivalent). Do not start the agent until the path is there.
-2. Copy `assert-recovery-file.sh`, `assert-stop-reason.py`, and `fail-once-restart.sh` into `scripts/`. Run them against last night's run even if chat said done.
-3. Tag `recovery-good` on the last commit you would actually ship. That is the only reset target.
+2. Copy `assert-recovery-file.sh`, `assert-stop-reason.py`, and `fail-once-restart.sh` into `scripts/`, then run `chmod +x scripts/*` so the wrapper can call them. Run them against last night's run even if chat said done.
+3. Tag `recovery-good` on the last commit you would actually ship. That is the only reset target. Run `git worktree list` once so you know whether anyone else shares this folder.
 4. Create `artifacts/job.log` from the wrapper, not from the model. Require a `STOP_REASON=` line.
 5. If the first restart stamp already exists, do not click Run. Assign a human. That person reads the diff.
 6. Link this page, the [map allow-list](/blog/your-coding-agent-needs-a-map-not-a-bigger-context-window-part-2/), and [long-running agents](/blog/long-running-ai-agents-from-demos-to-production/) on the ticket so the next person does not invent a fourth gate.
@@ -309,3 +345,5 @@ If you are new to this desk, start at [/start-here/](/start-here/) and the [deve
 {{< source href="https://code.visualstudio.com/learn/foundations/reviewing-and-controlling-agent-changes" label="VS Code: Reviewing and controlling agent changes" >}}
 
 {{< source href="https://code.claude.com/docs/en/checkpointing" label="Claude Code docs: Checkpointing" >}}
+
+{{< source href="https://github.com/anthropics/claude-code/releases/tag/v2.1.330" label="Claude Code release notes: v2.1.330" >}}
