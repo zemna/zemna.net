@@ -1,7 +1,7 @@
 ---
 title: "Your Coding Agent Needs a Map, Not a Bigger Context Window — Part 2"
 date: 2026-08-21T07:00:00+07:00
-lastmod: 2026-09-01T07:00:00+07:00
+lastmod: 2026-11-25T07:45:00+07:00
 draft: false
 topics: ["ai-agents"]
 tags: ["context-engineering", "code-graphs", "artifact-contracts", "repo-map", "allow-list"]
@@ -24,6 +24,10 @@ The question is not whether this demos well. The question is whether it survives
 <!--more-->
 
 ![The map file is the allow-list; out of map fails](/img/context-window-critique-2-1.png)
+
+{{< note type="note" title="Refreshed Nov 25, 2026" >}}
+I ran the check script below against eight small log files and re-read every price and limit on this page. Three things changed. The script now fails an empty log, a log that lists only the map file, and a bullet that sits outside the "Allowed paths:" section. The August version passed all three, and this page said it would fail the first two. OpenAI's GPT-5.5 page also lists a surcharge above 272K input tokens; it is added in the context-window section.
+{{< /note >}}
 
 ## The map is not a hint. It is the ticket.
 
@@ -52,7 +56,7 @@ Juniors get hurt here because search tools feel harmless. `rg ShippingCost` look
 
 I keep a small fixture next to the app so a one-year developer can run it without learning a vendor's internals. It reads the map file, records every path the agent opened, and fails if any path sits outside the list.
 
-```bash {linenos=inline,hl_lines=[18,"24-27"]}
+```bash {linenos=inline,hl_lines=["13-16","21-23"]}
 #!/usr/bin/env bash
 # scripts/assert-agent-map.sh
 # Usage: assert-agent-map.sh MAP_FILE OPENED_PATHS_FILE
@@ -65,18 +69,39 @@ if [[ ! -f "$MAP" ]]; then
   echo "FAIL: map file missing: $MAP" >&2
   exit 1
 fi
+if [[ ! -s "$OPENED" ]]; then
+  echo "FAIL: opened-paths log is missing or empty: $OPENED" >&2
+  exit 1
+fi
 
-mapfile -t allowed < <(grep -E '^[-*][[:space:]]+' "$MAP" | sed 's/^[-*][[:space:]]*//; s/[[:space:]]*$//')
+# Only bullets under "Allowed paths:" count. A bullet anywhere else in the file does not.
+mapfile -t allowed < <(
+  awk '
+    /^Allowed paths:/ { on = 1; next }
+    on && NF && !/^[-*][ \t]/ { on = 0 }
+    on && /^[-*][ \t]+/ { sub(/^[-*][ \t]+/, ""); sub(/[ \t]+$/, ""); print }
+  ' "$MAP"
+)
 if [[ ${#allowed[@]} -eq 0 ]]; then
-  echo "FAIL: map file has no path bullets" >&2
+  echo "FAIL: no bullets under 'Allowed paths:' in $MAP" >&2
   exit 1
 fi
 
 fail=0
-while IFS= read -r path; do
-  [[ -z "$path" ]] && continue
+code_reads=0
+while IFS= read -r raw; do
+  path="${raw#./}"
+  if [[ -z "$path" ]]; then continue; fi
+
+  if [[ "/$path/" == */../* ]]; then
+    echo "FAIL: path climbs out with '..': $path" >&2
+    fail=1
+    continue
+  fi
+
   ok=0
   for a in "${allowed[@]}"; do
+    a="${a#./}"; a="${a%/}"
     case "$path" in
       "$a"|"$a"/*) ok=1; break ;;
     esac
@@ -85,15 +110,24 @@ while IFS= read -r path; do
     echo "FAIL: out-of-map path: $path" >&2
     fail=1
   fi
+
+  if [[ "$path" != "${MAP#./}" ]]; then
+    code_reads=$((code_reads + 1))
+  fi
 done < "$OPENED"
+
+if [[ "$code_reads" -eq 0 ]]; then
+  echo "FAIL: the log has no file besides the map itself, so nothing was read" >&2
+  fail=1
+fi
 
 if [[ "$fail" -eq 1 ]]; then
   exit 1
 fi
-echo "PASS: every opened path is on the map"
+echo "PASS: every opened path is on the map (files read besides the map: $code_reads)"
 ```
 
-The opened-paths file is the log, not a memory. If the harness cannot print the files it read, I treat the run as unread. Same rule as [Long-Running AI Agents — From Demos to Production](/blog/long-running-ai-agents-from-demos-to-production/): a green session is not a surviving boundary.
+The opened-paths file is the log, not a memory. If the harness cannot print the files it read, I treat the run as unread, and the script fails an empty log for the same reason. Same rule as [Long-Running AI Agents — From Demos to Production](/blog/long-running-ai-agents-from-demos-to-production/): a green session is not a surviving boundary.
 
 A map file that only says "be careful" is not a map. I want bullets the fixture can parse:
 
@@ -111,6 +145,23 @@ Allowed paths:
 ```
 
 Four paths. Not the Vue admin. Not `database/seeders`. Not `.env.example` one directory up. If the agent needs another file, it asks the owner to add a line. That line is the review.
+
+### What the script printed when I ran it
+
+A fixture you have not tried to break is a sticky note. I wrote eight tiny log files next to the shipping map above and ran the August version and today's version on each one. The logs are hand-written, not a recorded agent run, so this tests the script, not any agent. Shell was GNU bash 5.2.37.
+
+| What the log contains | August script | Today's script |
+| --- | --- | --- |
+| The two allowed files plus the map | PASS | PASS |
+| One extra file, `resources/js/admin/Shipping.vue` | FAIL | FAIL |
+| Nothing at all (empty file) | **PASS** | FAIL: log is empty |
+| Only the map file itself | **PASS** | FAIL: nothing else was read |
+| A `resources/js` bullet under a "See also:" heading, then a read of a Vue file | **PASS** | FAIL: out-of-map path |
+| `app/Services/ShippingCostOld.php` next to the allowed `ShippingCost.php` | FAIL | FAIL |
+| The allowed file written as `./app/Services/ShippingCost.php` | **FAIL** (false alarm) | PASS |
+| `app/Services/../../.env` | not compared | FAIL: path climbs out |
+
+Read the bold cells. The August script said PASS on an agent that read nothing, and it let any bullet in the file widen the list. It also rejected a harmless `./` prefix, which trains people to switch the check off. I wrote the sentence "Empty log fails" on this page and shipped code that did the opposite. Today's script matches the sentence.
 
 ![Named owner, not the agent](/img/context-window-critique-2-2.png)
 
@@ -142,6 +193,8 @@ I keep the log next to the patch, not in chat. Chat scrolls. Git blame does not.
 Model vendors sell a larger haystack. You still need the needle on a card.
 
 GPT-5.5's API window is 1,050,000 tokens; Codex's GPT-5.5 window is listed separately at 400K on the product page [Source: https://openai.com/index/introducing-gpt-5-5/]. I do not care which number wins the slide. Both numbers are large enough to ingest a medium app, the lockfile, CI YAML, and last week's chat. That is how invariants fall out of the middle.
+
+The bill moves too. On OpenAI's GPT-5.5 page, prompts above 272K input tokens are priced at 2x input and 1.5x output for the full session [Source: https://developers.openai.com/api/docs/models/gpt-5.5]. By my arithmetic from the listed $5 and $30, that is $10 per 1M input tokens and $45 per 1M output tokens once a session crosses the line. Check the page before you copy those numbers; pricing pages change. The point for a ticket: an agent that "reads everything" does not only miss the needle, it can move the whole session into the higher price band.
 
 ```
 # What a big-window agent often loads
@@ -265,7 +318,7 @@ Run it on the repo you will touch this week, not on a hypothetical monorepo.
 
 1. **Put a map file on the open ticket.** Name the owner. List four to eight paths. If you cannot list them, you are not ready to start the agent.
 
-2. **Add `scripts/assert-agent-map.sh` to CI** on that branch. Feed it the map and the opened-paths log. A missing log is a fail.
+2. **Add `scripts/assert-agent-map.sh` to CI** on that branch. Feed it the map and the opened-paths log. A missing, empty or map-only log is a fail. If you copied the August version of this script, replace it and run the eight cases above once; it takes about two minutes.
 
 3. **Fail out-of-map paths before review.** Do not argue the diff if the fixture already failed. Expand the list in a separate commit with a human name.
 
